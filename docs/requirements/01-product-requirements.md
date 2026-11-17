@@ -2,7 +2,7 @@
 ## Product Requirements Document (PRD)
 
 **Version:** 0.1 — Draft  
-**Status:** Proposed, pending review  
+**Status:** Approved
 **Project:** CMU Agentic AI Systems Capstone  
 **Implementation phase:** Requirements definition
 
