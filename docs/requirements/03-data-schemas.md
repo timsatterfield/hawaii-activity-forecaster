@@ -283,6 +283,7 @@ Retrieval time must not be interpreted as observation time.
 | `unit` | String | Conditional | Original or documented normalized unit |
 | `measurement_time` | Timestamp | Conditional | Associated observation or forecast time |
 | `measurement_notes` | String | No | Definitions and limitations |
+| `measurement_convention` | String | No | Localized measurement method |
 
 ### Proposed Weather Measurement Types
 
