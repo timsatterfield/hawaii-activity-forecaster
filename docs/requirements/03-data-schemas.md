@@ -1095,23 +1095,35 @@ Sequence numbers provide ordering within a trace without assuming that parallel 
 
 ## 7.4 Event Types
 
-### Request Events
+This section defines the authoritative `TraceEvent.event_type` enumeration.
+
+The Investigation Trace schema is the single source of truth for allowed event types. Other specifications shall reference this enumeration and shall not define independent or conflicting event lists.
+
+### Request and Investigation Lifecycle Events
 
 - `REQUEST_RECEIVED`
 - `REQUEST_NORMALIZED`
 - `REQUEST_REVISED`
 - `CLARIFICATION_REQUESTED`
+- `INVESTIGATION_STARTED`
+- `INVESTIGATION_COMPLETED`
+- `INVESTIGATION_ABSTAINED`
+- `INVESTIGATION_FAILED`
 
-### Agent and Tool Events
+### Agent and Tool Execution Events
 
 - `AGENT_STARTED`
 - `AGENT_COMPLETED`
+- `AGENT_FAILED`
 - `TOOL_CALLED`
 - `TOOL_COMPLETED`
 - `TOOL_FAILED`
+- `RETRY_INITIATED`
+- `FALLBACK_INITIATED`
 
-### Evidence Events
+### Contract and Evidence Events
 
+- `CONTRACT_VALIDATED`
 - `EVIDENCE_RECEIVED`
 - `EVIDENCE_VALIDATED`
 - `EVIDENCE_REJECTED`
@@ -1124,16 +1136,70 @@ Sequence numbers provide ordering within a trace without assuming that parallel 
 - `CANDIDATE_EXCLUDED`
 - `CANDIDATE_ELIGIBLE`
 
-### Workflow Events
+### Execution Limit and Result Events
 
-- `RETRY_INITIATED`
-- `FALLBACK_INITIATED`
 - `INVESTIGATION_LIMIT_REACHED`
-- `INVESTIGATION_COMPLETED`
-- `INVESTIGATION_ABSTAINED`
-- `INVESTIGATION_FAILED`
+- `RESULT_VALIDATED`
 
-The final event vocabulary may be refined in the Agent and Tool Contracts specification.
+### Event Semantics
+
+**TR-EVT-001 — Authoritative Vocabulary**
+
+Only event types listed in this section may be emitted as `TraceEvent.event_type` values.
+
+New event types require an approved Data Schemas revision.
+
+**TR-EVT-002 — Event Outcomes**
+
+An event type identifies the operation that occurred.
+
+Its outcome shall be recorded in the event's structured `details` rather than inferred solely from the event name.
+
+For example, `CONTRACT_VALIDATED`, `EVIDENCE_VALIDATED`, and `RESULT_VALIDATED` shall indicate whether the relevant validation passed or failed.
+
+**TR-EVT-003 — Rejected Evidence**
+
+`EVIDENCE_REJECTED` identifies a finding rejected by evidence validation.
+
+It may accompany an `EVIDENCE_VALIDATED` event representing the same validation operation.
+
+Events shall not create contradictory validation outcomes.
+
+**TR-EVT-004 — Partial and Unresolved Outcomes**
+
+Evidence limitations and unresolved candidate status may be represented through structured validation events, Candidate Assessments, and related identifiers.
+
+Additional event types are not required solely to represent every possible status value.
+
+**TR-EVT-005 — Correlation**
+
+Events shall retain relevant identifiers through `related_ids` and structured `details`.
+
+Agent requests, execution attempts, tool calls, findings, policy results, candidate assessments, and recommendation results must remain correlatable.
+
+**TR-EVT-006 — Terminal Events**
+
+`INVESTIGATION_COMPLETED`, `INVESTIGATION_ABSTAINED`, and `INVESTIGATION_FAILED` correspond to the approved terminal Investigation State statuses.
+
+Recommendation Result outcomes remain defined separately by the Recommendation Result schema.
+
+**TR-EVT-007 — Observable Behavior**
+
+Trace events represent actual observable execution activity.
+
+Events must not be fabricated after execution to produce an apparently complete trace.
+
+**TR-EVT-008 — Privacy**
+
+Events shall not contain private model chain-of-thought, credentials, secrets, or unnecessary personal information.
+
+### Cross-Specification References
+
+- `04-agent-tool-contracts.md` defines specialist and tool execution contracts.
+- `06-test-acceptance.md` defines required trace assertions.
+- `07-observability.md` defines event semantics, storage, correlation, privacy, and operational reporting.
+
+The event enumeration in this section is authoritative.
 
 ## 7.5 Tool Execution Details
 
