@@ -1,8 +1,8 @@
 # Hawaii Activity Forecaster
 # Agent and Tool Contracts
 
-**Version:** 0.2 — Consolidated Draft  
-**Status:** Coordinator-to-Specialist Contracts approved; external provider integrations pending final verification  
+**Version:** 0.2 — Approved Logical Contracts  
+**Status:** Coordinator-to-Specialist Contracts approved; external provider integrations pending verification
 **Project:** CMU Agentic AI Systems Capstone  
 **Document:** `docs/requirements/04-agent-tool-contracts.md`
 
@@ -934,17 +934,32 @@ Some supplemental reports may summarize or republish NWS information.
 
 The Forecaster must not count the same underlying forecast as independent corroboration merely because it appears on multiple websites.
 
-**CF-001:** Preserve original underlying source attribution where identifiable.
+### Conflict Rule Authority
 
-**CF-002:** Identify derivative or republished information when known.
+Conflict handling requirements `CF-001` through `CF-006` are defined authoritatively in Section 20.3 of `05-safety-policies.md`.
 
-**CF-003:** Do not count duplicate underlying forecasts as independent confirmation.
+This specification does not redefine those rules.
 
-**CF-004:** Preserve material differences between sources.
+Agent and tool implementations shall comply with the approved conflict requirements, including:
 
-**CF-005:** Investigate conflicts when authorized and within execution limits.
+- Preserving underlying source provenance.
+- Identifying derivative or republished evidence.
+- Preventing duplicate underlying evidence from being counted as independent corroboration.
+- Preserving material disagreements.
+- Supporting authorized investigation of unresolved conflicts.
+- Reporting material uncertainty when evidence remains inadequate.
 
-**CF-006:** Disclose or abstain when unresolved conflicts prevent adequate evidence.
+### Contract Responsibilities
+
+The agent and tool contract layer shall:
+
+1. Retain the source identifiers and metadata needed by conflict evaluation.
+2. Preserve independently retrieved findings without silent replacement.
+3. Report conflicting or incomplete findings through structured responses.
+4. Maintain geographic, temporal, and measurement integrity.
+5. Provide the Coordinator with sufficient information to apply the authoritative Safety Policy.
+
+Conflict classification, safety implications, eligibility consequences, and abstention policy remain governed by `05-safety-policies.md`.
 
 ---
 
@@ -1060,6 +1075,18 @@ Response-contract validation and evidence validation are separate operations.
 **ST-005:** Material state changes must generate Investigation Trace events.
 
 **ST-006:** Source provenance and finding identifiers must be preserved.
+
+**ST-007 — Assessment Revision Association:** Trusted orchestration components shall associate Candidate Assessment evaluations with the active request revision.
+
+**ST-008 — Superseded Assessment Handling:** Materially changed user constraints shall trigger reevaluation of affected assessments before those assessments can support a new Recommendation Result.
+
+**ST-009 — Evidence Reuse:** Findings from earlier request revisions may be reused only when their original geographic coverage, temporal validity, provenance, and relevance remain acceptable.
+
+**ST-010 — Assessment History:** Material reassessments shall preserve their prior decision history through correlated Investigation Trace events.
+
+**ST-011 — Current Revision Validation:** A Recommendation Result shall not reference an assessment invalidated by a later request revision.
+
+These rules implement the revision-association requirements in `03-data-schemas.md` without expanding specialist permissions or modifying the shared request/response schema.
 
 ---
 

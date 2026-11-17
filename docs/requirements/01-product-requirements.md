@@ -1,8 +1,8 @@
 # Hawaii Activity Forecaster
 ## Product Requirements Document (PRD)
 
-**Version:** 0.1 — Draft  
-**Status:** Approved
+**Version:** 0.1 — Approved Baseline  
+**Status:** Approved — Product Scope; implementation details pending
 **Project:** CMU Agentic AI Systems Capstone  
 **Implementation phase:** Requirements definition
 
@@ -122,11 +122,13 @@ Optional preferences shall not automatically prevent an investigation.
 
 **PR-004 — Conversational Follow-ups**
 
-The system shall maintain active-session context and allow users to modify individual constraints without restating the entire request.
-
-Example: "What if I'm willing to drive 45 minutes?"
+Example: "Actually, let's look near Napili instead."
 
 The updated investigation shall preserve applicable unchanged constraints.
+
+Geographic proximity may be considered as a soft preference using verified geographic information.
+
+Drive-time estimation and routing remain outside MVP scope.
 
 ### 3.2 Geographic Information
 
@@ -459,4 +461,4 @@ The MVP will be considered complete when:
 
 ---
 
-**Document status:** Draft v0.1. Product requirements are proposed for review; unresolved decisions are not authorization for coding agents to invent implementation behavior.
+**Document status:** Approved Product Requirements v0.1. Unresolved implementation dependencies remain documented and do not authorize implementation agents to invent missing safety or source-integration behavior.

@@ -2,7 +2,7 @@
 # System Architecture Specification
 
 **Version:** 0.1 — Draft  
-**Status:** Approved
+**Status:** Approved — Logical Design; implementation decisions pending
 **Project:** CMU Agentic AI Systems Capstone  
 **Document:** `docs/requirements/02-system-architecture.md`  
 **Implementation Phase:** Requirements Definition
@@ -1369,6 +1369,6 @@ No live provider shall be treated as verified solely because it appears in the a
 
 **End of System Architecture Specification v0.1**
 
-**Status:** Approved
+**Status:** Approved — Logical Design; implementation decisions pending
 
 **No application code is authorized by this document.**
