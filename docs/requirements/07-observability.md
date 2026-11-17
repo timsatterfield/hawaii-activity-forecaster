@@ -1,8 +1,8 @@
 # Hawaii Activity Forecaster
 # Observability Specification
 
-**Version:** 0.1 — Draft  
-**Status:** Approved; consolidation pending 
+**Version:** 0.1 — Approved Logical Design  
+**Status:** Approved — Logical Design; event vocabulary reconciliation specified
 **Project:** CMU Agentic AI Systems Capstone  
 **Document:** `docs/requirements/07-observability.md`
 
@@ -153,7 +153,7 @@ The Investigation Trace is append-only.
 
 Each investigation shall have one logical trace.
 
-An in-session follow-up may continue the same investigation with a new request revision when supported by the approved workflow.
+Under the approved M1 session lifecycle, each post-terminal follow-up retains the session ID, increments the request revision, and creates a new investigation ID. Each investigation has its own logical trace. Terminal investigations and their historical trace events remain immutable.
 
 Events must identify the revision to which they apply.
 
@@ -219,71 +219,85 @@ The system must distinguish event occurrence time from external observation, iss
 
 ---
 
-# 5. Proposed Event Categories
+# 5. Investigation Trace Event Vocabulary
 
-The following event vocabulary is proposed for logical observability requirements.
+The authoritative event enumeration is defined in Section 7.4 of `03-data-schemas.md`.
 
-Final serialized names must be reconciled with the approved Investigation Trace schema before implementation.
+The observability implementation shall emit only approved `TraceEvent.event_type` values.
 
-## 5.1 Request Lifecycle
+This document specifies how events are captured, correlated, stored, and evaluated. It does not maintain a separate event enumeration.
 
-| Event | Purpose |
-|---|---|
-| `REQUEST_RECEIVED` | New CLI request accepted for processing |
-| `REQUEST_NORMALIZED` | Structured interpretation established |
-| `REQUEST_REVISED` | In-session follow-up updates active request |
-| `INVESTIGATION_STARTED` | Investigation begins |
-| `INVESTIGATION_COMPLETED` | Valid final recommendation result produced |
-| `INVESTIGATION_ABSTAINED` | No supported recommendation available |
-| `INVESTIGATION_FAILED` | Unrecoverable technical failure |
+## 5.1 Required Event Categories
 
-## 5.2 Agent and Tool Execution
+The approved enumeration covers:
 
-| Event | Purpose |
-|---|---|
-| `AGENT_STARTED` | Scoped specialist execution begins |
-| `AGENT_COMPLETED` | Specialist returns an acceptable response |
-| `AGENT_FAILED` | Specialist execution fails |
-| `TOOL_CALLED` | Approved external tool operation initiated |
-| `TOOL_COMPLETED` | Tool returns successfully |
-| `TOOL_FAILED` | Tool timeout, rejection, or error |
-| `RETRY_INITIATED` | An authorized retry begins |
-| `FALLBACK_INITIATED` | An authorized alternative source or tool is selected |
+1. Request and investigation lifecycle.
+2. Specialist and external tool execution.
+3. Contract and environmental evidence validation.
+4. Candidate assessment and safety-policy evaluation.
+5. Retry, fallback, and investigation limits.
+6. Final result validation and terminal outcomes.
 
-## 5.3 Evidence and Validation
+## 5.2 Validation Events
 
-| Event | Purpose |
-|---|---|
-| `EVIDENCE_RECEIVED` | Finding returned from approved operation |
-| `CONTRACT_VALIDATED` | Structured agent/tool response evaluated |
-| `EVIDENCE_VALIDATED` | Finding evaluated for usability |
-| `EVIDENCE_CONFLICT_DETECTED` | Material conflict identified |
+Contract, evidence, and result validation events shall preserve:
 
-A validation event shall include the result of validation, not merely indicate that a check occurred.
+- Relevant operation or record identifiers.
+- Applicable validation-rule identifiers.
+- Validation outcome.
+- Sanitized failure or limitation details.
 
-Rejected and limited findings must remain distinguishable from accepted findings.
+A validation event shall not imply successful validation merely because the validation operation completed.
 
-## 5.4 Safety and Candidate Assessment
+Rejected evidence must remain distinguishable from accepted or limited evidence.
 
-| Event | Purpose |
-|---|---|
-| `POLICY_EVALUATED` | Applicable policy check completed |
-| `CANDIDATE_ASSESSED` | Candidate Assessment created or updated |
-| `CANDIDATE_ELIGIBLE` | Candidate becomes eligible |
-| `CANDIDATE_EXCLUDED` | Candidate excluded by verified rule |
+## 5.3 Agent and Tool Events
 
-Unresolved candidates may be represented through their Candidate Assessment and policy results without requiring a separate event for every state.
+Specialist and tool events shall preserve sufficient correlation information to identify:
 
-## 5.5 Execution Limits
+- Originating logical request.
+- Request revision.
+- Execution attempt.
+- Tool-call identifier.
+- Responsible component.
+- Operation outcome.
 
-| Event | Purpose |
-|---|---|
-| `INVESTIGATION_LIMIT_REACHED` | Approved execution budget exhausted |
-| `RESULT_VALIDATED` | Final structured result checked before presentation |
+Concurrent completion order shall not be used as a substitute for explicit correlation.
 
-The event vocabulary should remain small and purpose-driven.
+## 5.4 Safety Events
 
-Additional event types require a demonstrable debugging, policy, or evaluation need.
+Policy and candidate assessment events shall preserve:
+
+- Candidate beach identifier.
+- Applicable policy identifier.
+- Relevant finding identifiers.
+- Policy outcome.
+- Candidate eligibility outcome.
+- Material assessment changes.
+
+Safety decisions must be verifiable without reconstructing private model reasoning.
+
+## 5.5 Terminal Events
+
+Every normally terminated investigation shall have an appropriate terminal event representing:
+
+- Successful recommendation completion.
+- Explained abstention.
+- Unrecoverable technical failure.
+
+The terminal event must agree with Investigation State and Recommendation Result.
+
+Interrupted executions may have incomplete traces, which must not be repaired by fabricating events.
+
+## 5.6 Event Vocabulary Changes
+
+Any proposed new event type shall be reviewed against the existing enumeration before modifying the schema.
+
+Changes shall be reflected consistently in:
+
+- `03-data-schemas.md`
+- `06-test-acceptance.md`
+- `07-observability.md`
 
 ---
 
@@ -1065,6 +1079,6 @@ Implementation planning should begin only after these issues have been identifie
 
 **End of Observability Specification v0.1**
 
-**Status:** Approved; consolidation pending
+**Status:** Approved logical observability design. Trace-event vocabulary is governed by `03-data-schemas.md`; implementation-specific storage, retention, and operational settings remain open.
 
 **No application code is authorized by this document.**
