@@ -41,3 +41,35 @@ inc/
 # cpanfile.snapshot
 
 .DS-Store
+
+# Python build artifacts and caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+/dist/
+/build/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Local environments and uv cache (uv.lock is versioned)
+.venv/
+venv/
+.uv-cache/
+
+# Local secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local traces and temporary files
+/traces/
+*.tmp
+*.swp
+*~
+.DS_Store
