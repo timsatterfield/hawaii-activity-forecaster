@@ -21,10 +21,11 @@ information, and user preferences.
 
 ## Current Status
 
-M1.1-B — Pydantic Schema Implementation. The Python package, information CLI,
-and structural data contracts are available. Agent execution, environmental
-recommendations, scenario fixtures, and safety evaluation remain for later
-increments. The LLM provider/model is undecided.
+M1.1-C — Configuration and Budget Validation. The Python package, information CLI,
+structural data contracts, and validated configuration are available. Runtime
+budget enforcement, agent execution, environmental recommendations, scenario
+fixtures, and safety evaluation remain for later increments. The LLM
+provider/model is undecided.
 
 ## Documentation
 
@@ -58,11 +59,36 @@ does not enable tracing, and its optional pytest plugin is disabled.
 
 Package areas under `src/hawaii_activity_forecaster/` are `config`, `models`,
 `agents`, `orchestration`, `validation`, and `tools`. The `models` package contains
-the Pydantic contracts; the other areas remain placeholders for later work.
+the Pydantic contracts and `config` contains settings and loading; the other areas
+remain placeholders for later work.
 
 See [M1.1-B model notes](docs/development/m1-1b-models.md) for schema coverage,
 serialization choices, validation boundaries, and unresolved specification details.
 Run the model tests alone with `uv run --locked pytest tests/test_models.py`.
+
+### Configuration
+
+Use the approved defaults or load an explicit local TOML file:
+
+```python
+from hawaii_activity_forecaster.config import AppConfig, load_config
+
+defaults = AppConfig()
+settings = load_config("haf.example.toml")
+```
+
+Precedence is defaults, explicit TOML, then supported `HAF_` environment variables.
+The loader does not discover files or read `.env` automatically. It creates no
+trace files and contacts no services. Budget and timeout values must match the
+approved baseline; real-model execution remains disabled pending provider
+activation. Keep credentials out of configuration files.
+
+See [M1.1-C configuration notes](docs/development/m1-1c-configuration.md) for the
+settings, environment variables, relative-path rules, and runtime checks deferred
+to later increments. Run its tests with `uv run --locked pytest tests/test_config.py`.
+
+Next foundation increment: synthetic fixture loading and validation, before
+M1.2 LangGraph execution.
 
 ## Specification notes
 
