@@ -1,0 +1,13 @@
+{
+  "tool_call_id": "SYNTHETIC_CALL_weather-unavailable",
+  "source_id": "NWS_WEATHER",
+  "retrieval_status": "UNAVAILABLE",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/synthetic/weather-unavailable",
+  "findings": [],
+  "missing_evidence": [
+    "weather_forecast"
+  ],
+  "errors": [],
+  "duration_ms": 1
+}

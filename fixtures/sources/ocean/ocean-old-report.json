@@ -1,0 +1,35 @@
+{
+  "tool_call_id": "SYNTHETIC_CALL_ocean-old-report",
+  "source_id": "SNORKEL_STORE",
+  "retrieval_status": "SUCCESS",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/synthetic/ocean-old-report",
+  "findings": [
+    {
+      "finding_id": "SYNTHETIC_OLD_REPORT",
+      "investigation_id": "SYNTHETIC_INPUT_EXAMPLES_V1",
+      "agent_type": "OCEAN",
+      "source_id": "SNORKEL_STORE",
+      "source_reference": "https://example.invalid/haf/synthetic/OLD_REPORT",
+      "finding_type": "REPORT",
+      "coverage_type": "REGIONAL",
+      "coverage_id": "SYNTHETIC_REGION",
+      "coverage_description": "Fictional reporting region; not a verified real-world coverage mapping.",
+      "retrieved_at": "2026-11-16T09:00:00-10:00",
+      "issued_at": "2026-11-14T08:00:00-10:00",
+      "valid_from": "2026-11-14T08:00:00-10:00",
+      "valid_until": "2026-11-14T18:00:00-10:00",
+      "retrieval_status": "SUCCESS",
+      "validation_status": "PENDING",
+      "limitations": [
+        "SYNTHETIC old report. Retrieval time must not replace publication or validity times."
+      ],
+      "descriptive_findings": [
+        "SYNTHETIC qualitative visibility report for a prior date."
+      ]
+    }
+  ],
+  "missing_evidence": [],
+  "errors": [],
+  "duration_ms": 1
+}

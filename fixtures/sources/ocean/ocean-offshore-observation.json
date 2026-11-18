@@ -1,0 +1,38 @@
+{
+  "tool_call_id": "SYNTHETIC_CALL_ocean-offshore-observation",
+  "source_id": "NDBC",
+  "retrieval_status": "SUCCESS",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/synthetic/ocean-offshore-observation",
+  "findings": [
+    {
+      "finding_id": "SYNTHETIC_OFFSHORE_OBSERVATION",
+      "investigation_id": "SYNTHETIC_INPUT_EXAMPLES_V1",
+      "agent_type": "OCEAN",
+      "source_id": "NDBC",
+      "source_reference": "https://example.invalid/haf/synthetic/OFFSHORE_OBSERVATION",
+      "finding_type": "OBSERVATION",
+      "coverage_type": "OFFSHORE",
+      "coverage_id": "SYNTHETIC_OFFSHORE_STATION",
+      "coverage_description": "Fictional offshore station; no direct beach surf or visibility measurement.",
+      "retrieved_at": "2026-11-16T09:00:00-10:00",
+      "retrieval_status": "SUCCESS",
+      "validation_status": "PENDING",
+      "limitations": [
+        "SYNTHETIC evidence for structural testing only. Not a complete activity evidence profile."
+      ],
+      "observed_at": "2026-11-16T08:00:00-10:00",
+      "measurements": [
+        {
+          "measurement_type": "SWELL_HEIGHT",
+          "value": 3,
+          "unit": "ft",
+          "measurement_time": "2026-11-16T08:00:00-10:00"
+        }
+      ]
+    }
+  ],
+  "missing_evidence": [],
+  "errors": [],
+  "duration_ms": 1
+}

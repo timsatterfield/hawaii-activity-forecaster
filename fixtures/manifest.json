@@ -1,0 +1,63 @@
+{
+  "fixture_format_version": "1.0.0",
+  "fixture_package_version": "1.0.0",
+  "schema_version": "0.1",
+  "policy_version": "0.2",
+  "synthetic": true,
+  "reference_time": "2026-11-16T09:00:00-10:00",
+  "target_time_window": {
+    "start": "2026-11-17T08:00:00-10:00",
+    "end": "2026-11-17T11:00:00-10:00"
+  },
+  "catalog_fixture": "catalogs/synthetic-maui-v1.json",
+  "source_fixtures": [
+    {
+      "fixture_id": "weather-forecast",
+      "path": "sources/weather/weather-forecast.json",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_WEATHER"
+    },
+    {
+      "fixture_id": "weather-partial",
+      "path": "sources/weather/weather-partial.json",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_WEATHER"
+    },
+    {
+      "fixture_id": "weather-unavailable",
+      "path": "sources/weather/weather-unavailable.json",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_WEATHER"
+    },
+    {
+      "fixture_id": "ocean-marine-forecast",
+      "path": "sources/ocean/ocean-marine-forecast.json",
+      "agent_type": "OCEAN",
+      "source_id": "NWS_MARINE"
+    },
+    {
+      "fixture_id": "ocean-advisory",
+      "path": "sources/ocean/ocean-advisory.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "ocean-advisory-unavailable",
+      "path": "sources/ocean/ocean-advisory-unavailable.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "ocean-offshore-observation",
+      "path": "sources/ocean/ocean-offshore-observation.json",
+      "agent_type": "OCEAN",
+      "source_id": "NDBC"
+    },
+    {
+      "fixture_id": "ocean-old-report",
+      "path": "sources/ocean/ocean-old-report.json",
+      "agent_type": "OCEAN",
+      "source_id": "SNORKEL_STORE"
+    }
+  ]
+}

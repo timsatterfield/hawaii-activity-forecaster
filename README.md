@@ -21,11 +21,11 @@ information, and user preferences.
 
 ## Current Status
 
-M1.1-C — Configuration and Budget Validation. The Python package, information CLI,
-structural data contracts, and validated configuration are available. Runtime
-budget enforcement, agent execution, environmental recommendations, scenario
-fixtures, and safety evaluation remain for later increments. The LLM
-provider/model is undecided.
+M1.1-D — Synthetic Fixture Loading and Validation. The Python package, information
+CLI, structural data contracts, validated configuration, and local synthetic
+catalog/source input loading are available. Full acceptance-scenario fixtures,
+runtime budget enforcement, agent execution, environmental recommendations, and
+safety evaluation remain for later increments. The LLM provider/model is undecided.
 
 ## Documentation
 
@@ -58,9 +58,9 @@ LangSmith is a transitive dependency of the orchestration stack; this bootstrap
 does not enable tracing, and its optional pytest plugin is disabled.
 
 Package areas under `src/hawaii_activity_forecaster/` are `config`, `models`,
-`agents`, `orchestration`, `validation`, and `tools`. The `models` package contains
-the Pydantic contracts and `config` contains settings and loading; the other areas
-remain placeholders for later work.
+`fixtures`, `agents`, `orchestration`, `validation`, and `tools`. The `models`
+package contains the Pydantic contracts, `config` contains settings and loading,
+and `fixtures` loads local synthetic inputs; the other areas remain placeholders.
 
 See [M1.1-B model notes](docs/development/m1-1b-models.md) for schema coverage,
 serialization choices, validation boundaries, and unresolved specification details.
@@ -87,8 +87,25 @@ See [M1.1-C configuration notes](docs/development/m1-1c-configuration.md) for th
 settings, environment variables, relative-path rules, and runtime checks deferred
 to later increments. Run its tests with `uv run --locked pytest tests/test_config.py`.
 
-Next foundation increment: synthetic fixture loading and validation, before
-M1.2 LangGraph execution.
+### Synthetic input fixtures
+
+```python
+from hawaii_activity_forecaster.fixtures import load_fixture_inputs
+
+inputs = load_fixture_inputs("fixtures")
+catalog = inputs.catalog
+forecast = inputs.source_responses["weather-forecast"]
+```
+
+The [fixture package](fixtures/README.md) contains five fictional beaches and
+eight synthetic source examples with fixed timestamps. Loading checks declared
+versions, paths, record schemas, and cross-file references. It does not execute
+scenarios, accept environmental evidence, or generate recommendations.
+
+Run its tests with `uv run --locked pytest tests/test_fixtures.py`. See the
+[M1.1-D notes](docs/development/m1-1d-fixtures.md) for the input format and remaining
+policy/behavior/assertion design decisions needed before full scenario loading
+and M1.2 LangGraph execution.
 
 ## Specification notes
 
