@@ -1,0 +1,11 @@
+{
+  "harness_contract_version": "1.0.0",
+  "agent_type": "OCEAN",
+  "source_fixture_ids": [
+    "sc-010-water",
+    "sc-010-visibility-unavailable",
+    "sc-010-marine-error",
+    "sc-010-fallback-surf",
+    "sc-010-fallback-currents"
+  ]
+}

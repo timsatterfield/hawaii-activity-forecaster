@@ -1,0 +1,120 @@
+{
+  "tool_call_id": "SC-010_CALL_WATER",
+  "source_id": "HI_DOH_CWB",
+  "retrieval_status": "SUCCESS",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/sc-010/water",
+  "findings": [
+    {
+      "finding_id": "SC-010_WATER_CHECK_A",
+      "investigation_id": "SYNTHETIC_SC-010_TEMPLATE",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB",
+      "source_reference": "https://example.invalid/haf/sc-010/water_check_a",
+      "finding_type": "ADVISORY",
+      "coverage_type": "BEACH",
+      "coverage_id": "TEST_BEACH_A",
+      "coverage_description": "Fictional TEST_BEACH_A; not a verified Maui provider mapping.",
+      "retrieved_at": "2026-11-16T09:00:00-10:00",
+      "issued_at": "2026-11-16T08:30:00-10:00",
+      "valid_from": "2026-11-17T08:00:00-10:00",
+      "valid_until": "2026-11-17T11:00:00-10:00",
+      "retrieval_status": "SUCCESS",
+      "validation_status": "PENDING",
+      "limitations": [
+        "SYNTHETIC test evidence only. No real environmental measurement or hazard threshold is established."
+      ],
+      "beach_id": "TEST_BEACH_A",
+      "descriptive_findings": [
+        "SYNTHETIC complete water-contact advisory check for TEST_BEACH_A over the explicit requested window.",
+        "No applicable listed water-contact avoidance advisory found after the declared complete synthetic check; this does not establish safe water quality."
+      ],
+      "advisories": [],
+      "missing_fields": []
+    },
+    {
+      "finding_id": "SC-010_WATER_CHECK_B",
+      "investigation_id": "SYNTHETIC_SC-010_TEMPLATE",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB",
+      "source_reference": "https://example.invalid/haf/sc-010/water_check_b",
+      "finding_type": "ADVISORY",
+      "coverage_type": "BEACH",
+      "coverage_id": "TEST_BEACH_B",
+      "coverage_description": "Fictional TEST_BEACH_B; not a verified Maui provider mapping.",
+      "retrieved_at": "2026-11-16T09:00:00-10:00",
+      "issued_at": "2026-11-16T08:30:00-10:00",
+      "valid_from": "2026-11-17T08:00:00-10:00",
+      "valid_until": "2026-11-17T11:00:00-10:00",
+      "retrieval_status": "SUCCESS",
+      "validation_status": "PENDING",
+      "limitations": [
+        "SYNTHETIC test evidence only. No real environmental measurement or hazard threshold is established."
+      ],
+      "beach_id": "TEST_BEACH_B",
+      "descriptive_findings": [
+        "SYNTHETIC complete water-contact advisory check for TEST_BEACH_B over the explicit requested window.",
+        "No applicable listed water-contact avoidance advisory found after the declared complete synthetic check; this does not establish safe water quality."
+      ],
+      "advisories": [],
+      "missing_fields": []
+    },
+    {
+      "finding_id": "SC-010_WATER_CHECK_C",
+      "investigation_id": "SYNTHETIC_SC-010_TEMPLATE",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB",
+      "source_reference": "https://example.invalid/haf/sc-010/water_check_c",
+      "finding_type": "ADVISORY",
+      "coverage_type": "BEACH",
+      "coverage_id": "TEST_BEACH_C",
+      "coverage_description": "Fictional TEST_BEACH_C; not a verified Maui provider mapping.",
+      "retrieved_at": "2026-11-16T09:00:00-10:00",
+      "issued_at": "2026-11-16T08:30:00-10:00",
+      "valid_from": "2026-11-17T08:00:00-10:00",
+      "valid_until": "2026-11-17T11:00:00-10:00",
+      "retrieval_status": "SUCCESS",
+      "validation_status": "PENDING",
+      "limitations": [
+        "SYNTHETIC test evidence only. No real environmental measurement or hazard threshold is established."
+      ],
+      "beach_id": "TEST_BEACH_C",
+      "descriptive_findings": [
+        "SYNTHETIC complete water-contact advisory check for TEST_BEACH_C over the explicit requested window.",
+        "No applicable listed water-contact avoidance advisory found after the declared complete synthetic check; this does not establish safe water quality."
+      ],
+      "advisories": [],
+      "missing_fields": []
+    },
+    {
+      "finding_id": "SC-010_WATER_CHECK_D",
+      "investigation_id": "SYNTHETIC_SC-010_TEMPLATE",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB",
+      "source_reference": "https://example.invalid/haf/sc-010/water_check_d",
+      "finding_type": "ADVISORY",
+      "coverage_type": "BEACH",
+      "coverage_id": "TEST_BEACH_D",
+      "coverage_description": "Fictional TEST_BEACH_D; not a verified Maui provider mapping.",
+      "retrieved_at": "2026-11-16T09:00:00-10:00",
+      "issued_at": "2026-11-16T08:30:00-10:00",
+      "valid_from": "2026-11-17T08:00:00-10:00",
+      "valid_until": "2026-11-17T11:00:00-10:00",
+      "retrieval_status": "SUCCESS",
+      "validation_status": "PENDING",
+      "limitations": [
+        "SYNTHETIC test evidence only. No real environmental measurement or hazard threshold is established."
+      ],
+      "beach_id": "TEST_BEACH_D",
+      "descriptive_findings": [
+        "SYNTHETIC complete water-contact advisory check for TEST_BEACH_D over the explicit requested window.",
+        "No applicable listed water-contact avoidance advisory found after the declared complete synthetic check; this does not establish safe water quality."
+      ],
+      "advisories": [],
+      "missing_fields": []
+    }
+  ],
+  "missing_evidence": [],
+  "errors": [],
+  "duration_ms": 1
+}

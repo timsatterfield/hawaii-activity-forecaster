@@ -21,11 +21,12 @@ information, and user preferences.
 
 ## Current Status
 
-M1.1-F — Scenario Harness Contracts. The Python package, information CLI,
-structural data contracts, validated configuration, v1 input loading, and v2
-scenario preflight/projections are available. Complete acceptance-scenario
-authoring, runtime/evaluator execution, agent workflows, environmental recommendations,
-and safety evaluation remain for later increments. The LLM provider/model is undecided.
+M1.1-G — SC-004 / SC-010 Scenario Fixtures. The Python package, information CLI,
+structural contracts, configuration, v1 inputs, and v2 preflight/projections are
+available, with authored SC-004/SC-010 inputs and independent assertion plans.
+Both scenarios remain execution-blocked. Runtime/evaluator execution, agent
+workflows, environmental recommendations and safety evaluation remain for later
+increments. The LLM provider/model is undecided.
 
 ## Documentation
 
@@ -125,8 +126,8 @@ explicitly registered v2 scenario and returns separate application, trusted-driv
 and evaluator snapshots. The existing `load_fixture_inputs()` API remains v1-only.
 Expected values and artifact digests stay out of application/driver inputs.
 
-No complete SC-004/SC-010 package is included yet. Tests construct temporary
-contract-only packages; structurally valid ACTIVE definitions remain **BLOCKED**
+M1.1-F tests construct temporary contract-only packages. M1.1-G adds the authored
+SC-004/SC-010 package below; structurally valid ACTIVE definitions remain **BLOCKED**
 for execution until the runtime components are implemented.
 
 Run the new tests with:
@@ -136,8 +137,27 @@ uv run --locked pytest tests/test_harness_contracts.py tests/test_harness_loadin
 ```
 
 See the [M1.1-F notes](docs/development/m1-1f-harness-contracts.md) for validated
-formats, projection boundaries and deferred runtime checks. Next is authoring
-complete SC-004/SC-010 inputs and independent assertion plans.
+formats, projection boundaries and deferred runtime checks.
+
+### Authored scenario fixtures — M1.1-G
+
+The [isolated v2 scenario pack](fixtures/scenario-pack-v1/README.md) contains the
+SC-004 advisory-exclusion case and SC-010 outage/abstention case, with 18 source
+templates and 145 independent assertion definitions. Its name denotes the first
+scenario pack; its manifest format is 2.0.0 and dataset version is 1.1.0.
+
+```python
+from hawaii_activity_forecaster.harness import load_scenario
+
+scenario = load_scenario("fixtures/scenario-pack-v1", "SC-004")
+assert scenario.execution_readiness.outcome == "BLOCKED"
+```
+
+Run authoring/preflight tests with `uv run --locked pytest tests/test_scenario_fixtures.py`.
+See the [M1.1-G coverage notes](docs/development/m1-1g-scenario-fixtures.md) for
+explicit evidence/gap inputs, independent expectations, budget-boundary semantics,
+and the temporal assertion-validation fix. Next is the bounded graph/runtime work,
+starting with M1.2's graph skeleton and trusted budget enforcement.
 
 ## Specification notes
 

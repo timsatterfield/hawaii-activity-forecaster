@@ -1,0 +1,22 @@
+{
+  "tool_call_id": "SC-004_CALL_OTHER_ALERTS",
+  "source_id": "NWS_ALERTS",
+  "retrieval_status": "UNAVAILABLE",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/sc-004/other-alerts",
+  "findings": [],
+  "missing_evidence": [
+    "OFFICIAL_ADVISORIES"
+  ],
+  "errors": [
+    {
+      "error_id": "SC-004_ERROR_OTHER_ALERTS",
+      "error_code": "SOURCE_UNAVAILABLE",
+      "message": "SYNTHETIC provider outage; environmental conditions are unknown.",
+      "retryable": false,
+      "source_id": "NWS_ALERTS",
+      "tool_call_id": "SC-004_CALL_OTHER_ALERTS"
+    }
+  ],
+  "duration_ms": 1
+}

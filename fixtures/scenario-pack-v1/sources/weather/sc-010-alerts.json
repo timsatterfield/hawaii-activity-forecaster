@@ -1,0 +1,37 @@
+{
+  "tool_call_id": "SC-010_CALL_ALERTS",
+  "source_id": "NWS_ALERTS",
+  "retrieval_status": "SUCCESS",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/sc-010/alerts",
+  "findings": [
+    {
+      "finding_id": "SC-010_OFFICIAL_ALERT_CHECK",
+      "investigation_id": "SYNTHETIC_SC-010_TEMPLATE",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_ALERTS",
+      "source_reference": "https://example.invalid/haf/sc-010/official_alert_check",
+      "finding_type": "ADVISORY",
+      "coverage_type": "REGIONAL",
+      "coverage_id": "SYNTHETIC_SC-010_REGION",
+      "coverage_description": "Fictional SC-010 reporting region; not a verified Maui provider mapping.",
+      "retrieved_at": "2026-11-16T09:00:00-10:00",
+      "issued_at": "2026-11-16T08:30:00-10:00",
+      "valid_from": "2026-11-17T08:00:00-10:00",
+      "valid_until": "2026-11-17T11:00:00-10:00",
+      "retrieval_status": "SUCCESS",
+      "validation_status": "PENDING",
+      "limitations": [
+        "SYNTHETIC test evidence only. No real environmental measurement or hazard threshold is established."
+      ],
+      "descriptive_findings": [
+        "SYNTHETIC complete official weather-alert review for the declared fictional region and requested window: no applicable listed alert found.",
+        "This is a scoped hypothetical check, not a prediction that real future conditions will be safe."
+      ],
+      "advisories": []
+    }
+  ],
+  "missing_evidence": [],
+  "errors": [],
+  "duration_ms": 1
+}

@@ -1,0 +1,467 @@
+{
+  "harness_contract_version": "1.0.0",
+  "policy_version": "0.2",
+  "policy_configuration_version": "synthetic-policy-1.0.0",
+  "synthetic": true,
+  "evidence_profiles": [
+    {
+      "activity": "SNORKELING",
+      "mandatory": [
+        "OFFICIAL_ADVISORIES",
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS",
+        "WATER_QUALITY_ADVISORY_CHECK",
+        "VERIFIED_BEACH_CHARACTERISTICS"
+      ],
+      "relevant": [
+        "WIND_CONDITIONS"
+      ],
+      "optional": [
+        "UNDERWATER_VISIBILITY"
+      ]
+    }
+  ],
+  "evidence_rules": [
+    {
+      "rule_id": "sc-004-alerts",
+      "category": "OFFICIAL_ADVISORIES",
+      "source_fixture_id": "sc-004-alerts",
+      "finding_id": "SC-004_OFFICIAL_ALERT_CHECK",
+      "temporal_rule": "COVERS_TARGET_WINDOW",
+      "beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B"
+      ]
+    },
+    {
+      "rule_id": "sc-004-wind",
+      "category": "WIND_CONDITIONS",
+      "source_fixture_id": "sc-004-wind",
+      "finding_id": "SC-004_WEATHER_FORECAST",
+      "temporal_rule": "COVERS_TARGET_WINDOW",
+      "beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B"
+      ]
+    },
+    {
+      "rule_id": "sc-004-water-a",
+      "category": "WATER_QUALITY_ADVISORY_CHECK",
+      "source_fixture_id": "sc-004-water-a",
+      "finding_id": "SC-004_WATER_CHECK_A",
+      "temporal_rule": "COVERS_TARGET_WINDOW",
+      "beach_ids": [
+        "TEST_BEACH_A"
+      ]
+    },
+    {
+      "rule_id": "sc-004-water-b",
+      "category": "WATER_QUALITY_ADVISORY_CHECK",
+      "source_fixture_id": "sc-004-water-b",
+      "finding_id": "SC-004_WATER_CHECK_B",
+      "temporal_rule": "COVERS_TARGET_WINDOW",
+      "beach_ids": [
+        "TEST_BEACH_B"
+      ]
+    },
+    {
+      "rule_id": "sc-004-surf_wave_conditions",
+      "category": "SURF_WAVE_CONDITIONS",
+      "source_fixture_id": "sc-004-marine",
+      "finding_id": "SC-004_MARINE_FORECAST",
+      "temporal_rule": "COVERS_TARGET_WINDOW",
+      "beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B"
+      ]
+    },
+    {
+      "rule_id": "sc-004-currents_persistent_hazards",
+      "category": "CURRENTS_PERSISTENT_HAZARDS",
+      "source_fixture_id": "sc-004-marine",
+      "finding_id": "SC-004_MARINE_FORECAST",
+      "temporal_rule": "COVERS_TARGET_WINDOW",
+      "beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B"
+      ]
+    }
+  ],
+  "premises": [
+    {
+      "premise_id": "SC-004_TEST_BEACH_A_OFFICIAL_ADVISORY_CHECK_COMPLETE",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "OFFICIAL_ADVISORY_CHECK_COMPLETE",
+      "value": true,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-alerts",
+          "finding_id": "SC-004_OFFICIAL_ALERT_CHECK"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. Official review is complete only for the declared fictional geography/time, subject to independent evidence validation."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_A_WATER_CONTACT_ADVISORY_CHECK_COMPLETE",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "WATER_CONTACT_ADVISORY_CHECK_COMPLETE",
+      "value": true,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-water-a",
+          "finding_id": "SC-004_WATER_CHECK_A"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. The scoped hypothetical authoritative listing check completed; neither an empty list alone nor a failed retrieval proves this."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_A_WATER_CONTACT_AVOIDANCE_ADVISORY_PRESENT",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "WATER_CONTACT_AVOIDANCE_ADVISORY_PRESENT",
+      "value": true,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-water-a",
+          "finding_id": "SC-004_WATER_CHECK_A"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. Advisory presence/absence is explicitly scoped to this candidate/time, not a global safety guarantee."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_A_DISQUALIFYING_WEATHER_PRESENT",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DISQUALIFYING_WEATHER_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-alerts",
+          "finding_id": "SC-004_OFFICIAL_ALERT_CHECK"
+        },
+        {
+          "source_fixture_id": "sc-004-wind",
+          "finding_id": "SC-004_WEATHER_FORECAST"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. No disqualifying weather is established in this hypothetical reviewed forecast/alert pair."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_A_DISQUALIFYING_BEACH_CHARACTERISTIC_PRESENT",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DISQUALIFYING_BEACH_CHARACTERISTIC_PRESENT",
+      "value": false,
+      "finding_refs": [],
+      "catalog_field_refs": [
+        {
+          "beach_id": "TEST_BEACH_A",
+          "field": "access_notes"
+        }
+      ],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. Persistent catalog traits alone do not disqualify this fictional activity under the request; no hard entry constraint was stated."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_B_OFFICIAL_ADVISORY_CHECK_COMPLETE",
+      "beach_id": "TEST_BEACH_B",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "OFFICIAL_ADVISORY_CHECK_COMPLETE",
+      "value": true,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-alerts",
+          "finding_id": "SC-004_OFFICIAL_ALERT_CHECK"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. Official review is complete only for the declared fictional geography/time, subject to independent evidence validation."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_B_WATER_CONTACT_ADVISORY_CHECK_COMPLETE",
+      "beach_id": "TEST_BEACH_B",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "WATER_CONTACT_ADVISORY_CHECK_COMPLETE",
+      "value": true,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-water-b",
+          "finding_id": "SC-004_WATER_CHECK_B"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. The scoped hypothetical authoritative listing check completed; neither an empty list alone nor a failed retrieval proves this."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_B_WATER_CONTACT_AVOIDANCE_ADVISORY_PRESENT",
+      "beach_id": "TEST_BEACH_B",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "WATER_CONTACT_AVOIDANCE_ADVISORY_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-water-b",
+          "finding_id": "SC-004_WATER_CHECK_B"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. Advisory presence/absence is explicitly scoped to this candidate/time, not a global safety guarantee."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_B_DISQUALIFYING_WEATHER_PRESENT",
+      "beach_id": "TEST_BEACH_B",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DISQUALIFYING_WEATHER_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-alerts",
+          "finding_id": "SC-004_OFFICIAL_ALERT_CHECK"
+        },
+        {
+          "source_fixture_id": "sc-004-wind",
+          "finding_id": "SC-004_WEATHER_FORECAST"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. No disqualifying weather is established in this hypothetical reviewed forecast/alert pair."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_B_DISQUALIFYING_BEACH_CHARACTERISTIC_PRESENT",
+      "beach_id": "TEST_BEACH_B",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DISQUALIFYING_BEACH_CHARACTERISTIC_PRESENT",
+      "value": false,
+      "finding_refs": [],
+      "catalog_field_refs": [
+        {
+          "beach_id": "TEST_BEACH_B",
+          "field": "access_notes"
+        }
+      ],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. Persistent catalog traits alone do not disqualify this fictional activity under the request; no hard entry constraint was stated."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_A_DISQUALIFYING_SURF_PRESENT",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DISQUALIFYING_SURF_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-marine",
+          "finding_id": "SC-004_MARINE_FORECAST"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. Surf is explicitly hypothetical non-disqualifying evidence; the numeric surf range is not a universal cutoff."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_A_DANGEROUS_CURRENT_PRESENT",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DANGEROUS_CURRENT_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-marine",
+          "finding_id": "SC-004_MARINE_FORECAST"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. The scenario author supplies a hypothetical current classification backed by scoped synthetic marine context; real nearshore currents are not inferred."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_A_MATERIAL_SAFETY_CONFLICT_PRESENT",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "MATERIAL_SAFETY_CONFLICT_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-marine",
+          "finding_id": "SC-004_MARINE_FORECAST"
+        },
+        {
+          "source_fixture_id": "sc-004-water-a",
+          "finding_id": "SC-004_WATER_CHECK_A"
+        },
+        {
+          "source_fixture_id": "sc-004-alerts",
+          "finding_id": "SC-004_OFFICIAL_ALERT_CHECK"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. No material contradictory finding is supplied. Favorable surf and an applicable water advisory are separate facts, not reasons to disregard the advisory."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_A_ACTIVITY_SUPPORTING_CONDITIONS_PRESENT",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "ACTIVITY_SUPPORTING_CONDITIONS_PRESENT",
+      "value": true,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-marine",
+          "finding_id": "SC-004_MARINE_FORECAST"
+        },
+        {
+          "source_fixture_id": "sc-004-wind",
+          "finding_id": "SC-004_WEATHER_FORECAST"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. Weather/surf hypothetically support the activity before independent advisory, evidence and eligibility gates; this cannot override any exclusion."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_B_DISQUALIFYING_SURF_PRESENT",
+      "beach_id": "TEST_BEACH_B",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DISQUALIFYING_SURF_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-marine",
+          "finding_id": "SC-004_MARINE_FORECAST"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. Surf is explicitly hypothetical non-disqualifying evidence; the numeric surf range is not a universal cutoff."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_B_DANGEROUS_CURRENT_PRESENT",
+      "beach_id": "TEST_BEACH_B",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DANGEROUS_CURRENT_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-marine",
+          "finding_id": "SC-004_MARINE_FORECAST"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. The scenario author supplies a hypothetical current classification backed by scoped synthetic marine context; real nearshore currents are not inferred."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_B_MATERIAL_SAFETY_CONFLICT_PRESENT",
+      "beach_id": "TEST_BEACH_B",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "MATERIAL_SAFETY_CONFLICT_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-marine",
+          "finding_id": "SC-004_MARINE_FORECAST"
+        },
+        {
+          "source_fixture_id": "sc-004-water-b",
+          "finding_id": "SC-004_WATER_CHECK_B"
+        },
+        {
+          "source_fixture_id": "sc-004-alerts",
+          "finding_id": "SC-004_OFFICIAL_ALERT_CHECK"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. No material contradictory finding is supplied. Favorable surf and an applicable water advisory are separate facts, not reasons to disregard the advisory."
+    },
+    {
+      "premise_id": "SC-004_TEST_BEACH_B_ACTIVITY_SUPPORTING_CONDITIONS_PRESENT",
+      "beach_id": "TEST_BEACH_B",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "ACTIVITY_SUPPORTING_CONDITIONS_PRESENT",
+      "value": true,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-004-marine",
+          "finding_id": "SC-004_MARINE_FORECAST"
+        },
+        {
+          "source_fixture_id": "sc-004-wind",
+          "finding_id": "SC-004_WEATHER_FORECAST"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise, not a production source claim or numeric hazard rule. Weather/surf hypothetically support the activity before independent advisory, evidence and eligibility gates; this cannot override any exclusion."
+    }
+  ],
+  "mixed_permissions": []
+}

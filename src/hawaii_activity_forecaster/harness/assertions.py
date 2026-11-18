@@ -252,7 +252,17 @@ class Assertion(ContractModel):
                 annotation = get_args(arrays[0])[0]
             if "expected" in needed:
                 adapter = TypeAdapter(annotation)
-                value = adapter.validate_json(json.dumps(self.expected, allow_nan=False), strict=True)
+                # Temporal types with BeforeValidator enter Python validation in
+                # strict JSON mode. Let their declared ISO-input validators parse
+                # strings, then retain the serialized-type check below. Other
+                # operands keep strict validation (notably integer vs float/bool).
+                schema = adapter.json_schema(mode="serialization")
+                branches = [branch for branch in schema.get("anyOf", [schema]) if branch.get("type") != "null"]
+                temporal = bool(branches) and all(branch.get("format") in {"date", "date-time"} for branch in branches)
+                if temporal and isinstance(self.expected, str):
+                    value = adapter.validate_python(self.expected)
+                else:
+                    value = adapter.validate_json(json.dumps(self.expected, allow_nan=False), strict=True)
                 if not _same_json_types(self.expected, adapter.dump_python(value, mode="json", exclude_unset=True)):
                     raise ValueError("expected operand must match the serialized target type")
             else:

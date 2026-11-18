@@ -48,3 +48,11 @@ Tests in `tests/test_fixtures.py` independently assert structural expectations.
 
 See [implementation notes](../docs/development/m1-1d-fixtures.md) for version
 identifiers, manifest fields, validation boundaries, and remaining design decisions.
+
+## Separate v2 scenario package
+
+[scenario-pack-v1/](scenario-pack-v1/README.md) adds authored SC-004 and SC-010
+inputs and independent assertions using the approved v2 harness format. It has
+its own manifest and is loaded explicitly with `load_scenario()`; the parent v1
+loader does not discover or merge it. Both cases remain blocked for execution.
+The original v1 manifest/catalog/source JSON inputs are unchanged.

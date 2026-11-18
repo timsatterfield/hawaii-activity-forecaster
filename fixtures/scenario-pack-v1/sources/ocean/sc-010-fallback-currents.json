@@ -1,0 +1,22 @@
+{
+  "tool_call_id": "SC-010_CALL_FALLBACK_CURRENTS",
+  "source_id": "SNORKEL_STORE",
+  "retrieval_status": "ERROR",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/sc-010/fallback-currents",
+  "findings": [],
+  "missing_evidence": [
+    "CURRENTS_PERSISTENT_HAZARDS"
+  ],
+  "errors": [
+    {
+      "error_id": "SC-010_ERROR_FALLBACK_CURRENTS",
+      "error_code": "SOURCE_UNAVAILABLE",
+      "message": "SYNTHETIC provider outage; environmental conditions are unknown.",
+      "retryable": false,
+      "source_id": "SNORKEL_STORE",
+      "tool_call_id": "SC-010_CALL_FALLBACK_CURRENTS"
+    }
+  ],
+  "duration_ms": 1
+}
