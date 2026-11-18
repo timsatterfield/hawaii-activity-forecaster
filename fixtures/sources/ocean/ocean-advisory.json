@@ -1,0 +1,44 @@
+{
+  "tool_call_id": "SYNTHETIC_CALL_ocean-advisory",
+  "source_id": "HI_DOH_CWB",
+  "retrieval_status": "SUCCESS",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/synthetic/ocean-advisory",
+  "findings": [
+    {
+      "finding_id": "SYNTHETIC_OCEAN_ADVISORY",
+      "investigation_id": "SYNTHETIC_INPUT_EXAMPLES_V1",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB",
+      "source_reference": "https://example.invalid/haf/synthetic/OCEAN_ADVISORY",
+      "finding_type": "ADVISORY",
+      "coverage_type": "BEACH",
+      "coverage_id": "TEST_BEACH_A",
+      "coverage_description": "Fictional Test Beach A only.",
+      "retrieved_at": "2026-11-16T09:00:00-10:00",
+      "issued_at": "2026-11-16T08:30:00-10:00",
+      "valid_from": "2026-11-17T08:00:00-10:00",
+      "valid_until": "2026-11-17T11:00:00-10:00",
+      "retrieval_status": "SUCCESS",
+      "validation_status": "PENDING",
+      "limitations": [
+        "SYNTHETIC evidence for structural testing only. Not a complete activity evidence profile."
+      ],
+      "beach_id": "TEST_BEACH_A",
+      "advisories": [
+        {
+          "advisory_id": "SYNTHETIC_ADVISORY_A",
+          "issuer": "Synthetic official-advisory test source",
+          "advisory_type": "Synthetic water-contact avoidance advisory",
+          "affected_area": "TEST_BEACH_A",
+          "effective_from": "2026-11-17T08:00:00-10:00",
+          "effective_until": "2026-11-17T11:00:00-10:00",
+          "source_reference": "https://example.invalid/haf/synthetic/advisory-a"
+        }
+      ]
+    }
+  ],
+  "missing_evidence": [],
+  "errors": [],
+  "duration_ms": 1
+}

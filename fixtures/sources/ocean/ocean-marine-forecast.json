@@ -1,0 +1,50 @@
+{
+  "tool_call_id": "SYNTHETIC_CALL_ocean-marine-forecast",
+  "source_id": "NWS_MARINE",
+  "retrieval_status": "SUCCESS",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/synthetic/ocean-marine-forecast",
+  "findings": [
+    {
+      "finding_id": "SYNTHETIC_OCEAN_MARINE_FORECAST",
+      "investigation_id": "SYNTHETIC_INPUT_EXAMPLES_V1",
+      "agent_type": "OCEAN",
+      "source_id": "NWS_MARINE",
+      "source_reference": "https://example.invalid/haf/synthetic/OCEAN_MARINE_FORECAST",
+      "finding_type": "FORECAST",
+      "coverage_type": "REGIONAL",
+      "coverage_id": "SYNTHETIC_REGION",
+      "coverage_description": "Fictional reporting region; not a verified real-world coverage mapping.",
+      "retrieved_at": "2026-11-16T09:00:00-10:00",
+      "issued_at": "2026-11-16T08:30:00-10:00",
+      "valid_from": "2026-11-17T08:00:00-10:00",
+      "valid_until": "2026-11-17T11:00:00-10:00",
+      "retrieval_status": "SUCCESS",
+      "validation_status": "PENDING",
+      "limitations": [
+        "SYNTHETIC evidence for structural testing only. Not a complete activity evidence profile."
+      ],
+      "measurements": [
+        {
+          "measurement_type": "SURF_HEIGHT",
+          "value": {
+            "min": 1,
+            "max": 2
+          },
+          "unit": "ft",
+          "measurement_convention": "FACE",
+          "measurement_time": "2026-11-17T08:00:00-10:00"
+        },
+        {
+          "measurement_type": "SWELL_HEIGHT",
+          "value": 3,
+          "unit": "ft",
+          "measurement_time": "2026-11-17T08:00:00-10:00"
+        }
+      ]
+    }
+  ],
+  "missing_evidence": [],
+  "errors": [],
+  "duration_ms": 1
+}

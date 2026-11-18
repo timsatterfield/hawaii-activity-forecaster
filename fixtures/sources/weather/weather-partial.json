@@ -1,0 +1,44 @@
+{
+  "tool_call_id": "SYNTHETIC_CALL_weather-partial",
+  "source_id": "NWS_WEATHER",
+  "retrieval_status": "PARTIAL",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/synthetic/weather-partial",
+  "findings": [
+    {
+      "finding_id": "SYNTHETIC_WEATHER_PARTIAL",
+      "investigation_id": "SYNTHETIC_INPUT_EXAMPLES_V1",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_WEATHER",
+      "source_reference": "https://example.invalid/haf/synthetic/WEATHER_PARTIAL",
+      "finding_type": "FORECAST",
+      "coverage_type": "REGIONAL",
+      "coverage_id": "SYNTHETIC_REGION",
+      "coverage_description": "Fictional reporting region; not a verified real-world coverage mapping.",
+      "retrieved_at": "2026-11-16T09:00:00-10:00",
+      "issued_at": "2026-11-16T08:30:00-10:00",
+      "valid_from": "2026-11-17T08:00:00-10:00",
+      "valid_until": "2026-11-17T11:00:00-10:00",
+      "retrieval_status": "PARTIAL",
+      "validation_status": "PENDING",
+      "limitations": [
+        "SYNTHETIC evidence for structural testing only. Not a complete activity evidence profile."
+      ],
+      "measurements": [
+        {
+          "measurement_type": "WIND_SPEED",
+          "value": 8,
+          "unit": "kn"
+        }
+      ],
+      "missing_fields": [
+        "wind_direction"
+      ]
+    }
+  ],
+  "missing_evidence": [
+    "wind_direction"
+  ],
+  "errors": [],
+  "duration_ms": 1
+}

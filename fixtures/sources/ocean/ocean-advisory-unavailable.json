@@ -1,0 +1,13 @@
+{
+  "tool_call_id": "SYNTHETIC_CALL_ocean-advisory-unavailable",
+  "source_id": "HI_DOH_CWB",
+  "retrieval_status": "UNAVAILABLE",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/synthetic/ocean-advisory-unavailable",
+  "findings": [],
+  "missing_evidence": [
+    "water_quality_advisory_check"
+  ],
+  "errors": [],
+  "duration_ms": 1
+}
