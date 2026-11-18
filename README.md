@@ -21,11 +21,11 @@ information, and user preferences.
 
 ## Current Status
 
-M1.1-D — Synthetic Fixture Loading and Validation. The Python package, information
-CLI, structural data contracts, validated configuration, and local synthetic
-catalog/source input loading are available. Full acceptance-scenario fixtures,
-runtime budget enforcement, agent execution, environmental recommendations, and
-safety evaluation remain for later increments. The LLM provider/model is undecided.
+M1.1-F — Scenario Harness Contracts. The Python package, information CLI,
+structural data contracts, validated configuration, v1 input loading, and v2
+scenario preflight/projections are available. Complete acceptance-scenario
+authoring, runtime/evaluator execution, agent workflows, environmental recommendations,
+and safety evaluation remain for later increments. The LLM provider/model is undecided.
 
 ## Documentation
 
@@ -58,9 +58,10 @@ LangSmith is a transitive dependency of the orchestration stack; this bootstrap
 does not enable tracing, and its optional pytest plugin is disabled.
 
 Package areas under `src/hawaii_activity_forecaster/` are `config`, `models`,
-`fixtures`, `agents`, `orchestration`, `validation`, and `tools`. The `models`
+`fixtures`, `harness`, `agents`, `orchestration`, `validation`, and `tools`. The `models`
 package contains the Pydantic contracts, `config` contains settings and loading,
-and `fixtures` loads local synthetic inputs; the other areas remain placeholders.
+`fixtures` loads local synthetic inputs, and `harness` validates v2 scenario contracts;
+the agent/orchestration/validation/tool areas remain placeholders.
 
 See [M1.1-B model notes](docs/development/m1-1b-models.md) for schema coverage,
 serialization choices, validation boundaries, and unresolved specification details.
@@ -114,7 +115,29 @@ was **approved on November 18, 2026**, including SH-OD-001 through SH-OD-009 and
 acceptance checks SH-T01 through SH-T20. It defines synthetic policy inputs, tool
 behaviors, independent assertions, scenario assembly, and the SC-005/SC-008
 readiness-status serialization mapping. This design adds no runtime functionality
-or changes to the existing fixture format. Implementation requires a separate request.
+or changes to the existing fixture format. Its first implementation step is now
+available as M1.1-F below; later execution work still requires separate authorization.
+
+### Scenario contracts and preflight — M1.1-F
+
+`hawaii_activity_forecaster.harness.load_scenario(root, scenario_id)` validates an
+explicitly registered v2 scenario and returns separate application, trusted-driver,
+and evaluator snapshots. The existing `load_fixture_inputs()` API remains v1-only.
+Expected values and artifact digests stay out of application/driver inputs.
+
+No complete SC-004/SC-010 package is included yet. Tests construct temporary
+contract-only packages; structurally valid ACTIVE definitions remain **BLOCKED**
+for execution until the runtime components are implemented.
+
+Run the new tests with:
+
+```bash
+uv run --locked pytest tests/test_harness_contracts.py tests/test_harness_loading.py
+```
+
+See the [M1.1-F notes](docs/development/m1-1f-harness-contracts.md) for validated
+formats, projection boundaries and deferred runtime checks. Next is authoring
+complete SC-004/SC-010 inputs and independent assertion plans.
 
 ## Specification notes
 
