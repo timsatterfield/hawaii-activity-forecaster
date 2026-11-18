@@ -1,0 +1,23 @@
+{
+  "tool_call_id": "SC-010_CALL_MARINE_ERROR",
+  "source_id": "NWS_MARINE",
+  "retrieval_status": "ERROR",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/sc-010/marine-error",
+  "findings": [],
+  "missing_evidence": [
+    "SURF_WAVE_CONDITIONS",
+    "CURRENTS_PERSISTENT_HAZARDS"
+  ],
+  "errors": [
+    {
+      "error_id": "SC-010_ERROR_MARINE_ERROR",
+      "error_code": "SOURCE_UNAVAILABLE",
+      "message": "SYNTHETIC provider outage; environmental conditions are unknown.",
+      "retryable": true,
+      "source_id": "NWS_MARINE",
+      "tool_call_id": "SC-010_CALL_MARINE_ERROR"
+    }
+  ],
+  "duration_ms": 1
+}

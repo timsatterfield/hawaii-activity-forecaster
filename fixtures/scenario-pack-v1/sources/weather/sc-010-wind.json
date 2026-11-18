@@ -1,0 +1,49 @@
+{
+  "tool_call_id": "SC-010_CALL_WIND",
+  "source_id": "NWS_WEATHER",
+  "retrieval_status": "SUCCESS",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/sc-010/wind",
+  "findings": [
+    {
+      "finding_id": "SC-010_WEATHER_FORECAST",
+      "investigation_id": "SYNTHETIC_SC-010_TEMPLATE",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_WEATHER",
+      "source_reference": "https://example.invalid/haf/sc-010/weather_forecast",
+      "finding_type": "FORECAST",
+      "coverage_type": "REGIONAL",
+      "coverage_id": "SYNTHETIC_SC-010_REGION",
+      "coverage_description": "Fictional SC-010 reporting region; not a verified Maui provider mapping.",
+      "retrieved_at": "2026-11-16T09:00:00-10:00",
+      "issued_at": "2026-11-16T08:30:00-10:00",
+      "valid_from": "2026-11-17T08:00:00-10:00",
+      "valid_until": "2026-11-17T11:00:00-10:00",
+      "retrieval_status": "SUCCESS",
+      "validation_status": "PENDING",
+      "limitations": [
+        "SYNTHETIC test evidence only. No real environmental measurement or hazard threshold is established."
+      ],
+      "descriptive_findings": [
+        "SYNTHETIC weather forecast supports only the explicitly declared test premises; the numbers do not define safety."
+      ],
+      "measurements": [
+        {
+          "measurement_type": "WIND_SPEED",
+          "value": 8,
+          "unit": "kn",
+          "measurement_time": "2026-11-17T08:00:00-10:00"
+        },
+        {
+          "measurement_type": "WIND_DIRECTION",
+          "value": 80,
+          "unit": "deg",
+          "measurement_time": "2026-11-17T08:00:00-10:00"
+        }
+      ]
+    }
+  ],
+  "missing_evidence": [],
+  "errors": [],
+  "duration_ms": 1
+}

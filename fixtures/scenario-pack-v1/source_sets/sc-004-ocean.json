@@ -1,0 +1,13 @@
+{
+  "harness_contract_version": "1.0.0",
+  "agent_type": "OCEAN",
+  "source_fixture_ids": [
+    "sc-004-water-a",
+    "sc-004-water-b",
+    "sc-004-visibility-unavailable",
+    "sc-004-marine",
+    "sc-004-other-marine",
+    "sc-004-other-water",
+    "sc-004-other-visibility"
+  ]
+}

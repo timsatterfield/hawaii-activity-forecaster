@@ -1,0 +1,22 @@
+{
+  "tool_call_id": "SC-004_CALL_OTHER_VISIBILITY",
+  "source_id": "HWT_VISIBILITY",
+  "retrieval_status": "UNAVAILABLE",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/sc-004/other-visibility",
+  "findings": [],
+  "missing_evidence": [
+    "UNDERWATER_VISIBILITY"
+  ],
+  "errors": [
+    {
+      "error_id": "SC-004_ERROR_OTHER_VISIBILITY",
+      "error_code": "SOURCE_UNAVAILABLE",
+      "message": "SYNTHETIC provider outage; environmental conditions are unknown.",
+      "retryable": false,
+      "source_id": "HWT_VISIBILITY",
+      "tool_call_id": "SC-004_CALL_OTHER_VISIBILITY"
+    }
+  ],
+  "duration_ms": 1
+}

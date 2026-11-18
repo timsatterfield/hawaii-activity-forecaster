@@ -1,0 +1,53 @@
+{
+  "tool_call_id": "SC-004_CALL_MARINE",
+  "source_id": "NWS_MARINE",
+  "retrieval_status": "SUCCESS",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/sc-004/marine",
+  "findings": [
+    {
+      "finding_id": "SC-004_MARINE_FORECAST",
+      "investigation_id": "SYNTHETIC_SC-004_TEMPLATE",
+      "agent_type": "OCEAN",
+      "source_id": "NWS_MARINE",
+      "source_reference": "https://example.invalid/haf/sc-004/marine_forecast",
+      "finding_type": "FORECAST",
+      "coverage_type": "REGIONAL",
+      "coverage_id": "SYNTHETIC_SC-004_REGION",
+      "coverage_description": "Fictional SC-004 reporting region; not a verified Maui provider mapping.",
+      "retrieved_at": "2026-11-16T09:00:00-10:00",
+      "issued_at": "2026-11-16T08:30:00-10:00",
+      "valid_from": "2026-11-17T08:00:00-10:00",
+      "valid_until": "2026-11-17T11:00:00-10:00",
+      "retrieval_status": "SUCCESS",
+      "validation_status": "PENDING",
+      "limitations": [
+        "SYNTHETIC test evidence only. No real environmental measurement or hazard threshold is established."
+      ],
+      "descriptive_findings": [
+        "SYNTHETIC regional marine forecast for A/B. Current/entry classifications are explicit hypothetical premises, not direct current-speed measurements."
+      ],
+      "measurements": [
+        {
+          "measurement_type": "SURF_HEIGHT",
+          "value": {
+            "min": 1,
+            "max": 2
+          },
+          "unit": "ft",
+          "measurement_convention": "FACE",
+          "measurement_time": "2026-11-17T08:00:00-10:00"
+        },
+        {
+          "measurement_type": "SWELL_HEIGHT",
+          "value": 3,
+          "unit": "ft",
+          "measurement_time": "2026-11-17T08:00:00-10:00"
+        }
+      ]
+    }
+  ],
+  "missing_evidence": [],
+  "errors": [],
+  "duration_ms": 1
+}

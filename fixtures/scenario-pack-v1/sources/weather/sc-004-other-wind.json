@@ -1,0 +1,22 @@
+{
+  "tool_call_id": "SC-004_CALL_OTHER_WIND",
+  "source_id": "NWS_WEATHER",
+  "retrieval_status": "UNAVAILABLE",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/sc-004/other-wind",
+  "findings": [],
+  "missing_evidence": [
+    "WIND_CONDITIONS"
+  ],
+  "errors": [
+    {
+      "error_id": "SC-004_ERROR_OTHER_WIND",
+      "error_code": "SOURCE_UNAVAILABLE",
+      "message": "SYNTHETIC provider outage; environmental conditions are unknown.",
+      "retryable": false,
+      "source_id": "NWS_WEATHER",
+      "tool_call_id": "SC-004_CALL_OTHER_WIND"
+    }
+  ],
+  "duration_ms": 1
+}

@@ -1,0 +1,22 @@
+{
+  "tool_call_id": "SC-010_CALL_FALLBACK_SURF",
+  "source_id": "HWT_SURF",
+  "retrieval_status": "ERROR",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/sc-010/fallback-surf",
+  "findings": [],
+  "missing_evidence": [
+    "SURF_WAVE_CONDITIONS"
+  ],
+  "errors": [
+    {
+      "error_id": "SC-010_ERROR_FALLBACK_SURF",
+      "error_code": "SOURCE_UNAVAILABLE",
+      "message": "SYNTHETIC provider outage; environmental conditions are unknown.",
+      "retryable": false,
+      "source_id": "HWT_SURF",
+      "tool_call_id": "SC-010_CALL_FALLBACK_SURF"
+    }
+  ],
+  "duration_ms": 1
+}

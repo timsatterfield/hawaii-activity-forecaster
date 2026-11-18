@@ -199,3 +199,24 @@ def test_retry_attempt_sequences_cannot_reset_original_allowance(package):
     operation["attempts"].append(dict(operation["attempts"][1], attempt=3))
     with pytest.raises(ValidationError):
         BehaviorScript.model_validate(script)
+
+
+@pytest.mark.parametrize('field,value', [
+    ('/created_at', '2026-11-16T09:00:00-10:00'),
+    ('/created_at', '2026-11-16T19:00:00Z'),
+    ('/target_time_window/start', '2026-11-17T08:00:00-10:00'),
+    ('/target_date', '2026-11-17'),
+    ('/deadline_at', '2026-11-17T08:00:00-10:00'),
+])
+def test_temporal_assertion_operands_use_declared_iso_input_validators(field, value):
+    data = assertion(target='investigation_state', selector={'request_step': 1}, field=field, expected=value)
+    record = Assertion.model_validate(data)
+    assert record.expected == value
+    assert Assertion.model_validate_json(record.model_dump_json(exclude_unset=True)) == record
+
+
+@pytest.mark.parametrize('value', ['2026-11-16T09:00:00', '0', 0, True, 'invalid', '2026-11-16 09:00:00Z'])
+def test_temporal_assertion_fix_does_not_accept_naive_or_non_iso_values(value):
+    with pytest.raises(ValidationError):
+        Assertion.model_validate(assertion(target='investigation_state', selector={'request_step': 1},
+                                            field='/created_at', expected=value))
