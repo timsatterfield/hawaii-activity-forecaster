@@ -107,9 +107,19 @@ Run its tests with `uv run --locked pytest tests/test_fixtures.py`. See the
 policy/behavior/assertion design decisions needed before full scenario loading
 and M1.2 LangGraph execution.
 
+### Approved scenario harness design — M1.1-E
+
+The [M1.1-E scenario harness contract design](docs/implementation/m1-scenario-harness-contract-design.md)
+was **approved on November 18, 2026**, including SH-OD-001 through SH-OD-009 and
+acceptance checks SH-T01 through SH-T20. It defines synthetic policy inputs, tool
+behaviors, independent assertions, scenario assembly, and the SC-005/SC-008
+readiness-status serialization mapping. This design adds no runtime functionality
+or changes to the existing fixture format. Implementation requires a separate request.
+
 ## Specification notes
 
-All seven core requirements and six M1 implementation documents are present.
+All seven core requirements and seven approved M1 implementation/design
+documents are present.
 The older technical plan still marks dependency management and several safeguards
 as open; the approved configuration baseline resolves uv and its lockfile,
 invocation limits/timeouts, and trace write-failure handling. Its provider/model
