@@ -21,9 +21,10 @@ information, and user preferences.
 
 ## Current Status
 
-M1.1-A — Project Bootstrap. The Python package and information CLI are available.
-Agent execution, environmental recommendations, schemas, fixtures, and safety
-validation are reserved for later increments. The LLM provider/model is undecided.
+M1.1-B — Pydantic Schema Implementation. The Python package, information CLI,
+and structural data contracts are available. Agent execution, environmental
+recommendations, scenario fixtures, and safety evaluation remain for later
+increments. The LLM provider/model is undecided.
 
 ## Documentation
 
@@ -56,11 +57,12 @@ LangSmith is a transitive dependency of the orchestration stack; this bootstrap
 does not enable tracing, and its optional pytest plugin is disabled.
 
 Package areas under `src/hawaii_activity_forecaster/` are `config`, `models`,
-`agents`, `orchestration`, `validation`, and `tools`. These are placeholders for
-later work; the technical plan's module names are illustrative.
+`agents`, `orchestration`, `validation`, and `tools`. The `models` package contains
+the Pydantic contracts; the other areas remain placeholders for later work.
 
-Next increment: **M1.1-B — Pydantic Schema Implementation**, following the approved
-schema and contract mapping.
+See [M1.1-B model notes](docs/development/m1-1b-models.md) for schema coverage,
+serialization choices, validation boundaries, and unresolved specification details.
+Run the model tests alone with `uv run --locked pytest tests/test_models.py`.
 
 ## Specification notes
 
