@@ -21,6 +21,7 @@ from hawaii_activity_forecaster.interpretation import (
     PROFILE_ID, RequestContext, ValidatedRequest, verify_request, verify_selection,
 )
 from hawaii_activity_forecaster.interpretation.validation import checked_context
+from hawaii_activity_forecaster.observability import inspect_trace
 
 if TYPE_CHECKING:
     from .skeleton import SkeletonReport
@@ -282,10 +283,17 @@ class SessionManager:
                     (state.investigation_id, state.request_revision, state.result_id, state.outcome)
                     or not report.trace_writable or report.result_validation is None):
                 raise SessionError("The result does not match the session investigation.")
+            if report.result_validation.authoritative_trace and (report.trace_path is None or report.trace_validation is None):
+                raise SessionError("The required authoritative trace receipt is absent.")
         elif state.status in {"COMPLETED", "ABSTAINED"}:
             raise SessionError("A successful terminal investigation requires a validated result.")
         if state.status == "AWAITING_CLARIFICATION" and (report.result is not None or state.tool_call_count or state.assessments):
             raise SessionError("Clarification cannot publish a result or inherit an assessment.")
+        if report.trace_path is not None and report.trace_writable:
+            observed = inspect_trace(report.trace_path, state=state, result=report.result, budgets=budgets,
+                                     bindings=report.tool_bindings, evidence=report.evidence_report, safety=report.safety_report)
+            if observed != report.trace_validation:
+                raise SessionError("The authoritative trace does not match its session validation record.")
         return report
 
     def _check_raw_report(self, report, admission):

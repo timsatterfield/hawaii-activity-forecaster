@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 from hawaii_activity_forecaster.models import BeachCatalog, InvestigationState, RecommendationResult
 from hawaii_activity_forecaster.harness.policy import PolicyConfiguration
 from hawaii_activity_forecaster.recommendations import ResultContext, validate_error_result, validate_result
+from hawaii_activity_forecaster.observability import inspect_trace
 
 if TYPE_CHECKING:
     from hawaii_activity_forecaster.orchestration import SkeletonReport
@@ -103,6 +104,13 @@ def _verified(report, catalog, policy):
         final_fields = {"status", "updated_at", "outcome", "result_id", "completion_reason"}
         if state.model_dump(exclude=final_fields) != prior.model_dump(exclude=final_fields):
             raise ValueError("Terminal state differs from its validation basis")
+        if basis.authoritative_trace and (report.trace_path is None or report.trace_validation is None):
+            raise ValueError("The required authoritative trace receipt is absent")
+        if report.trace_path is not None:
+            observed = inspect_trace(report.trace_path, state=state, result=result, budgets=report.budgets,
+                                     bindings=report.tool_bindings, evidence=report.evidence_report, safety=report.safety_report)
+            if observed != report.trace_validation or not observed.complete:
+                raise ValueError("Authoritative trace differs from its validated publication basis")
         if result.outcome == "ERROR":
             result = validate_error_result(result, prior, now=state.updated_at, error_code=basis.error_code,
                                            request_context=report.request_context, request_receipt=report.request_receipt)

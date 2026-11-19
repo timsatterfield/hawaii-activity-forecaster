@@ -13,7 +13,7 @@ from uuid import uuid4
 
 from hawaii_activity_forecaster.config.settings import ExecutionTimeouts
 from hawaii_activity_forecaster.models.enums import TraceEventType
-from .budgets import BudgetManager
+from .budgets import BudgetError, BudgetManager
 
 
 class ModelCallError(RuntimeError):
@@ -43,7 +43,12 @@ class ComponentModelCalls:
         if operation not in {"normalize_request", "coordinator_plan", "weather_investigation", "ocean_investigation"}:
             raise ModelCallError("Unknown synthetic model operation")
         call_id = str(uuid4())
-        self._budget.reserve(call_id, "model")
+        try:
+            self._budget.reserve(call_id, "model")
+        except BudgetError:
+            if not self._budget.snapshot().closed:
+                self._emit(TraceEventType.INVESTIGATION_LIMIT_REACHED, budget_kind="model", configured_limit=12)
+            raise
         details = dict(contract="synthetic_model_dispatch", synthetic_adapter=True,
                        operation=operation, call_id=call_id)
         try:

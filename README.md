@@ -21,15 +21,13 @@ information, and user preferences.
 
 ## Current Status
 
-M1.5-F — Raw Request/Session Graph Integration is implemented against the approved
-M1.5-D design. Raw admission, independent interpretation receipts, catalog selection,
-bounded dispatch, safety and result validation now share one synthetic investigation.
-Post-terminal revisions preserve normalized context and assumed time precision.
-Catalog-only empty selections produce grounded abstention. Explicit synthetic
-adapter tests exercise shared model accounting; authored callbacks record no model
-usage. Existing synthetic CLI demos remain available. General conversational CLI
-execution and authoritative JSONL tracing remain deferred; full scenario acceptance
-stays BLOCKED. The LLM provider/model is undecided.
+M1.6-A — Authoritative Local JSONL Tracing is implemented. Synthetic demonstrations
+now persist one append-only trace per investigation, with independent correlation,
+completeness, budget and terminal-result checks before publication. Session commits
+and presentation recheck the retained trace receipt. Raw request/session integration,
+catalog selection, evidence/safety validation and post-terminal follow-ups remain
+available. General conversational CLI execution and full agentic scenario acceptance
+remain deferred; scenario readiness stays BLOCKED. The LLM provider/model is undecided.
 
 ## Documentation
 
@@ -418,6 +416,40 @@ uv run --locked hafi demo session --fixtures fixtures/scenario-pack-v1
 See the [M1.5-F integration notes](docs/development/m1-5f-raw-request-session-graph-integration.md)
 for API wiring, trust checks, verification results and remaining runtime gates.
 These are component APIs; the existing CLI accepts fixed synthetic demos only.
+
+### Authoritative local JSONL tracing — M1.6-A
+
+Synthetic demos now create `traces/<investigation-id>.jsonl` by default. Each line
+is an approved `TraceEvent`; the initial event carries trace/configuration/policy
+metadata. Writes are synced before execution continues. Required storage or trace
+validation failures stop further dispatch and suppress result publication.
+
+```bash
+uv sync --locked
+uv run --locked hafi demo advisory --fixtures fixtures/scenario-pack-v1
+uv run --locked hafi demo session --fixtures fixtures/scenario-pack-v1 --trace-directory traces
+uv run --locked hafi trace traces/<investigation-id>.jsonl
+uv run --locked pytest
+```
+
+Replace `<investigation-id>` with a generated filename. `hafi trace PATH` prints
+structured completeness and metrics; it exits 1 for partial or invalid traces.
+It does not authorize recommendations or establish full scenario acceptance.
+Trace location precedence is `--trace-directory`, `HAF_TRACE_DIRECTORY`, an explicit
+`--config PATH` TOML `[trace]` directory, then `traces/`. Relative TOML paths are
+anchored to the configuration file's directory.
+
+Raw messages, opaque constraints, source/model payloads and private reasoning are
+omitted from local traces. Events retain controlled summaries, identifiers,
+timestamps, source/rule/policy references and actual outcomes. Explicit in-memory
+recorders remain component-test seams. Remote tracing and live providers are not
+enabled. Existing `.gitignore` rules exclude the default trace directory.
+
+Keep files only as long as needed for local development/evaluation; manually remove
+unneeded files after their investigations have stopped. No automatic retention
+period, repair, overwrite or investigation resumption is implemented. See the
+[M1.6-A notes](docs/development/m1-6a-authoritative-local-jsonl-tracing.md) for format,
+privacy, integrity, test coverage and remaining acceptance gates.
 
 ## Specification notes
 

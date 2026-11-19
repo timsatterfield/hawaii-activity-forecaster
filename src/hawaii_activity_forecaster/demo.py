@@ -19,6 +19,7 @@ from hawaii_activity_forecaster.orchestration import (
     SessionManager, SessionRequest, SkeletonReport, run_synthetic_tool_graph,
 )
 from hawaii_activity_forecaster.tools import ToolAction
+from hawaii_activity_forecaster.config.settings import TraceSettings
 
 DemoCase = Literal["advisory", "outage"]
 _SCENARIOS = {"advisory": "SC-004", "outage": "SC-010"}
@@ -52,7 +53,8 @@ def _load_demo(case: DemoCase, fixture_root: str | Path):
 
 async def run_demo(case: DemoCase, fixture_root: str | Path, *,
                    record_event: Callable[[TraceEvent], None] | None = None,
-                   session_request: SessionRequest | None = None) -> DemoOutput:
+                   session_request: SessionRequest | None = None,
+                   trace_settings: TraceSettings | None = None) -> DemoOutput:
     """Run one fixed fictional example; keep full acceptance readiness unchanged."""
     scenario = _load_demo(case, fixture_root)
     scenario_id = _SCENARIOS[case]
@@ -109,20 +111,20 @@ async def run_demo(case: DemoCase, fixture_root: str | Path, *,
             call("visibility", "HWT_VISIBILITY", ["UNDERWATER_VISIBILITY"]),
         )
 
-    # Memory recording is solely a component-test seam. This command does not
-    # claim authoritative JSONL tracing or full scenario acceptance.
-    events = []
+    # The application path requires local JSONL. An explicitly supplied memory
+    # recorder remains a component-test seam and claims no durable trace.
     report = await run_synthetic_tool_graph(
         request, catalog=application.catalog, candidate_beach_ids=candidates, plan=plan, tool_plan=tools,
         driver_inputs=scenario.driver, evidence_policy=application.policy_configuration,
-        record_event=record_event if record_event is not None else events.append,
+        record_event=record_event, trace_settings=trace_settings,
         safety_evaluation=True, result_generation=True, session_request=session_request,
     )
     return DemoOutput(report, application.catalog, application.policy_configuration)
 
 
 async def run_session_demo(fixture_root: str | Path, *,
-                           record_event: Callable[[TraceEvent], None] | None = None) -> SessionDemoOutput:
+                           record_event: Callable[[TraceEvent], None] | None = None,
+                           trace_settings: TraceSettings | None = None) -> SessionDemoOutput:
     """Two authored normalized requests in one session, with independent retrievals.
 
     This is not SC-012 acceptance, a language interpreter, or persistent chat.
@@ -134,7 +136,8 @@ async def run_session_demo(fixture_root: str | Path, *,
     outputs = []
 
     async def run(admission):
-        output = await run_demo("advisory", fixture_root, record_event=record_event, session_request=admission)
+        output = await run_demo("advisory", fixture_root, record_event=record_event, session_request=admission,
+                                trace_settings=trace_settings)
         outputs.append(output)
         return output.report
 

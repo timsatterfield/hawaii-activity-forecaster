@@ -63,6 +63,7 @@ class ResultValidationSnapshot:
     stop_reason: str | None
     error_code: str | None
     request_step: int = 1
+    authoritative_trace: bool = False
 
 
 @dataclass(frozen=True)
