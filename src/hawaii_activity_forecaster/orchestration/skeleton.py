@@ -3,8 +3,10 @@
 from collections.abc import Awaitable, Callable
 from asyncio import wait_for
 from copy import deepcopy
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
+from inspect import isawaitable
+import json
 from operator import add
 from typing import Annotated, TypedDict
 from uuid import uuid4
@@ -24,10 +26,15 @@ from hawaii_activity_forecaster.models.enums import (
 )
 from .budgets import BudgetManager, BudgetSnapshot
 from .specialists import SpecialistContractError, SpecialistDelivery, SpecialistExchange
-from .session import SessionRequest
+from .session import RawSessionRequest, SessionRequest
+from .model_calls import ComponentModelCalls, SyntheticModelAdapter
+from hawaii_activity_forecaster.interpretation import (
+    CandidateSelection, RequestContext, ValidatedRequest, select_candidates, validate_request, verify_request, verify_selection,
+)
+from hawaii_activity_forecaster.interpretation.validation import interpreter_input
 from hawaii_activity_forecaster.harness.contracts import DriverInputs
 from hawaii_activity_forecaster.harness.synthetic import DispatchBinding, SyntheticDriver
-from hawaii_activity_forecaster.tools.synthetic import SyntheticToolDispatcher, ToolAction
+from hawaii_activity_forecaster.tools.synthetic import SyntheticToolDispatcher, ToolAction, ToolPlanError
 from hawaii_activity_forecaster.harness.policy import PolicyConfiguration
 from hawaii_activity_forecaster.validation import EvidenceValidationReport, validate_evidence
 from hawaii_activity_forecaster.validation import SafetyEvaluationReport, evaluate_safety as evaluate_safety_policies
@@ -67,6 +74,9 @@ class SkeletonReport:
     comparison: CandidateComparison | None = None
     result: RecommendationResult | None = None
     result_validation: ResultValidationSnapshot | None = None
+    request_context: RequestContext | None = None
+    request_receipt: ValidatedRequest | None = None
+    selection: CandidateSelection | None = None
     # Without result_generation, state.result_id identifies only an operational stop.
 
 
@@ -86,6 +96,16 @@ SpecialistPlanner = Callable[[InvestigationState], tuple[SpecialistInvestigation
 SyntheticSpecialist = Callable[[SpecialistInvestigationRequest], Awaitable[object]]
 
 
+@dataclass(frozen=True)
+class RawPlanningInput:
+    """Detached planner state and trusted dispatch scope for a raw component run."""
+
+    state: InvestigationState
+    investigation_candidate_ids: tuple[str, ...]
+    planning_order: tuple[str, ...]
+    models: ComponentModelCalls
+
+
 class _TraceFailure(RuntimeError):
     pass
 
@@ -98,11 +118,11 @@ def _updated(state: InvestigationState, **changes) -> InvestigationState:
 
 
 def _initial(request: NormalizedRequest, candidates: tuple[str, ...], session_id: str,
-             request_revision: int = 1) -> InvestigationState:
+             request_revision: int = 1, investigation_id: str | None = None) -> InvestigationState:
     now = datetime.now(timezone.utc)
     limits = InvestigationLimits()
     return InvestigationState(
-        **request.model_dump(), investigation_id=str(uuid4()), session_id=session_id,
+        **request.model_dump(), investigation_id=investigation_id or str(uuid4()), session_id=session_id,
         schema_version="0.1", created_at=now, updated_at=now,
         status=InvestigationStatus.INITIALIZING, request_revision=request_revision,
         candidate_beach_ids=list(candidates), assessments=[], investigated_beach_ids=[],
@@ -155,7 +175,7 @@ async def _run_graph(
     request, *, candidate_beach_ids, record_event, session_id=None, branch=None,
     catalog=None, plan=None, specialist_callback=None, driver_inputs=None, tool_plan=None, request_step=1,
     evidence_policy=None, safety_evaluation=False, result_generation=False,
-    session_request=None,
+    session_request=None, raw_admission=None, interpreter=None, model_adapter=None,
 ) -> SkeletonReport:
     request = NormalizedRequest.model_validate(request.model_dump())
     if session_request is not None:
@@ -167,14 +187,19 @@ async def _run_graph(
         catalog = BeachCatalog.model_validate(catalog.model_dump())
     candidates = tuple(candidate_beach_ids)
     initial = _initial(request, candidates, session_id or str(uuid4()),
-                       session_request.request_revision if session_request is not None else 1)
+                       raw_admission.request_revision if raw_admission else
+                       session_request.request_revision if session_request is not None else 1,
+                       raw_admission.investigation_id if raw_admission else None)
     budget = BudgetManager()
     current = initial
     visited: list[str] = []
     sequence = 0
     trace_id = str(uuid4())
     trace_failed = False
-    exchange = SpecialistExchange(initial, catalog) if catalog is not None else None
+    exchange = SpecialistExchange(initial, catalog) if catalog is not None and raw_admission is None else None
+    request_context = raw_admission.context if raw_admission else None
+    request_receipt = None
+    selection = None
     dispatcher = None
     evidence_report = None
     safety_report = None
@@ -195,12 +220,14 @@ async def _run_graph(
         if trace_failed:
             raise _TraceFailure("mandatory event recording failed")
         sequence += 1
+        counts = budget.snapshot()
         event = TraceEvent(
             event_id=str(uuid4()), trace_id=trace_id, sequence_number=sequence,
             timestamp=datetime.now(timezone.utc), event_type=event_type,
             actor=TraceActor.ORCHESTRATOR, request_revision=initial.request_revision,
             related_ids=related_ids,
-            details={"investigation_id": initial.investigation_id, "session_id": initial.session_id, **details},
+            details={"investigation_id": initial.investigation_id, "session_id": initial.session_id,
+                     "model_call_count": counts.model_calls, "tool_call_count": counts.tool_calls, **details},
         )
         try:
             record_event(event)
@@ -215,20 +242,36 @@ async def _run_graph(
         visited.append(name)
         return {"visited": (name,)}
 
-    if driver_inputs is not None:
-        driver = SyntheticDriver(driver_inputs)
-        reference = driver.reference_time(request_step)
-        dispatcher = SyntheticToolDispatcher(
+    driver = SyntheticDriver(driver_inputs) if driver_inputs is not None else None
+
+    def evidence_reference():
+        return request_context.reference_time if request_context else driver.reference_time(request_step)
+
+    def tool_dispatcher(scope=None):
+        return SyntheticToolDispatcher(
             driver, budget, investigation_id=initial.investigation_id, request_revision=initial.request_revision,
-            reference_time=reference, emit=emit, request_step=request_step,
+            reference_time=evidence_reference(), emit=emit, request_step=request_step,
+            investigation_candidate_ids=scope,
         )
+
+    models = ComponentModelCalls(model_adapter, budget, emit)
+    if driver is not None and raw_admission is None:
+        dispatcher = tool_dispatcher()
         specialist_callback = dispatcher.run
 
     def initialize(state: _GraphState):
         emit(TraceEventType.INVESTIGATION_STARTED, component_probe=True, status=initial.status,
              iteration_count=initial.iteration_count, tool_call_count=initial.tool_call_count,
              retry_count=initial.retry_count, model_call_count=0, fallback_attempted=False)
-        if session_request is not None:
+        if raw_admission is not None:
+            emit(TraceEventType.REQUEST_RECEIVED, original_request=request.original_request,
+                 reference_time=request_context.reference_time.isoformat(), rule_profile=request_context.rule_profile)
+            if raw_admission.previous_investigation_id is not None:
+                emit(TraceEventType.REQUEST_REVISED, related_ids=[raw_admission.previous_investigation_id],
+                     previous_investigation_id=raw_admission.previous_investigation_id,
+                     previous_request_revision=initial.request_revision - 1,
+                     prior_status=raw_admission.prior_status)
+        elif session_request is not None:
             emit(TraceEventType.REQUEST_RECEIVED, original_request=request.original_request)
             if session_request.previous_investigation_id is not None:
                 emit(TraceEventType.REQUEST_REVISED,
@@ -241,6 +284,46 @@ async def _run_graph(
                  assumed_fields=sorted(session_request.assumed_fields))
         return visit("initialize_investigation")
 
+    async def normalize_raw(state: _GraphState):
+        nonlocal current, request, request_receipt
+        visit("normalize_request")
+        inputs = interpreter_input(request_context)
+        try:
+            proposal = (await models.invoke("normalize_request", inputs) if model_adapter is not None
+                        else interpreter(inputs))
+            receipt = verify_request(validate_request(proposal, request_context), request_context)
+        except Exception:
+            if not trace_failed:
+                emit(TraceEventType.CONTRACT_VALIDATED, contract="request_interpretation", valid=False,
+                     reason="REQUEST_NORMALIZATION_FAILED")
+            raise
+        proposed = _updated(state["investigation"], **receipt.request.model_dump())
+        emit(TraceEventType.CONTRACT_VALIDATED, contract="request_interpretation", valid=True,
+             context_digest=receipt.context_digest)
+        emit(TraceEventType.REQUEST_NORMALIZED, normalized_request=receipt.request.model_dump(mode="json"),
+             reference_time=request_context.reference_time.isoformat(), rule_profile=request_context.rule_profile,
+             context_digest=receipt.context_digest, origins=[json.loads(json.dumps(asdict(o))) for o in receipt.origins],
+             changed_fields=list(receipt.changed_fields), user_provided_fields=sorted(receipt.user_provided_fields),
+             assumed_fields=sorted(receipt.assumed_fields), limitations=list(receipt.limitations))
+        current, request, request_receipt = proposed, receipt.request, receipt
+        return {"investigation": current, "visited": ("normalize_request",)}
+
+    def select_raw(state: _GraphState):
+        nonlocal current, candidates, selection, exchange, dispatcher, specialist_callback
+        update = visit("select_candidates")
+        if request.clarification_needed:
+            return update
+        audit = verify_selection(select_candidates(request_receipt, request_context), request_receipt, request_context)
+        proposed = _updated(state["investigation"], candidate_beach_ids=list(audit.assessment_candidate_ids),
+                            remaining_candidate_ids=list(audit.planning_order))
+        emit(TraceEventType.CONTRACT_VALIDATED, contract="candidate_selection", valid=True,
+             **json.loads(json.dumps(asdict(audit))))
+        current, candidates, selection = proposed, audit.assessment_candidate_ids, audit
+        exchange = SpecialistExchange(current, catalog, investigation_candidate_ids=audit.investigation_candidate_ids)
+        dispatcher = tool_dispatcher(audit.investigation_candidate_ids)
+        specialist_callback = dispatcher.run
+        return {**update, "investigation": current}
+
     def validate(state: _GraphState):
         nonlocal current
         current = state["investigation"]
@@ -250,6 +333,9 @@ async def _run_graph(
                                clarification_needed=True)
             emit(TraceEventType.CLARIFICATION_REQUESTED, questions=current.clarification_questions)
             return {**update, "investigation": current, "route": "end"}
+        if selection is not None and not selection.investigation_candidate_ids:
+            current = _updated(current, status=InvestigationStatus.EVALUATING)
+            return {**update, "investigation": current, "route": "assess_stop", "reason": "NO_SUPPORTED_CANDIDATES"}
         if not candidates:
             return {**update, "route": "stop", "reason": "NO_SELECTED_CANDIDATES"}
         current = _updated(current, status=InvestigationStatus.INVESTIGATING)
@@ -262,7 +348,7 @@ async def _run_graph(
                            iteration_count=iteration)
         return {**visit("authorize_dispatch"), "investigation": current}
 
-    def plan_evidence(state: _GraphState):
+    async def plan_evidence(state: _GraphState):
         nonlocal current, safety_report
         snapshot = InvestigationState.model_validate(state["investigation"].model_dump())
         if evidence_policy is not None and snapshot.iteration_count == 0:
@@ -270,11 +356,15 @@ async def _run_graph(
             # No findings exist yet, so this produces no observed-evidence events
             # or committed category/issue decisions.
             validate_evidence(snapshot, catalog=catalog, policy=evidence_policy, bindings=(),
-                              reference_time=dispatcher.driver.reference_time(request_step), request_step=request_step)
+                              reference_time=evidence_reference(), request_step=request_step)
         try:
+            planned = plan(RawPlanningInput(snapshot, selection.investigation_candidate_ids,
+                                           selection.planning_order, models)) if raw_admission else plan(snapshot)
+            if isawaitable(planned):
+                planned = await planned
             requests = tuple(SpecialistInvestigationRequest.model_validate(
                 r.model_dump() if isinstance(r, SpecialistInvestigationRequest) else deepcopy(r),
-            ) for r in plan(snapshot))
+            ) for r in planned)
         except (ValidationError, ValueError, TypeError):
             emit(TraceEventType.CONTRACT_VALIDATED, contract="specialist_request", valid=False,
                  reason="REQUEST_SCHEMA_INVALID")
@@ -282,7 +372,7 @@ async def _run_graph(
         if not requests:
             reason = ("NO_FURTHER_ACTION" if result_generation else
                       "RESULT_VALIDATION_NOT_IMPLEMENTED" if safety_evaluation else "VALIDATORS_NOT_IMPLEMENTED")
-            return {**visit("plan_evidence"), "route": "stop", "reason": reason}
+            return {**visit("plan_evidence"), "route": "assess_stop" if raw_admission else "stop", "reason": reason}
         try:
             proposed = exchange.authorize(state["investigation"], requests, now=datetime.now(timezone.utc))
             if dispatcher is not None:
@@ -292,6 +382,10 @@ async def _run_graph(
         except SpecialistContractError as error:
             emit(TraceEventType.CONTRACT_VALIDATED, contract="specialist_request", valid=False,
                  reason=str(error), request_ids=[r.request_id for r in requests])
+            raise
+        except ToolPlanError:
+            emit(TraceEventType.CONTRACT_VALIDATED, contract="tool_plan", valid=False,
+                 reason="TOOL_PLAN_INVALID", request_ids=[r.request_id for r in requests])
             raise
         invalidated = []
         if safety_evaluation:
@@ -404,7 +498,7 @@ async def _run_graph(
         proposed = validate_evidence(
             _updated(state["investigation"], status=InvestigationStatus.EVALUATING),
             catalog=catalog, policy=evidence_policy, bindings=dispatcher.driver.bindings,
-            reference_time=dispatcher.driver.reference_time(request_step), request_step=request_step,
+            reference_time=evidence_reference(), request_step=request_step,
             retrieval_gaps=dispatcher.gap_scopes,
         )
         for decision in proposed.decisions:
@@ -476,7 +570,8 @@ async def _run_graph(
         if evidence_report is None or safety_report is None:
             raise ResultValidationError("Current evidence and assessments are required for comparison")
         result_context = ResultContext(state["investigation"], evidence_report, safety_report, catalog,
-                                       evidence_policy, dispatcher.driver.bindings, request_step)
+                                       evidence_policy, dispatcher.driver.bindings, request_step,
+                                       request_context, request_receipt, selection)
         comparison = compare_candidates(result_context)
         # A handled provider response ERROR is not a contract rejection. An
         # unrecovered malformed/failed specialist boundary with no eligible
@@ -488,7 +583,8 @@ async def _run_graph(
     def construct(state: _GraphState):
         nonlocal proposed_result
         generated_at = datetime.now(timezone.utc)
-        proposed_result = (build_error_result(state["investigation"], generated_at=generated_at, error_code=trusted_error_code)
+        proposed_result = (build_error_result(state["investigation"], generated_at=generated_at, error_code=trusted_error_code,
+                                             request_context=request_context, request_receipt=request_receipt)
                            if trusted_error_code else build_result(result_context, generated_at=generated_at, stop_reason=state["reason"]))
         return visit("construct_result")
 
@@ -496,7 +592,8 @@ async def _run_graph(
         nonlocal validated_result, result_validation
         if trusted_error_code:
             candidate = validate_error_result(proposed_result, state["investigation"], now=datetime.now(timezone.utc),
-                                               error_code=trusted_error_code)
+                                               error_code=trusted_error_code,
+                                               request_context=request_context, request_receipt=request_receipt)
         else:
             candidate = validate_result(proposed_result, result_context, now=datetime.now(timezone.utc), stop_reason=state["reason"])
         emit(TraceEventType.RESULT_VALIDATED, result_id=candidate.result_id, outcome=candidate.outcome,
@@ -516,7 +613,14 @@ async def _run_graph(
     ):
         graph.add_node(name, node)
     graph.add_edge(START, "initialize_investigation")
-    graph.add_edge("initialize_investigation", "validate_request")
+    if raw_admission:
+        graph.add_node("normalize_request", normalize_raw)
+        graph.add_node("select_candidates", select_raw)
+        graph.add_edge("initialize_investigation", "normalize_request")
+        graph.add_edge("normalize_request", "select_candidates")
+        graph.add_edge("select_candidates", "validate_request")
+    else:
+        graph.add_edge("initialize_investigation", "validate_request")
     routes = {"dispatch": "authorize_dispatch", "stop": "finalize_investigation", "end": END}
     if result_generation:
         graph.add_node("compare_candidates", compare)
@@ -526,25 +630,30 @@ async def _run_graph(
         graph.add_edge("compare_candidates", "construct_result")
         graph.add_edge("construct_result", "validate_result")
         graph.add_edge("validate_result", "finalize_investigation")
-    if exchange is not None:
+    if catalog is not None:
         graph.add_node("plan_evidence", plan_evidence)
         graph.add_node("validate_and_merge_specialist_responses", merge_responses)
         routes["dispatch"] = "plan_evidence"
         graph.add_conditional_edges("plan_evidence", lambda state: state["route"],
-                                    {"authorize": "authorize_dispatch", "stop": routes["stop"]})
+                                    {"authorize": "authorize_dispatch", "stop": routes["stop"],
+                                     **({"assess_stop": "validate_evidence"} if raw_admission else {})})
+    if raw_admission:
+        routes["assess_stop"] = "validate_evidence"
     graph.add_conditional_edges("validate_request", lambda state: state["route"], routes)
     graph.add_edge("authorize_dispatch", "weather_investigation")
     graph.add_edge("authorize_dispatch", "ocean_investigation")
-    join = "validate_and_merge_specialist_responses" if exchange is not None else "decide_next_action"
+    join = "validate_and_merge_specialist_responses" if catalog is not None else "decide_next_action"
     graph.add_edge(["weather_investigation", "ocean_investigation"], join)
-    if exchange is not None:
+    if catalog is not None:
         if evidence_policy is not None:
             graph.add_node("validate_evidence", evaluate_evidence)
             graph.add_edge(join, "validate_evidence")
             if safety_evaluation:
                 graph.add_node("evaluate_safety", assess_candidates)
                 graph.add_edge("validate_evidence", "evaluate_safety")
-                graph.add_edge("evaluate_safety", "decide_next_action")
+                graph.add_conditional_edges("evaluate_safety", lambda state: (
+                    "stop" if raw_admission and state.get("route") == "assess_stop" else "decide"),
+                    {"stop": routes["stop"], "decide": "decide_next_action"})
             else:
                 graph.add_edge("validate_evidence", "decide_next_action")
         else:
@@ -557,7 +666,8 @@ async def _run_graph(
         with tracing_context(enabled=False):
             await graph.compile().ainvoke(
                 {"investigation": initial, "signals": (), "visited": (), "deliveries": ()},
-                config={"recursion_limit": initial.max_iterations * (7 if safety_evaluation else 6 if evidence_policy is not None else 5) + 8},
+                config={"recursion_limit": initial.max_iterations * (7 if safety_evaluation else 6 if evidence_policy is not None else 5)
+                        + 8 + (2 if raw_admission else 0)},
             )
     except Exception as error:
         reason = ("TRACE_WRITE_FAILED" if trace_failed else
@@ -580,8 +690,10 @@ async def _run_graph(
         try:
             if result_generation and trace_writable and current.activity is not None and current.target_time_window is not None:
                 code = "RESULT_VALIDATION_FAILED" if isinstance(error, ResultValidationError) else "INVESTIGATION_EXECUTION_FAILED"
-                candidate_error = build_error_result(current, generated_at=datetime.now(timezone.utc), error_code=code)
-                candidate_error = validate_error_result(candidate_error, current, now=datetime.now(timezone.utc), error_code=code)
+                candidate_error = build_error_result(current, generated_at=datetime.now(timezone.utc), error_code=code,
+                                                     request_context=request_context, request_receipt=request_receipt)
+                candidate_error = validate_error_result(candidate_error, current, now=datetime.now(timezone.utc), error_code=code,
+                                                        request_context=request_context, request_receipt=request_receipt)
                 candidate_validation = ResultValidationSnapshot(
                     InvestigationState.model_validate(current.model_dump()), None, code, request_step,
                 )
@@ -620,7 +732,8 @@ async def _run_graph(
                        fallback_attempted=bool(stats.fallbacks))
     return SkeletonReport(current, stats, tuple(visited), trace_writable,
                           dispatcher.driver.bindings if dispatcher is not None else (), evidence_report, safety_report,
-                          comparison, published_result, published_validation)
+                          comparison, published_result, published_validation,
+                          request_context, request_receipt, selection)
 
 
 async def run_synthetic_tool_graph(
@@ -656,4 +769,39 @@ async def run_synthetic_tool_graph(
         evidence_policy=evidence_policy,
         safety_evaluation=safety_evaluation,
         result_generation=result_generation,
+    )
+
+
+async def run_raw_synthetic_tool_graph(
+    admission: RawSessionRequest, *,
+    interpreter: Callable | None = None,
+    model_adapter: SyntheticModelAdapter | None = None,
+    plan: Callable[[RawPlanningInput], object],
+    tool_plan: Callable[[SpecialistInvestigationRequest], tuple[ToolAction, ...]],
+    driver_inputs: DriverInputs, evidence_policy: PolicyConfiguration,
+    record_event: EventRecorder, request_step: int = 1,
+) -> SkeletonReport:
+    """Integrate admitted raw work with the existing synthetic component graph.
+
+    Supply either an authored synchronous interpreter (zero model usage) or an
+    explicit synthetic model adapter (shared-ledger accounting test double).
+    Trusted planners may be synchronous/async; only they receive the model-call
+    seam and independently enforced investigation subset. No provider is enabled,
+    no general CLI is exposed, and memory recorders are not authoritative JSONL.
+    """
+    if not isinstance(admission, RawSessionRequest):
+        raise ValueError("Raw work requires session admission before interpretation")
+    if (interpreter is None) == (model_adapter is None):
+        raise ValueError("Supply exactly one authored interpreter or synthetic model adapter")
+    if model_adapter is not None and not isinstance(model_adapter, SyntheticModelAdapter):
+        raise ValueError("Only an explicit synthetic accounting adapter is supported")
+    if type(request_step) is not int or not 1 <= request_step <= len(driver_inputs.script.requests):
+        raise ValueError("Invalid synthetic request step")
+    # Use the admission's detached catalog, not a caller-replaced scope snapshot.
+    return await _run_graph(
+        admission.request, candidate_beach_ids=(), catalog=admission.context.catalog,
+        session_id=admission.session_id, raw_admission=admission,
+        interpreter=interpreter, model_adapter=model_adapter, plan=plan, tool_plan=tool_plan,
+        driver_inputs=driver_inputs, evidence_policy=evidence_policy, request_step=request_step,
+        safety_evaluation=True, result_generation=True, record_event=record_event,
     )

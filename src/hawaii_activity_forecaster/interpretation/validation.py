@@ -24,6 +24,7 @@ class _Scope(ContractModel):
     request_revision: PositiveInt
     prior_status: Literal["COMPLETED", "ABSTAINED", "FAILED"] | None
     rule_profile: Literal[PROFILE_ID]
+    previous_investigation_id: Text | None
 
 
 def _json(value):
@@ -44,12 +45,19 @@ def checked_context(context: RequestContext) -> RequestContext:
         catalog = BeachCatalog.model_validate(context.catalog.model_dump())
         prior = context.inherited
         if prior is None:
-            if scope.request_revision != 1 or scope.prior_status is not None:
+            initial = (scope.request_revision == 1 and scope.prior_status is None
+                       and scope.previous_investigation_id is None)
+            failed_before_normalization = (scope.request_revision > 1 and scope.prior_status == "FAILED"
+                                           and scope.previous_investigation_id is not None
+                                           and scope.previous_investigation_id != scope.investigation_id)
+            if not (initial or failed_before_normalization):
                 raise ValueError("Initial context mismatch")
         elif (scope.prior_status is None or prior.session_id != scope.session_id
               or prior.request_revision + 1 != scope.request_revision or prior.investigation_id == scope.investigation_id
               or (prior.request.clarification_needed and scope.prior_status != "FAILED")):
             raise ValueError("Post-terminal context mismatch")
+        if prior is not None and scope.previous_investigation_id not in (None, prior.investigation_id):
+            raise ValueError("Prior investigation mismatch")
         return replace(context, **scope.model_dump(), catalog=catalog)
     except (ValueError, TypeError, AttributeError):
         raise RequestValidationError("Invalid request-validation context.") from None
@@ -208,18 +216,25 @@ def verify_request(receipt: ValidatedRequest, context: RequestContext) -> Valida
         raise RequestValidationError("Request receipt is stale or inconsistent.") from None
 
 
-def interpret_request(context: RequestContext, interpreter) -> ValidatedRequest:
-    """Invoke an authored synchronous proposal callback with isolated input data.
-
-    This seam performs no SDK/tool dispatch and records no model usage. A live
-    adapter and its shared-budget admission remain a separately authorized step.
-    """
+def interpreter_input(context: RequestContext) -> InterpreterInput:
+    """Build the same isolated input for authored and synthetic adapter callbacks."""
     context = checked_context(context)
     inherited = context.inherited
-    inputs = InterpreterInput(context.original_request, context.reference_time, context.session_id,
+    return InterpreterInput(context.original_request, context.reference_time, context.session_id,
         context.investigation_id, context.request_revision, context.rule_profile,
         tuple((b.beach_id, b.name, tuple(b.aliases or ()), b.region.value, b.locality) for b in context.catalog.root),
         inherited.origins if inherited else (), inherited._request if inherited else None)
+
+
+def interpret_request(context: RequestContext, interpreter) -> ValidatedRequest:
+    """Invoke an authored synchronous proposal callback with isolated input data.
+
+    This seam performs no SDK/tool dispatch and records no model usage. Raw graph
+    admission offers separate synthetic accounting tests; live adapters remain
+    deferred behind their provider and authoritative-tracing approval gates.
+    """
+    context = checked_context(context)
+    inputs = interpreter_input(context)
     try:
         proposal = interpreter(inputs)
     except Exception:

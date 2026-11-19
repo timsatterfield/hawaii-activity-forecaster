@@ -1,4 +1,4 @@
-"""In-memory admission of normalized requests and post-terminal refinements.
+"""In-memory admission of raw/normalized requests and post-terminal refinements.
 
 Runtime metadata only: no new logical schema, language parser, persisted session,
 cross-investigation evidence cache, or active-investigation resumption.
@@ -9,14 +9,18 @@ from __future__ import annotations
 from collections.abc import Awaitable, Callable, Collection, Mapping
 from copy import deepcopy
 from dataclasses import dataclass, field
-from datetime import timedelta, timezone
+from datetime import datetime, timedelta, timezone
 from threading import RLock
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from hawaii_activity_forecaster.config.settings import InvestigationLimits
-from hawaii_activity_forecaster.models import InvestigationState, NormalizedRequest, RecommendationResult
+from hawaii_activity_forecaster.models import BeachCatalog, InvestigationState, NormalizedRequest, RecommendationResult
 from hawaii_activity_forecaster.models.investigation import TERMINAL_OUTCOMES
+from hawaii_activity_forecaster.interpretation import (
+    PROFILE_ID, RequestContext, ValidatedRequest, verify_request, verify_selection,
+)
+from hawaii_activity_forecaster.interpretation.validation import checked_context
 
 if TYPE_CHECKING:
     from .skeleton import SkeletonReport
@@ -72,6 +76,39 @@ class SessionRequest:
 SessionRunner = Callable[[SessionRequest], Awaitable["SkeletonReport"]]
 
 
+@dataclass(frozen=True)
+class RawSessionRequest:
+    """Owned pre-normalization admission. Mutable catalog data stays serialized."""
+
+    session_id: str
+    investigation_id: str
+    request_revision: int
+    original_request: str
+    reference_time: datetime
+    previous_investigation_id: str | None
+    prior_status: str | None
+    inherited: ValidatedRequest | None
+    rule_profile: str
+    _catalog: bytes = field(repr=False)
+
+    @property
+    def context(self) -> RequestContext:
+        return RequestContext(
+            self.original_request, self.reference_time, BeachCatalog.model_validate_json(self._catalog),
+            self.session_id, self.investigation_id, self.request_revision, self.inherited,
+            self.prior_status, self.rule_profile, self.previous_investigation_id,
+        )
+
+    @property
+    def request(self) -> NormalizedRequest:
+        # Preserve unknowns until an independently validated proposal is committed.
+        return NormalizedRequest(original_request=self.original_request, hard_constraints=[], soft_preferences=[],
+                                 clarification_needed=False, clarification_questions=[])
+
+
+RawSessionRunner = Callable[[RawSessionRequest], Awaitable["SkeletonReport"]]
+
+
 def _normalized(request: NormalizedRequest) -> NormalizedRequest:
     try:
         data = NormalizedRequest.model_validate(request.model_dump()).model_dump()
@@ -91,15 +128,17 @@ def _normalized(request: NormalizedRequest) -> NormalizedRequest:
 class SessionManager:
     """One process-local session; each admitted request runs once with fresh state.
 
-    The injected runner selects candidates and executes the existing graph with
-    session_request=admission. No previous report/findings are passed to it.
-    Returned snapshots are detached, so callers cannot mutate session history.
+    Normalized runners receive SessionRequest; raw runners receive a new
+    investigation identity and isolated interpretation context before execution.
+    No prior report/findings are passed to either runner. Returned snapshots are
+    detached, so callers cannot mutate session history.
     """
 
     def __init__(self):
         self._session_id = str(uuid4())
         self._revision = 0
         self._context: SessionRequest | None = None
+        self._raw_mode = False
         self._reports: list[SkeletonReport] = []
         self._busy = False
         self._blocked = False
@@ -157,6 +196,8 @@ class SessionManager:
         """
         with self._lock:
             self._available()
+            if self._raw_mode:
+                raise SessionError("Use follow_up_raw to preserve validated raw request origins.")
             if not self._reports or self._reports[-1].state.status not in TERMINAL_OUTCOMES:
                 raise SessionError("Follow-ups require a terminal investigation; clarification resumption is deferred.")
             if not isinstance(changes, Mapping) or not set(changes) <= _CHANGES:
@@ -169,6 +210,44 @@ class SessionManager:
             explicit = self._context.user_provided_fields | (set(changes) & _VALUE_FIELDS)
             context = self._admit(request, frozenset(explicit), tuple(sorted(changes)))
         return await self._execute(context, run)
+
+    async def start_raw(self, original_request: str, *, catalog: BeachCatalog, reference_time: datetime,
+                        run: RawSessionRunner, rule_profile: str = PROFILE_ID) -> SkeletonReport:
+        """Admit raw work before any interpreter or synthetic model dispatch."""
+        with self._lock:
+            self._available()
+            if self._revision:
+                raise SessionError("A session's initial request can only be started once.")
+            admission = self._admit_raw(original_request, catalog, reference_time, rule_profile)
+        return await self._execute(admission, run)
+
+    async def follow_up_raw(self, original_request: str, *, catalog: BeachCatalog, reference_time: datetime,
+                            run: RawSessionRunner, rule_profile: str = PROFILE_ID) -> SkeletonReport:
+        """Revise terminal raw work, retaining values/origins but no prior evidence."""
+        with self._lock:
+            self._available()
+            if (not self._raw_mode or not self._reports
+                    or self._reports[-1].state.status not in TERMINAL_OUTCOMES):
+                raise SessionError("Raw follow-ups require a terminal raw investigation; clarification resumption is deferred.")
+            admission = self._admit_raw(original_request, catalog, reference_time, rule_profile)
+        return await self._execute(admission, run)
+
+    def _admit_raw(self, text, catalog, reference_time, rule_profile):
+        previous = self._reports[-1] if self._reports else None
+        try:
+            catalog = BeachCatalog.model_validate(catalog.model_dump())
+            admission = RawSessionRequest(
+                self._session_id, str(uuid4()), self._revision + 1, text, reference_time,
+                previous.state.investigation_id if previous else None,
+                previous.state.status.value if previous else None,
+                previous.request_receipt if previous else None, rule_profile, catalog.model_dump_json().encode(),
+            )
+            checked_context(admission.context)
+        except (ValueError, TypeError, AttributeError):
+            raise SessionError("Invalid raw request admission context.") from None
+        self._revision += 1
+        self._raw_mode, self._busy = True, True
+        return admission
 
     def _admit(self, request, explicit, changed):
         self._revision += 1
@@ -209,11 +288,43 @@ class SessionManager:
             raise SessionError("Clarification cannot publish a result or inherit an assessment.")
         return report
 
+    def _check_raw_report(self, report, admission):
+        report = deepcopy(report)
+        state = report.state
+        if (state.investigation_id != admission.investigation_id
+                or report.request_context != admission.context):
+            raise SessionError("Raw report does not match the owned admission context.")
+        receipt = report.request_receipt
+        if receipt is not None:
+            receipt = verify_request(receipt, admission.context)
+            request = receipt.request
+            if report.selection is not None:
+                verify_selection(report.selection, receipt, admission.context)
+                if tuple(state.candidate_beach_ids) != report.selection.assessment_candidate_ids:
+                    raise SessionError("Raw candidate scope does not match its validated selection.")
+            elif not request.clarification_needed and state.status != "FAILED":
+                raise SessionError("Raw investigation lacks a validated selection.")
+            context = SessionRequest(admission.session_id, admission.request_revision,
+                admission.previous_investigation_id, receipt.user_provided_fields, receipt.changed_fields, receipt._request)
+        else:
+            if (state.status != "FAILED" or report.result is not None or report.selection is not None
+                    or state.candidate_beach_ids or state.iteration_count or state.tool_call_count
+                    or state.weather_findings or state.ocean_findings or state.assessments):
+                raise SessionError("Unnormalized failure cannot publish request-dependent work.")
+            context = SessionRequest(admission.session_id, admission.request_revision,
+                admission.previous_investigation_id, frozenset(), (), admission.request.model_dump_json().encode())
+        return self._check_report(report, context), context
+
     async def _execute(self, context, run):
         try:
-            report = self._check_report(await run(context), context)
+            returned = await run(deepcopy(context))
+            if isinstance(context, RawSessionRequest):
+                report, normalized_context = self._check_raw_report(returned, context)
+            else:
+                report, normalized_context = self._check_report(returned, context), context
             with self._lock:
                 self._reports.append(report)
+                self._context = normalized_context
             return deepcopy(report)
         except Exception:
             with self._lock:

@@ -18,6 +18,10 @@ from hawaii_activity_forecaster.models import (
     BeachCatalog, CandidateAssessment, InvestigationState, Recommendation, RecommendationResult,
 )
 from hawaii_activity_forecaster.validation import EvidenceValidationReport, SafetyEvaluationReport, evaluate_safety
+from hawaii_activity_forecaster.interpretation import (
+    CandidateSelection, RequestContext, ValidatedRequest, verify_request, verify_selection,
+)
+from hawaii_activity_forecaster.models import NormalizedRequest
 
 SYNTHETIC_WARNING = "SYNTHETIC TEST OUTPUT: fictional locations and conditions; not for real activity planning."
 _ERROR_MESSAGES = {
@@ -25,7 +29,7 @@ _ERROR_MESSAGES = {
     "INVESTIGATION_EXECUTION_FAILED": "An application execution error prevented a validated result.",
     "TRACE_WRITE_FAILED": "Required investigation events could not be recorded.",
 }
-_STOPS = {"ASSESSMENT_COMPLETE", "NO_FURTHER_ACTION", "ITERATION_LIMIT_REACHED"}
+_STOPS = {"ASSESSMENT_COMPLETE", "NO_FURTHER_ACTION", "ITERATION_LIMIT_REACHED", "NO_SUPPORTED_CANDIDATES"}
 
 
 class ResultValidationError(ValueError):
@@ -43,6 +47,9 @@ class ResultContext:
     policy: PolicyConfiguration
     bindings: tuple[DispatchBinding, ...]
     request_step: int = 1
+    request_context: RequestContext | None = None
+    request_receipt: ValidatedRequest | None = None
+    selection: CandidateSelection | None = None
 
 
 @dataclass(frozen=True)
@@ -105,11 +112,46 @@ def _time(value, state, *, now=None):
             raise ResultValidationError("Result timestamp is later than validation time")
 
 
+def _raw_request(state, request_context, request_receipt):
+    if request_context is None and request_receipt is None:
+        return None
+    try:
+        receipt = verify_request(request_receipt, request_context)
+        raw = request_context
+        normalized = NormalizedRequest.model_validate({key: getattr(state, key) for key in NormalizedRequest.model_fields})
+        if ((state.session_id, state.investigation_id, state.request_revision) !=
+                (raw.session_id, raw.investigation_id, raw.request_revision) or normalized != receipt.request):
+            raise ValueError("Raw request scope mismatch")
+        return receipt
+    except (ValueError, TypeError, AttributeError):
+        raise ResultValidationError("Raw request context could not be verified") from None
+
+
 def _checked(context: ResultContext) -> ResultContext:
     context = deepcopy(context)
     try:
         state = InvestigationState.model_validate(context.state.model_dump())
         _active(state, evaluating=True)
+        raw_parts = (context.request_context, context.request_receipt, context.selection)
+        if any(part is not None for part in raw_parts):
+            if any(part is None for part in raw_parts):
+                raise ValueError("Incomplete raw request grounding")
+            raw = context.request_context
+            if raw.catalog != context.catalog:
+                raise ValueError("Selection catalog differs from the result catalog")
+            receipt = _raw_request(state, raw, context.request_receipt)
+            selection = verify_selection(context.selection, receipt, raw)
+            if (tuple(state.candidate_beach_ids) != selection.assessment_candidate_ids
+                    or context.evidence.reference_time != raw.reference_time):
+                raise ValueError("Raw scope differs from the current investigation")
+            # Dispatch bindings retain source calls, not an eligibility verdict.
+            # Each observed response must stay within the authorized subset.
+            allowed = set(selection.investigation_candidate_ids)
+            if (not set(state.investigated_beach_ids + state.remaining_candidate_ids) <= allowed
+                    or any(not set(r.candidate_beach_ids) <= allowed for r in state.pending_evidence_requests)
+                    or any(f.beach_id is not None and f.beach_id not in allowed
+                           for f in state.weather_findings + state.ocean_findings)):
+                raise ValueError("Raw evidence work exceeds the selection scope")
         canonical = evaluate_safety(context.evidence, catalog=context.catalog, policy=context.policy,
                                     bindings=context.bindings, request_step=context.request_step)
     except (ValueError, TypeError, AttributeError):
@@ -125,7 +167,8 @@ def _checked(context: ResultContext) -> ResultContext:
     if state.updated_at < canonical.state.updated_at:
         raise ResultValidationError("Current state predates its assessments")
     return ResultContext(state, context.evidence, canonical, context.catalog, context.policy,
-                         tuple(context.bindings), context.request_step)
+                         tuple(context.bindings), context.request_step,
+                         context.request_context, context.request_receipt, context.selection)
 
 
 def _dominates(left: CandidateAssessment, right: CandidateAssessment) -> bool:
@@ -220,6 +263,10 @@ def _recommendation(assessment, context):
 
 
 def _abstention(context, stop_reason):
+    if stop_reason == "NO_SUPPORTED_CANDIDATES":
+        return ("NO_ELIGIBLE_CANDIDATES",
+                "No verified, attributable catalog location supports this activity within the requested mandatory location scope. "
+                "This is a catalog and activity-support limitation; it does not establish hazardous environmental conditions.")
     assessments = context.safety.assessments
     if assessments and all(a.eligibility == "EXCLUDED" for a in assessments):
         return "APPLICABLE_HAZARDS", "All assessed candidates have verified disqualifying policy failures."
@@ -241,6 +288,13 @@ def _assemble(context, generated_at, stop_reason):
     _time(generated_at, state)
     if stop_reason not in _STOPS:
         raise ResultValidationError("Unknown trusted investigation stopping reason")
+    empty_selection = context.selection is not None and not context.selection.investigation_candidate_ids
+    if (stop_reason == "NO_SUPPORTED_CANDIDATES") != empty_selection:
+        raise ResultValidationError("Catalog-only abstention requires a current verified empty investigation selection")
+    if empty_selection and (state.iteration_count or state.tool_call_count or context.bindings
+                            or state.weather_findings or state.ocean_findings
+                            or any(a.eligibility != "UNSUPPORTED" for a in context.safety.assessments)):
+        raise ResultValidationError("Catalog-only abstention cannot claim environmental investigation or hazards")
     if stop_reason == "ITERATION_LIMIT_REACHED" and state.iteration_count < state.max_iterations:
         raise ResultValidationError("Iteration-limit explanation contradicts the current counter")
     comparison = _compare(context)
@@ -251,6 +305,8 @@ def _assemble(context, generated_at, stop_reason):
         schema_version=state.schema_version, generated_at=generated_at, activity=state.activity,
         target_time_window=state.target_time_window, general_warnings=[SYNTHETIC_WARNING], recommendations=entries,
     )
+    if context.request_receipt is not None:
+        data["general_warnings"].extend(context.request_receipt.assumption_disclosures)
     if entries:
         limitations = []
         if len(entries) < InvestigationLimits().max_recommendations:
@@ -270,6 +326,30 @@ def _assemble(context, generated_at, stop_reason):
                     general_limitations=limits, no_recommendation_reason=reason, explanation=explanation,
                     affected_beach_ids=sorted(a.beach_id for a in context.safety.assessments), unresolved_issues=unresolved,
                     next_step_suggestions=["Resolve the documented evidence or constraint questions before starting a new investigation."])
+        if empty_selection:
+            labels = {
+                "CATALOG_NOT_VERIFIED": "catalog record is not verified",
+                "CATALOG_VERIFICATION_IN_FUTURE": "catalog verification is later than the reference date",
+                "CATALOG_ATTRIBUTE_PROVENANCE_MISSING": "catalog attributes lack current attribution",
+                "OUTSIDE_HARD_LOCATION": "outside the mandatory location scope",
+                "ACTIVITY_UNSUPPORTED": "requested activity is unsupported by the verified record",
+            }
+            names = {b.beach_id: b.name for b in context.catalog.root}
+            data["general_limitations"] = [
+                f"{names[d.beach_id]}: {labels[reason]}."
+                for d in context.selection.decisions for reason in d.reasons
+            ]
+            if not context.selection.decisions:
+                data["general_limitations"] = ["The supplied catalog contains no location records."]
+            data["unresolved_issues"] = []
+            data["next_step_suggestions"] = ["Review the catalog's supported activities and mandatory location scope before starting a new investigation."]
+    if context.request_receipt is not None:
+        data["general_limitations"].extend(context.request_receipt.limitations)
+        unfinished = sorted(a.beach_id for a in context.safety.assessments if a.eligibility == "NEEDS_INVESTIGATION")
+        if unfinished:
+            names = {b.beach_id: b.name for b in context.catalog.root}
+            data["general_limitations"].append(
+                "Evidence or requirement checks remain incomplete for: " + ", ".join(names[key] for key in unfinished) + ".")
     return RecommendationResult(result_id="result-" + _digest(data), **data)
 
 
@@ -297,29 +377,37 @@ def validate_result(proposal: RecommendationResult, context: ResultContext, *, n
     return proposal
 
 
-def build_error_result(state: InvestigationState, *, generated_at: datetime, error_code: str) -> RecommendationResult:
+def build_error_result(state: InvestigationState, *, generated_at: datetime, error_code: str,
+                       request_context: RequestContext | None = None,
+                       request_receipt: ValidatedRequest | None = None) -> RecommendationResult:
     """Sanitized operational failure, never a source-outage suitability verdict."""
     state = InvestigationState.model_validate(state.model_dump())
     _active(state, evaluating=False)
     _time(generated_at, state)
     if error_code not in _ERROR_MESSAGES:
         raise ResultValidationError("Unknown trusted operational failure code")
+    receipt = _raw_request(state, request_context, request_receipt)
     data = dict(investigation_id=state.investigation_id, request_revision=state.request_revision,
                 schema_version=state.schema_version, generated_at=generated_at, activity=state.activity,
                 target_time_window=state.target_time_window, outcome="ERROR", summary=_ERROR_MESSAGES[error_code],
                 recommendations=[], general_warnings=[SYNTHETIC_WARNING], general_limitations=[],
                 error_code=error_code, error_summary=_ERROR_MESSAGES[error_code], recoverable=False)
+    if receipt is not None:
+        data["general_warnings"].extend(receipt.assumption_disclosures)
+        data["general_limitations"].extend(receipt.limitations)
     return RecommendationResult(result_id="result-" + _digest(data), **data)
 
 
 def validate_error_result(proposal: RecommendationResult, state: InvestigationState, *, now: datetime,
-                          error_code: str) -> RecommendationResult:
+                          error_code: str, request_context: RequestContext | None = None,
+                          request_receipt: ValidatedRequest | None = None) -> RecommendationResult:
     try:
         proposal = RecommendationResult.model_validate(proposal.model_dump() if isinstance(proposal, BaseModel) else deepcopy(proposal))
     except (ValueError, TypeError):
         raise ResultValidationError("Invalid error result structure") from None
     _time(proposal.generated_at, state, now=now)
-    expected = build_error_result(state, generated_at=proposal.generated_at, error_code=error_code)
+    expected = build_error_result(state, generated_at=proposal.generated_at, error_code=error_code,
+                                  request_context=request_context, request_receipt=request_receipt)
     if proposal != expected:
         raise ResultValidationError("Error output is inconsistent with its trusted operational failure")
     return proposal
