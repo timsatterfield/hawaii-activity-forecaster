@@ -24,10 +24,10 @@ information, and user preferences.
 M1.5-C — Session Lifecycle and Post-Terminal Follow-ups is implemented. The in-memory
 controller preserves normalized context, revisions, independent investigation budgets
 and immutable history; the CLI includes a fictional two-request session demo.
-M1.5-D now provides a **proposed design for human review** covering request
-interpretation and candidate selection. Natural-language execution and authoritative
-JSONL tracing remain deferred; full scenario acceptance stays BLOCKED. The LLM
-provider/model is undecided.
+M1.5-D provides an **approved design** covering request interpretation and candidate
+selection, including disclosed morning and afternoon time windows. Natural-language
+execution and authoritative JSONL tracing remain deferred; full scenario acceptance
+stays BLOCKED. The LLM provider/model is undecided.
 
 ## Documentation
 
@@ -329,28 +329,30 @@ natural-language normalization and authoritative tracing remain separate work.
 See the [M1.5-C notes](docs/development/m1-5c-session-lifecycle.md) for the API,
 admission guards, origin declarations, acceptance coverage and open decisions.
 
-### Request interpretation and candidate-selection proposal — M1.5-D
+### Approved request interpretation and candidate-selection design — M1.5-D
 
-The [M1.5-D design draft](docs/implementation/m1-request-interpretation-and-candidate-selection-design.md)
-is **PROPOSED, not approved**. It defines reviewable interpretation rules, hard/soft
+The [M1.5-D design](docs/implementation/m1-request-interpretation-and-candidate-selection-design.md)
+was **approved on November 19, 2026**, including RI-OD-001 through RI-OD-010 and the
+afternoon-window amendment. It defines interpretation rules, hard/soft
 constraint payloads, catalog selection, follow-up origins, shared model-budget
 admission and empty-selection abstention. It selects no provider and changes no
-application behavior or approved specifications.
+application behavior or the existing approved requirement/architecture baselines.
 
-Key review items include the proposed disclosed **08:00–11:00 HST morning default**
-and the distinction between assessment candidates and supported dispatch candidates.
-That distinction addresses a documented tension between the architecture's filtering
-step and SC-003's required UNSUPPORTED assessments. See RI-C01 and decisions
-RI-OD-001 through RI-OD-010 in the draft. After approval, proposed M1.5-E would
-implement deterministic validation/selection components with synthetic interpreter
-outputs. General conversational CLI execution remains separately gated.
+Approved defaults are **08:00–11:00 HST for morning** and **12:00–16:00 HST for
+afternoon**. Explicit user times override defaults; assumed windows are disclosed
+and require evidence covering the entire interval. The approved distinction between
+assessment candidates and supported dispatch candidates resolves RI-C01's tension
+between architecture filtering and SC-003's required UNSUPPORTED assessments.
+The next increment is M1.5-E's deterministic validation/selection components with
+synthetic interpreter outputs, subject to a separate implementation request.
+General conversational CLI execution remains separately gated.
 
 See the [M1.5-D review notes](docs/development/m1-5d-request-interpretation-design.md)
 for the current-code gaps, approval scope and validation performed in this increment.
 
 ## Specification notes
 
-All seven core requirements and seven approved M1 implementation/design
+All seven core requirements and eight approved M1 implementation/design
 documents are present.
 The older technical plan still marks dependency management and several safeguards
 as open; the approved configuration baseline resolves uv and its lockfile,
