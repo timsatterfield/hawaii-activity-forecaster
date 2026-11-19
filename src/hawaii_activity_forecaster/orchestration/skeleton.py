@@ -24,6 +24,7 @@ from hawaii_activity_forecaster.models.enums import (
 )
 from .budgets import BudgetManager, BudgetSnapshot
 from .specialists import SpecialistContractError, SpecialistDelivery, SpecialistExchange
+from .session import SessionRequest
 from hawaii_activity_forecaster.harness.contracts import DriverInputs
 from hawaii_activity_forecaster.harness.synthetic import DispatchBinding, SyntheticDriver
 from hawaii_activity_forecaster.tools.synthetic import SyntheticToolDispatcher, ToolAction
@@ -96,13 +97,14 @@ def _updated(state: InvestigationState, **changes) -> InvestigationState:
     })
 
 
-def _initial(request: NormalizedRequest, candidates: tuple[str, ...], session_id: str) -> InvestigationState:
+def _initial(request: NormalizedRequest, candidates: tuple[str, ...], session_id: str,
+             request_revision: int = 1) -> InvestigationState:
     now = datetime.now(timezone.utc)
     limits = InvestigationLimits()
     return InvestigationState(
         **request.model_dump(), investigation_id=str(uuid4()), session_id=session_id,
         schema_version="0.1", created_at=now, updated_at=now,
-        status=InvestigationStatus.INITIALIZING, request_revision=1,
+        status=InvestigationStatus.INITIALIZING, request_revision=request_revision,
         candidate_beach_ids=list(candidates), assessments=[], investigated_beach_ids=[],
         remaining_candidate_ids=list(candidates), weather_findings=[], ocean_findings=[],
         pending_evidence_requests=[], unresolved_evidence_issues=[], iteration_count=0,
@@ -117,6 +119,7 @@ def _initial(request: NormalizedRequest, candidates: tuple[str, ...], session_id
 async def run_skeleton(
     request: NormalizedRequest, *, candidate_beach_ids: tuple[str, ...],
     branch: SyntheticBranch, record_event: EventRecorder, session_id: str | None = None,
+    session_request: SessionRequest | None = None,
 ) -> SkeletonReport:
     """Traverse the graph with trusted synthetic callbacks only.
 
@@ -127,13 +130,14 @@ async def run_skeleton(
     this API does not resume an investigation or accept previous graph state.
     """
     return await _run_graph(request, candidate_beach_ids=candidate_beach_ids, branch=branch,
-                            record_event=record_event, session_id=session_id)
+                            record_event=record_event, session_id=session_id, session_request=session_request)
 
 
 async def run_specialist_graph(
     request: NormalizedRequest, *, catalog: BeachCatalog, candidate_beach_ids: tuple[str, ...],
     plan: SpecialistPlanner, specialist: SyntheticSpecialist, record_event: EventRecorder,
     session_id: str | None = None,
+    session_request: SessionRequest | None = None,
 ) -> SkeletonReport:
     """Probe approved specialist contracts with trusted synthetic callbacks.
 
@@ -143,7 +147,7 @@ async def run_specialist_graph(
     """
     return await _run_graph(
         request, candidate_beach_ids=candidate_beach_ids, record_event=record_event,
-        session_id=session_id, catalog=catalog, plan=plan, specialist_callback=specialist,
+        session_id=session_id, session_request=session_request, catalog=catalog, plan=plan, specialist_callback=specialist,
     )
 
 
@@ -151,12 +155,19 @@ async def _run_graph(
     request, *, candidate_beach_ids, record_event, session_id=None, branch=None,
     catalog=None, plan=None, specialist_callback=None, driver_inputs=None, tool_plan=None, request_step=1,
     evidence_policy=None, safety_evaluation=False, result_generation=False,
+    session_request=None,
 ) -> SkeletonReport:
     request = NormalizedRequest.model_validate(request.model_dump())
+    if session_request is not None:
+        session_request.check(request)
+        if session_id is not None and session_id != session_request.session_id:
+            raise ValueError("Conflicting session identities")
+        session_id = session_request.session_id
     if catalog is not None:
         catalog = BeachCatalog.model_validate(catalog.model_dump())
     candidates = tuple(candidate_beach_ids)
-    initial = _initial(request, candidates, session_id or str(uuid4()))
+    initial = _initial(request, candidates, session_id or str(uuid4()),
+                       session_request.request_revision if session_request is not None else 1)
     budget = BudgetManager()
     current = initial
     visited: list[str] = []
@@ -179,7 +190,7 @@ async def _run_graph(
     if evidence_policy is not None:
         evidence_policy = PolicyConfiguration.model_validate(evidence_policy.model_dump())
 
-    def emit(event_type: TraceEventType, **details):
+    def emit(event_type: TraceEventType, *, related_ids=None, **details):
         nonlocal sequence, trace_failed
         if trace_failed:
             raise _TraceFailure("mandatory event recording failed")
@@ -188,7 +199,8 @@ async def _run_graph(
             event_id=str(uuid4()), trace_id=trace_id, sequence_number=sequence,
             timestamp=datetime.now(timezone.utc), event_type=event_type,
             actor=TraceActor.ORCHESTRATOR, request_revision=initial.request_revision,
-            details={"investigation_id": initial.investigation_id, **details},
+            related_ids=related_ids,
+            details={"investigation_id": initial.investigation_id, "session_id": initial.session_id, **details},
         )
         try:
             record_event(event)
@@ -213,7 +225,20 @@ async def _run_graph(
         specialist_callback = dispatcher.run
 
     def initialize(state: _GraphState):
-        emit(TraceEventType.INVESTIGATION_STARTED, component_probe=True)
+        emit(TraceEventType.INVESTIGATION_STARTED, component_probe=True, status=initial.status,
+             iteration_count=initial.iteration_count, tool_call_count=initial.tool_call_count,
+             retry_count=initial.retry_count, model_call_count=0, fallback_attempted=False)
+        if session_request is not None:
+            emit(TraceEventType.REQUEST_RECEIVED, original_request=request.original_request)
+            if session_request.previous_investigation_id is not None:
+                emit(TraceEventType.REQUEST_REVISED,
+                     related_ids=[session_request.previous_investigation_id],
+                     previous_investigation_id=session_request.previous_investigation_id,
+                     previous_request_revision=initial.request_revision - 1,
+                     changed_fields=list(session_request.changed_fields))
+            emit(TraceEventType.REQUEST_NORMALIZED, normalized_request=request.model_dump(mode="json"),
+                 user_provided_fields=sorted(session_request.user_provided_fields),
+                 assumed_fields=sorted(session_request.assumed_fields))
         return visit("initialize_investigation")
 
     def validate(state: _GraphState):
@@ -223,7 +248,7 @@ async def _run_graph(
         if request.clarification_needed or request.activity is None or request.target_time_window is None:
             current = _updated(current, status=InvestigationStatus.AWAITING_CLARIFICATION,
                                clarification_needed=True)
-            emit(TraceEventType.CLARIFICATION_REQUESTED)
+            emit(TraceEventType.CLARIFICATION_REQUESTED, questions=current.clarification_questions)
             return {**update, "investigation": current, "route": "end"}
         if not candidates:
             return {**update, "route": "stop", "reason": "NO_SELECTED_CANDIDATES"}
@@ -345,7 +370,8 @@ async def _run_graph(
         for rejection in report.rejections:
             emit(TraceEventType.CONTRACT_VALIDATED, contract="specialist_response", valid=False,
                  request_id=rejection.request_id, attempt_number=rejection.attempt_number,
-                 response_id=rejection.response_id, reason=rejection.reason)
+                 response_id=rejection.response_id, reason=rejection.reason,
+                 response_correlation=dict(rejection.response_correlation))
         if report.accepted_response_ids:
             emit(TraceEventType.EVIDENCE_RECEIVED, response_ids=list(report.accepted_response_ids),
                  validation_status="PENDING")
@@ -605,6 +631,7 @@ async def run_synthetic_tool_graph(
     evidence_policy: PolicyConfiguration | None = None,
     safety_evaluation: bool = False,
     result_generation: bool = False,
+    session_request: SessionRequest | None = None,
 ) -> SkeletonReport:
     """Execute explicitly planned synthetic retrievals; never an acceptance run.
 
@@ -612,7 +639,9 @@ async def run_synthetic_tool_graph(
     Optional evidence_policy enables independent synthetic validation; the
     safety_evaluation flag additionally creates trusted Candidate Assessments.
     result_generation additionally validates controlled synthetic outcomes.
-    CLI presentation, authoritative JSONL and full acceptance remain deferred.
+    Optional session admission carries a revision into fresh IDs and budgets;
+    it never accepts previous graph state. Authoritative JSONL and full acceptance
+    remain deferred. The CLI exposes explicit synthetic component demos only.
     """
     if type(request_step) is not int or not 1 <= request_step <= len(driver_inputs.script.requests):
         raise ValueError("Invalid synthetic request step")
@@ -623,7 +652,7 @@ async def run_synthetic_tool_graph(
     return await _run_graph(
         request, candidate_beach_ids=candidate_beach_ids, catalog=catalog, plan=plan,
         tool_plan=tool_plan, driver_inputs=driver_inputs, request_step=request_step,
-        record_event=record_event, session_id=session_id,
+        record_event=record_event, session_id=session_id, session_request=session_request,
         evidence_policy=evidence_policy,
         safety_evaluation=safety_evaluation,
         result_generation=result_generation,
