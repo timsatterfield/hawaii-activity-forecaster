@@ -76,7 +76,9 @@ def test_invalid_proposed_result_becomes_a_valid_sanitized_error(monkeypatch):
     assert not report.result.recommendations and report.state.status == "FAILED"
     assert report.state.result_id == report.result.result_id
     validated = [e for e in events if e.event_type == "RESULT_VALIDATED"]
-    assert len(validated) == 1 and validated[0].details["outcome"] == "ERROR"
+    assert [e.details["valid"] for e in validated] == [False, True]
+    assert validated[0].details["error_code"] == "RESULT_VALIDATION_FAILED"
+    assert validated[1].details["outcome"] == "ERROR"
     assert not any(e.event_type == "INVESTIGATION_COMPLETED" for e in events)
 
 

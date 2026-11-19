@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from inspect import isawaitable
 import json
 from operator import add
+from pathlib import Path
 from typing import Annotated, TypedDict
 from uuid import uuid4
 
@@ -16,7 +17,11 @@ from pydantic import ValidationError
 from langgraph.graph import END, START, StateGraph
 from langsmith.run_helpers import tracing_context
 
-from hawaii_activity_forecaster.config.settings import InvestigationLimits
+from hawaii_activity_forecaster.config import load_config
+from hawaii_activity_forecaster.config.settings import ExecutionTimeouts, InvestigationLimits, TraceSettings
+from hawaii_activity_forecaster.observability import (
+    JsonlTraceWriter, TraceValidation, TraceValidationError, TraceWriteError, inspect_trace,
+)
 from hawaii_activity_forecaster.models import (
     BeachCatalog, InvestigationState, NormalizedRequest, SpecialistInvestigationRequest,
     TimeRange, TraceEvent, RecommendationResult,
@@ -77,6 +82,8 @@ class SkeletonReport:
     request_context: RequestContext | None = None
     request_receipt: ValidatedRequest | None = None
     selection: CandidateSelection | None = None
+    trace_path: Path | None = None
+    trace_validation: TraceValidation | None = None
     # Without result_generation, state.result_id identifies only an operational stop.
 
 
@@ -176,7 +183,10 @@ async def _run_graph(
     catalog=None, plan=None, specialist_callback=None, driver_inputs=None, tool_plan=None, request_step=1,
     evidence_policy=None, safety_evaluation=False, result_generation=False,
     session_request=None, raw_admission=None, interpreter=None, model_adapter=None,
+    trace_settings=None,
 ) -> SkeletonReport:
+    if record_event is not None and trace_settings is not None:
+        raise ValueError("Choose authoritative local tracing or an explicit component recorder")
     request = NormalizedRequest.model_validate(request.model_dump())
     if session_request is not None:
         session_request.check(request)
@@ -196,6 +206,9 @@ async def _run_graph(
     sequence = 0
     trace_id = str(uuid4())
     trace_failed = False
+    trace_failure_reason = "TRACE_WRITE_FAILED"
+    local_trace = None
+    trace_validation = None
     exchange = SpecialistExchange(initial, catalog) if catalog is not None and raw_admission is None else None
     request_context = raw_admission.context if raw_admission else None
     request_receipt = None
@@ -221,16 +234,32 @@ async def _run_graph(
             raise _TraceFailure("mandatory event recording failed")
         sequence += 1
         counts = budget.snapshot()
+        actor = TraceActor.ORCHESTRATOR
+        if event_type in {TraceEventType.CONTRACT_VALIDATED, TraceEventType.EVIDENCE_RECEIVED,
+                          TraceEventType.EVIDENCE_VALIDATED, TraceEventType.EVIDENCE_REJECTED,
+                          TraceEventType.EVIDENCE_CONFLICT_DETECTED, TraceEventType.POLICY_EVALUATED,
+                          TraceEventType.CANDIDATE_ASSESSED, TraceEventType.CANDIDATE_EXCLUDED,
+                          TraceEventType.CANDIDATE_ELIGIBLE, TraceEventType.RESULT_VALIDATED}:
+            actor = TraceActor.VALIDATOR
+        if event_type in {TraceEventType.AGENT_STARTED, TraceEventType.AGENT_COMPLETED, TraceEventType.AGENT_FAILED,
+                          TraceEventType.TOOL_CALLED, TraceEventType.TOOL_COMPLETED, TraceEventType.TOOL_FAILED,
+                          TraceEventType.RETRY_INITIATED, TraceEventType.FALLBACK_INITIATED}:
+            actor = TraceActor(details["agent_type"])
         event = TraceEvent(
             event_id=str(uuid4()), trace_id=trace_id, sequence_number=sequence,
             timestamp=datetime.now(timezone.utc), event_type=event_type,
-            actor=TraceActor.ORCHESTRATOR, request_revision=initial.request_revision,
+            actor=actor, request_revision=initial.request_revision,
             related_ids=related_ids,
             details={"investigation_id": initial.investigation_id, "session_id": initial.session_id,
-                     "model_call_count": counts.model_calls, "tool_call_count": counts.tool_calls, **details},
+                     "model_call_count": counts.model_calls, "tool_call_count": counts.tool_calls,
+                     "iteration_count": counts.iterations, "retry_count": counts.retries,
+                     "fallback_count": counts.fallbacks, **details},
         )
         try:
-            record_event(event)
+            if local_trace is not None:
+                local_trace.append(event)
+            else:
+                record_event(event)
         except Exception:
             trace_failed = True
             budget.close()
@@ -260,9 +289,26 @@ async def _run_graph(
         specialist_callback = dispatcher.run
 
     def initialize(state: _GraphState):
+        nonlocal local_trace, trace_failed
+        if record_event is None:
+            try:
+                settings = trace_settings if trace_settings is not None else load_config().trace
+                local_trace = JsonlTraceWriter(settings, trace_id=trace_id, investigation_id=initial.investigation_id,
+                                               session_id=initial.session_id, request_revision=initial.request_revision)
+            except Exception:
+                trace_failed = True
+                budget.close()
+                raise _TraceFailure("mandatory trace startup failed") from None
         emit(TraceEventType.INVESTIGATION_STARTED, component_probe=True, status=initial.status,
              iteration_count=initial.iteration_count, tool_call_count=initial.tool_call_count,
-             retry_count=initial.retry_count, model_call_count=0, fallback_attempted=False)
+             retry_count=initial.retry_count, model_call_count=0, fallback_attempted=False,
+             trace_metadata=dict(schema_version=initial.schema_version, configuration_version="0.1",
+                                 policy_version=evidence_policy.policy_version if evidence_policy else "not-applied",
+                                 model_identifier=None),
+             configuration=dict(limits=InvestigationLimits().model_dump(), timeouts=ExecutionTimeouts().model_dump(),
+                                environment_mode="synthetic", remote_tracing_enabled=False,
+                                policy_configuration_version=evidence_policy.policy_configuration_version if evidence_policy else None),
+             candidate_beach_ids=list(initial.candidate_beach_ids), raw_payloads_retained=False)
         if raw_admission is not None:
             emit(TraceEventType.REQUEST_RECEIVED, original_request=request.original_request,
                  reference_time=request_context.reference_time.isoformat(), rule_profile=request_context.rule_profile)
@@ -282,7 +328,41 @@ async def _run_graph(
             emit(TraceEventType.REQUEST_NORMALIZED, normalized_request=request.model_dump(mode="json"),
                  user_provided_fields=sorted(session_request.user_provided_fields),
                  assumed_fields=sorted(session_request.assumed_fields))
+        elif local_trace is not None:
+            emit(TraceEventType.REQUEST_RECEIVED, original_request=request.original_request)
+            emit(TraceEventType.REQUEST_NORMALIZED, normalized_request=request.model_dump(mode="json"),
+                 user_provided_fields=[], assumed_fields=[])
         return visit("initialize_investigation")
+
+    def terminal_details(snapshot, result=None):
+        stats = budget.snapshot()
+        return dict(final_status=snapshot.status.value, outcome=snapshot.outcome.value,
+                    result_id=snapshot.result_id, completion_reason=snapshot.completion_reason,
+                    recommended_beach_ids=[r.beach_id for r in result.recommendations] if result else [],
+                    recommendation_count=len(result.recommendations) if result else 0,
+                    no_recommendation_reason=result.no_recommendation_reason if result else None,
+                    candidate_beach_ids=list(snapshot.candidate_beach_ids),
+                    total_iterations=stats.iterations, total_tool_calls=stats.tool_calls,
+                    total_model_calls=stats.model_calls, total_retries=stats.retries, total_fallbacks=stats.fallbacks,
+                    total_duration_ms=max(0, int((datetime.now(timezone.utc) - initial.created_at).total_seconds() * 1000)))
+
+    def audit_local(snapshot, result=None):
+        nonlocal trace_validation, trace_failed, trace_failure_reason
+        if local_trace is None:
+            return
+        try:
+            local_trace.close()
+            trace_validation = inspect_trace(
+                local_trace.path, state=snapshot, result=result, budgets=budget.snapshot(),
+                bindings=dispatcher.driver.bindings if dispatcher else (), evidence=evidence_report, safety=safety_report,
+            )
+        except TraceWriteError:
+            trace_failed = True
+            raise _TraceFailure("mandatory trace close failed") from None
+        except TraceValidationError:
+            trace_failed = True
+            trace_failure_reason = "TRACE_VALIDATION_FAILED"
+            raise _TraceFailure("mandatory trace validation failed") from None
 
     async def normalize_raw(state: _GraphState):
         nonlocal current, request, request_receipt
@@ -407,7 +487,14 @@ async def _run_graph(
             if scoped_request is None:
                 return visit(f"{role.value.lower()}_skipped")
         with budget.specialist_slot(role):
-            emit(TraceEventType.AGENT_STARTED, agent_type=role.value, iteration=snapshot.iteration_count)
+            started = datetime.now(timezone.utc)
+            correlation = dict(request_id=scoped_request.request_id if scoped_request else f"{role.value}-component-{snapshot.iteration_count}",
+                               attempt_number=scoped_request.attempt_number if scoped_request else 1,
+                               agent_type=role.value)
+            emit(TraceEventType.AGENT_STARTED, **correlation, iteration=snapshot.iteration_count,
+                 candidate_beach_ids=list(scoped_request.candidate_beach_ids) if scoped_request else list(candidates),
+                 requested_evidence=[r.model_dump(mode="json") for r in scoped_request.requested_evidence] if scoped_request else [],
+                 target_time_window=snapshot.target_time_window.model_dump(mode="json"))
             if exchange is not None:
                 detached = SpecialistInvestigationRequest.model_validate(scoped_request.model_dump())
                 try:
@@ -421,13 +508,20 @@ async def _run_graph(
                     # Capture now; callbacks may retain and later mutate their own payload.
                     response = deepcopy(response)
                 except Exception:
-                    emit(TraceEventType.AGENT_FAILED, request_id=scoped_request.request_id,
-                         attempt_number=scoped_request.attempt_number)
+                    emit(TraceEventType.AGENT_FAILED, **correlation, execution_status="ERROR",
+                         duration_ms=max(0, int((datetime.now(timezone.utc) - started).total_seconds() * 1000)))
                     delivery = SpecialistDelivery(scoped_request.request_id, scoped_request.attempt_number,
                                                   execution_failed=True)
                 else:
-                    emit(TraceEventType.AGENT_COMPLETED, request_id=scoped_request.request_id,
-                         attempt_number=scoped_request.attempt_number)
+                    valid_response = response if isinstance(response, dict) else (
+                        response.model_dump(mode="json") if hasattr(response, "model_dump") else {})
+                    reported_status = valid_response.get("status") if isinstance(valid_response, dict) else None
+                    emit(TraceEventType.AGENT_COMPLETED, **correlation,
+                         execution_status=reported_status if isinstance(reported_status, str) and reported_status in
+                         {"SUCCESS", "PARTIAL", "UNAVAILABLE", "ERROR"} else "UNVALIDATED",
+                         missing_evidence_count=len(valid_response.get("unresolved_gaps", []))
+                         if isinstance(valid_response.get("unresolved_gaps"), list) else 0,
+                         duration_ms=max(0, int((datetime.now(timezone.utc) - started).total_seconds() * 1000)))
                     delivery = SpecialistDelivery(scoped_request.request_id, scoped_request.attempt_number, response)
                 return {**visit(f"{role.value.lower()}_investigation"), "deliveries": (delivery,)}
             # No mutable logical state or budget manager is exposed to callbacks.
@@ -438,7 +532,8 @@ async def _run_graph(
             if (not isinstance(signal, BranchSignal) or not isinstance(signal.agent_type, AgentType)
                     or signal.agent_type != role or type(signal.needs_another_cycle) is not bool):
                 raise ValueError("invalid synthetic branch signal")
-            emit(TraceEventType.AGENT_COMPLETED, agent_type=role.value, iteration=snapshot.iteration_count)
+            emit(TraceEventType.AGENT_COMPLETED, **correlation, iteration=snapshot.iteration_count,
+                 execution_status="SUCCESS", duration_ms=max(0, int((datetime.now(timezone.utc) - started).total_seconds() * 1000)))
             return {**visit(f"{role.value.lower()}_investigation"), "signals": (signal,)}
 
     async def weather(state: _GraphState):
@@ -468,6 +563,7 @@ async def _run_graph(
                  response_correlation=dict(rejection.response_correlation))
         if report.accepted_response_ids:
             emit(TraceEventType.EVIDENCE_RECEIVED, response_ids=list(report.accepted_response_ids),
+                 finding_ids=sorted(f.finding_id for f in report.state.weather_findings + report.state.ocean_findings),
                  validation_status="PENDING")
         stats = budget.snapshot()
         current = _updated(report.state, tool_call_count=stats.tool_calls, retry_count=stats.retries,
@@ -489,7 +585,8 @@ async def _run_graph(
                     "RESULT_VALIDATION_NOT_IMPLEMENTED" if safety_evaluation else "VALIDATORS_NOT_IMPLEMENTED")
         reason = "ITERATION_LIMIT_REACHED" if more else boundary
         if more and not repeat:
-            emit(TraceEventType.INVESTIGATION_LIMIT_REACHED, iteration=current.iteration_count)
+            emit(TraceEventType.INVESTIGATION_LIMIT_REACHED, iteration=current.iteration_count,
+                 budget_kind="coordinator_iterations", configured_limit=current.max_iterations)
         return {**visit("decide_next_action"), "investigation": current,
                 "route": "dispatch" if repeat else "stop", "reason": reason}
 
@@ -504,9 +601,17 @@ async def _run_graph(
         for decision in proposed.decisions:
             event_type = (TraceEventType.EVIDENCE_REJECTED if decision.status == "REJECTED"
                           else TraceEventType.EVIDENCE_VALIDATED)
-            emit(event_type, finding_id=decision.finding_id, rule_id=decision.rule_id,
+            finding = next(f for f in proposed.state.weather_findings + proposed.state.ocean_findings
+                           if f.finding_id == decision.finding_id)
+            emit(event_type, related_ids=[decision.finding_id], finding_id=decision.finding_id, rule_id=decision.rule_id,
                  beach_id=decision.beach_id, category=decision.category,
-                 validation_status=decision.status, reasons=list(decision.reasons))
+                 validation_status=decision.status, reasons=list(decision.reasons), valid=decision.status != "REJECTED",
+                 validation_rule_ids=[decision.rule_id] if decision.rule_id else [], validation_reasons=list(decision.reasons),
+                 source_id=finding.source_id, coverage_type=finding.coverage_type, coverage_id=finding.coverage_id,
+                 retrieved_at=finding.retrieved_at.isoformat(), issued_at=finding.issued_at.isoformat() if finding.issued_at else None,
+                 observed_at=finding.observed_at.isoformat() if finding.observed_at else None,
+                 valid_from=finding.valid_from.isoformat() if finding.valid_from else None,
+                 valid_until=finding.valid_until.isoformat() if finding.valid_until else None)
         if proposed.conflicted_finding_ids:
             emit(TraceEventType.EVIDENCE_CONFLICT_DETECTED, finding_ids=list(proposed.conflicted_finding_ids))
         current = proposed.state
@@ -525,11 +630,17 @@ async def _run_graph(
             for result in assessment.policy_results:
                 emit(TraceEventType.POLICY_EVALUATED, assessment_id=assessment.assessment_id,
                      beach_id=assessment.beach_id, policy_id=result.policy_id, result=result.result,
+                     activity=assessment.activity, explanation=result.explanation,
                      supporting_finding_ids=result.supporting_finding_ids)
             emit(TraceEventType.CANDIDATE_ASSESSED, assessment_id=assessment.assessment_id,
                  assessment_version=assessment.assessment_version, beach_id=assessment.beach_id,
                  eligibility=assessment.eligibility, evidence_quality=assessment.evidence_quality,
-                 environmental_suitability=assessment.environmental_suitability)
+                 environmental_suitability=assessment.environmental_suitability, activity=assessment.activity,
+                 applied_policy_ids=[r.policy_id for r in assessment.policy_results],
+                 decision_reasons=list(assessment.decision_reasons),
+                 disqualifying_policy_ids=list(assessment.disqualifying_policy_ids),
+                 unresolved_policy_ids=list(assessment.unresolved_policy_ids),
+                 recommended_next_actions=list(assessment.recommended_next_actions))
             if assessment.eligibility in {"EXCLUDED", "ELIGIBLE"}:
                 event = TraceEventType.CANDIDATE_EXCLUDED if assessment.eligibility == "EXCLUDED" else TraceEventType.CANDIDATE_ELIGIBLE
                 emit(event, beach_id=assessment.beach_id, assessment_id=assessment.assessment_id,
@@ -555,14 +666,18 @@ async def _run_graph(
             status, event = terminal[validated_result.outcome]
             proposed_state = _updated(state["investigation"], status=status, outcome=validated_result.outcome,
                                       result_id=validated_result.result_id, completion_reason="Validated " + validated_result.outcome.value)
-            emit(event, result_id=validated_result.result_id, outcome=validated_result.outcome,
+            emit(event, **terminal_details(proposed_state, validated_result),
                  stop_reason=state["reason"], error_code=validated_result.error_code)
+            proposed_state = _updated(proposed_state)
+            audit_local(proposed_state, validated_result)
             current, published_result = proposed_state, validated_result
             published_validation = result_validation
             return {**visit("finalize_investigation"), "investigation": current}
         current = _updated(state["investigation"], status=InvestigationStatus.FAILED, outcome=Outcome.ERROR,
                            result_id=str(uuid4()), completion_reason=state["reason"])
-        emit(TraceEventType.INVESTIGATION_FAILED, reason=state["reason"])
+        emit(TraceEventType.INVESTIGATION_FAILED, **terminal_details(current), reason=state["reason"])
+        current = _updated(current)
+        audit_local(current)
         return {**visit("finalize_investigation"), "investigation": current}
 
     def compare(state: _GraphState):
@@ -590,17 +705,23 @@ async def _run_graph(
 
     def validate_output(state: _GraphState):
         nonlocal validated_result, result_validation
-        if trusted_error_code:
-            candidate = validate_error_result(proposed_result, state["investigation"], now=datetime.now(timezone.utc),
-                                               error_code=trusted_error_code,
-                                               request_context=request_context, request_receipt=request_receipt)
-        else:
-            candidate = validate_result(proposed_result, result_context, now=datetime.now(timezone.utc), stop_reason=state["reason"])
-        emit(TraceEventType.RESULT_VALIDATED, result_id=candidate.result_id, outcome=candidate.outcome,
+        try:
+            if trusted_error_code:
+                candidate = validate_error_result(proposed_result, state["investigation"], now=datetime.now(timezone.utc),
+                                                   error_code=trusted_error_code,
+                                                   request_context=request_context, request_receipt=request_receipt)
+            else:
+                candidate = validate_result(proposed_result, result_context, now=datetime.now(timezone.utc), stop_reason=state["reason"])
+        except ResultValidationError:
+            emit(TraceEventType.RESULT_VALIDATED, result_id=proposed_result.result_id, valid=False,
+                 error_code="RESULT_VALIDATION_FAILED", assessment_ids=[])
+            raise
+        emit(TraceEventType.RESULT_VALIDATED, result_id=candidate.result_id, outcome=candidate.outcome, valid=True,
              assessment_ids=[r.assessment_id for r in candidate.recommendations])
         validated_result = candidate
         result_validation = ResultValidationSnapshot(
             InvestigationState.model_validate(state["investigation"].model_dump()), state["reason"], trusted_error_code, request_step,
+            authoritative_trace=local_trace is not None,
         )
         return visit("validate_result")
 
@@ -670,7 +791,7 @@ async def _run_graph(
                         + 8 + (2 if raw_admission else 0)},
             )
     except Exception as error:
-        reason = ("TRACE_WRITE_FAILED" if trace_failed else
+        reason = (trace_failure_reason if trace_failed else
                   "SPECIALIST_CONTRACT_FAILED" if isinstance(error, SpecialistContractError) else
                   "RESULT_VALIDATION_FAILED" if result_generation and isinstance(error, ResultValidationError) else
                   "INVESTIGATION_EXECUTION_FAILED" if result_generation else
@@ -696,20 +817,23 @@ async def _run_graph(
                                                         request_context=request_context, request_receipt=request_receipt)
                 candidate_validation = ResultValidationSnapshot(
                     InvestigationState.model_validate(current.model_dump()), None, code, request_step,
+                    authoritative_trace=local_trace is not None,
                 )
                 emit(TraceEventType.RESULT_VALIDATED, result_id=candidate_error.result_id, outcome=candidate_error.outcome,
-                     assessment_ids=[])
+                     assessment_ids=[], valid=True)
             failed_state = _updated(current, status=InvestigationStatus.FAILED, outcome=Outcome.ERROR,
                                     result_id=candidate_error.result_id if candidate_error else str(uuid4()), completion_reason=reason)
             if trace_writable:
-                emit(TraceEventType.INVESTIGATION_FAILED, reason=reason, result_id=failed_state.result_id,
+                emit(TraceEventType.INVESTIGATION_FAILED, **terminal_details(failed_state, candidate_error), reason=reason,
                      error_code=candidate_error.error_code if candidate_error else None)
+                failed_state = _updated(failed_state)
+                audit_local(failed_state, candidate_error)
             current, published_result = failed_state, candidate_error
             published_validation = candidate_validation
         except _TraceFailure:
             trace_writable = False
             current = _updated(current, status=InvestigationStatus.FAILED, outcome=Outcome.ERROR,
-                               result_id=str(uuid4()), completion_reason="TRACE_WRITE_FAILED")
+                               result_id=str(uuid4()), completion_reason=trace_failure_reason)
         except ResultValidationError:
             # An incomplete request cannot be forced into the result schema by
             # inventing its activity/window. Keep only the operational diagnostic.
@@ -717,34 +841,53 @@ async def _run_graph(
                                result_id=str(uuid4()), completion_reason=reason)
             if trace_writable:
                 try:
-                    emit(TraceEventType.INVESTIGATION_FAILED, reason=reason, result_id=current.result_id)
+                    emit(TraceEventType.INVESTIGATION_FAILED, **terminal_details(current), reason=reason)
+                    current = _updated(current)
+                    audit_local(current)
                 except _TraceFailure:
                     trace_writable = False
-                    current = _updated(current, completion_reason="TRACE_WRITE_FAILED")
+                    current = _updated(current, completion_reason=trace_failure_reason)
     finally:
         budget.close()
         if dispatcher is not None:
             dispatcher.close()
         if exchange is not None:
             exchange.close()
+        if local_trace is not None:
+            try:
+                local_trace.close()
+            except TraceWriteError:
+                trace_failed = True
     stats = budget.snapshot()
     current = _updated(current, tool_call_count=stats.tool_calls, retry_count=stats.retries,
                        fallback_attempted=bool(stats.fallbacks))
+    if local_trace is not None and not trace_failed and trace_validation is None:
+        try:
+            audit_local(current, published_result)
+        except _TraceFailure:
+            pass
+    if trace_failed:
+        trace_writable = False
+        published_result = published_validation = trace_validation = None
+        current = _updated(current, status=InvestigationStatus.FAILED, outcome=Outcome.ERROR,
+                           result_id=str(uuid4()), completion_reason=trace_failure_reason)
     return SkeletonReport(current, stats, tuple(visited), trace_writable,
                           dispatcher.driver.bindings if dispatcher is not None else (), evidence_report, safety_report,
                           comparison, published_result, published_validation,
-                          request_context, request_receipt, selection)
+                          request_context, request_receipt, selection,
+                          local_trace.path if local_trace else None, trace_validation)
 
 
 async def run_synthetic_tool_graph(
     request: NormalizedRequest, *, catalog: BeachCatalog, candidate_beach_ids: tuple[str, ...],
     plan: SpecialistPlanner, tool_plan: Callable[[SpecialistInvestigationRequest], tuple[ToolAction, ...]],
-    driver_inputs: DriverInputs, record_event: EventRecorder, session_id: str | None = None,
+    driver_inputs: DriverInputs, record_event: EventRecorder | None = None, session_id: str | None = None,
     request_step: int = 1,
     evidence_policy: PolicyConfiguration | None = None,
     safety_evaluation: bool = False,
     result_generation: bool = False,
     session_request: SessionRequest | None = None,
+    trace_settings: TraceSettings | None = None,
 ) -> SkeletonReport:
     """Execute explicitly planned synthetic retrievals; never an acceptance run.
 
@@ -753,8 +896,9 @@ async def run_synthetic_tool_graph(
     safety_evaluation flag additionally creates trusted Candidate Assessments.
     result_generation additionally validates controlled synthetic outcomes.
     Optional session admission carries a revision into fresh IDs and budgets;
-    it never accepts previous graph state. Authoritative JSONL and full acceptance
-    remain deferred. The CLI exposes explicit synthetic component demos only.
+    it never accepts previous graph state. By default, local JSONL must pass
+    independent validation before publication. An explicit record_event callback
+    is a memory/component seam. Full scenario acceptance remains deferred.
     """
     if type(request_step) is not int or not 1 <= request_step <= len(driver_inputs.script.requests):
         raise ValueError("Invalid synthetic request step")
@@ -769,6 +913,7 @@ async def run_synthetic_tool_graph(
         evidence_policy=evidence_policy,
         safety_evaluation=safety_evaluation,
         result_generation=result_generation,
+        trace_settings=trace_settings,
     )
 
 
@@ -779,7 +924,8 @@ async def run_raw_synthetic_tool_graph(
     plan: Callable[[RawPlanningInput], object],
     tool_plan: Callable[[SpecialistInvestigationRequest], tuple[ToolAction, ...]],
     driver_inputs: DriverInputs, evidence_policy: PolicyConfiguration,
-    record_event: EventRecorder, request_step: int = 1,
+    record_event: EventRecorder | None = None, request_step: int = 1,
+    trace_settings: TraceSettings | None = None,
 ) -> SkeletonReport:
     """Integrate admitted raw work with the existing synthetic component graph.
 
@@ -804,4 +950,5 @@ async def run_raw_synthetic_tool_graph(
         interpreter=interpreter, model_adapter=model_adapter, plan=plan, tool_plan=tool_plan,
         driver_inputs=driver_inputs, evidence_policy=evidence_policy, request_step=request_step,
         safety_evaluation=True, result_generation=True, record_event=record_event,
+        trace_settings=trace_settings,
     )

@@ -196,19 +196,23 @@ class SyntheticToolDispatcher:
             details = dict(tool_call_id=call_id, request_id=parent.request_id,
                            specialist_attempt=parent.attempt_number, operation_id=operation_id,
                            operation_attempt=attempt, source_id=action.source_id,
+                           tool_name=action.source_id, agent_type=parent.agent_type.value,
                            candidate_beach_ids=list(action.candidate_beach_ids),
                            requested_evidence=list(action.requested_evidence),
                            target_time_window=parent.target_time_window.model_dump(mode="json"))
             if action.retry_of:
-                self._emit(TraceEventType.RETRY_INITIATED, **details, original_tool_call_id=origin[0])
+                self._emit(TraceEventType.RETRY_INITIATED, **details, original_tool_call_id=origin[0], reason="RETRYABLE_TOOL_FAILURE")
             if action.fallback_of:
-                self._emit(TraceEventType.FALLBACK_INITIATED, **details, gap_id=gap_id)
+                self._emit(TraceEventType.FALLBACK_INITIATED, **details, gap_id=gap_id,
+                           original_tool_call_id=origin[0], reason="REQUIRED_EVIDENCE_GAP")
             self._emit(TraceEventType.TOOL_CALLED, **details)
             self.budgets.dispatch(call_id)
             try:
                 delivery = self.driver.deliver(tool_request, operation_id, attempt)
             except Exception:
                 self.budgets.finish(call_id, failed=True, retryable=False)
+                self._emit(TraceEventType.TOOL_FAILED, **details, execution_status="ERROR", duration_ms=0,
+                           result_reference_ids=[], error_codes=["TOOL_EXECUTION_FAILED"])
                 raise
             finished = self._reference_time + timedelta(milliseconds=elapsed + delivery.elapsed_ms)
             response = None
@@ -241,9 +245,17 @@ class SyntheticToolDispatcher:
             failed = response is None or response.retrieval_status in {"ERROR", "UNAVAILABLE"}
             retryable = failed and any(error.retryable for error in errors)
             self.budgets.finish(call_id, failed=failed, retryable=retryable)
+            binding = next((b for b in self.driver.bindings if b.runtime_tool_call_id == call_id), None)
             self._emit(TraceEventType.TOOL_FAILED if failed else TraceEventType.TOOL_COMPLETED, **details,
                        elapsed_ms=delivery.elapsed_ms, virtual_completed_at=finished.isoformat(),
-                       error_codes=[error.error_code for error in errors], delivery_count=len(delivery.payloads))
+                       error_codes=[error.error_code for error in errors], delivery_count=len(delivery.payloads),
+                       duration_ms=max(0, int((datetime.now(timezone.utc) - now).total_seconds() * 1000)),
+                       simulated_duration_ms=delivery.elapsed_ms,
+                       source_fixture_id=binding.source_fixture_id if binding else None,
+                       result_reference_ids=[f.runtime_finding_id for f in binding.findings] if binding else [],
+                       execution_status="TIMEOUT" if delivery.timed_out else "ERROR" if failed else
+                       "PARTIAL" if response.retrieval_status == "PARTIAL" else "SUCCESS",
+                       retrieval_status=response.retrieval_status if response else None)
             return call_id, retryable, response, errors, delivery.elapsed_ms
 
     async def run(self, supplied: SpecialistInvestigationRequest) -> SpecialistInvestigationResponse:
@@ -271,7 +283,8 @@ class SyntheticToolDispatcher:
                 error = SpecialistError(error_id=str(uuid4()), error_code="EXECUTION_LIMIT_REACHED",
                                         message="Environmental invocation allowance exhausted", retryable=False)
                 errors[error.error_id] = error
-                self._emit(TraceEventType.INVESTIGATION_LIMIT_REACHED, request_id=parent.request_id)
+                self._emit(TraceEventType.INVESTIGATION_LIMIT_REACHED, request_id=parent.request_id,
+                           budget_kind="environmental_tool", configured_limit=12)
                 for category in action.requested_evidence:
                     gaps[self._gap_id(parent, action.candidate_beach_ids, category)] = category, tuple(action.candidate_beach_ids)
                 break
