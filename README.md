@@ -21,7 +21,10 @@ information, and user preferences.
 
 ## Current Status
 
-M1.6-A — Authoritative Local JSONL Tracing is implemented. Synthetic demonstrations
+M1.6-B — Independent Scenario Assertion Evaluation and Reporting is implemented.
+Evaluator-owned expected files can now be compared against verified, detached
+component captures, with strict selectors/operators and explicit readiness outcomes.
+Synthetic demonstrations
 now persist one append-only trace per investigation, with independent correlation,
 completeness, budget and terminal-result checks before publication. Session commits
 and presentation recheck the retained trace receipt. Raw request/session integration,
@@ -450,6 +453,27 @@ unneeded files after their investigations have stopped. No automatic retention
 period, repair, overwrite or investigation resumption is implemented. See the
 [M1.6-A notes](docs/development/m1-6a-authoritative-local-jsonl-tracing.md) for format,
 privacy, integrity, test coverage and remaining acceptance gates.
+
+### Independent assertion evaluation and reporting — M1.6-B
+
+```bash
+uv run --locked hafi evaluate SC-004 --fixtures fixtures/scenario-pack-v1
+uv run --locked hafi evaluate SC-010 --fixtures fixtures/scenario-pack-v1
+uv run --locked pytest tests/test_harness_evaluation.py
+```
+
+The evaluation CLI preflights inputs and reports readiness without dispatching
+work. Both scenarios currently report BLOCKED (exit 2). Invalid fixtures report
+FAIL (exit 1). The evaluator-only Python API can compare verified component
+captures with the approved expected files; component assertion success cannot
+be presented as a full scenario PASS.
+
+Independent evaluation currently detects two demo gaps: SC-004 omits the Kihei
+preference (A028), and SC-010 stops before an investigation-limit event (A054).
+Those attempted component evaluations report FAIL; missing runtime capabilities
+do not hide active mandatory failures. Expected fixtures remain unchanged.
+See the [M1.6-B notes](docs/development/m1-6b-scenario-evaluation-and-reporting.md)
+for APIs, comparison semantics, diagnostic categories and remaining gates.
 
 ## Specification notes
 

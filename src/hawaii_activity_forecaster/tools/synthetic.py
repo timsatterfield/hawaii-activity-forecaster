@@ -212,7 +212,7 @@ class SyntheticToolDispatcher:
             except Exception:
                 self.budgets.finish(call_id, failed=True, retryable=False)
                 self._emit(TraceEventType.TOOL_FAILED, **details, execution_status="ERROR", duration_ms=0,
-                           result_reference_ids=[], error_codes=["TOOL_EXECUTION_FAILED"])
+                           result_reference_ids=[], error_codes=["TOOL_EXECUTION_FAILED"], error_code="TOOL_EXECUTION_FAILED")
                 raise
             finished = self._reference_time + timedelta(milliseconds=elapsed + delivery.elapsed_ms)
             response = None
@@ -248,7 +248,8 @@ class SyntheticToolDispatcher:
             binding = next((b for b in self.driver.bindings if b.runtime_tool_call_id == call_id), None)
             self._emit(TraceEventType.TOOL_FAILED if failed else TraceEventType.TOOL_COMPLETED, **details,
                        elapsed_ms=delivery.elapsed_ms, virtual_completed_at=finished.isoformat(),
-                       error_codes=[error.error_code for error in errors], delivery_count=len(delivery.payloads),
+                       error_codes=[error.error_code for error in errors], error_code=errors[0].error_code if errors else None,
+                       delivery_count=len(delivery.payloads),
                        duration_ms=max(0, int((datetime.now(timezone.utc) - now).total_seconds() * 1000)),
                        simulated_duration_ms=delivery.elapsed_ms,
                        source_fixture_id=binding.source_fixture_id if binding else None,

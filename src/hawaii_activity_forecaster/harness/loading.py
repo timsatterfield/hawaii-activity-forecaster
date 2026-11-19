@@ -100,8 +100,8 @@ class LoadedScenario:
         if status == "BLOCKED":
             return ExecutionReadiness(outcome="BLOCKED", reason="Scenario definition is blocked.")
         return ExecutionReadiness(outcome="BLOCKED", reason=(
-            "Scenario runtime is not implemented: request handling, specialists/tools, "
-            "evidence/policy/result validation, budget controls and local trace execution are required."
+            "Agentic scenario runtime is not implemented: reviewed provider/model integration, "
+            "real Coordinator planning and an independent execution adapter remain required."
         ))
 
 

@@ -30,7 +30,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     demo.add_argument("--trace-directory", type=Path, metavar="PATH", help="override the local JSONL trace directory")
     trace = commands.add_parser("trace", help="validate an existing local JSONL trace and show metrics")
     trace.add_argument("path", type=Path, metavar="PATH")
+    evaluation = commands.add_parser("evaluate", help="preflight a scenario and report independent evaluation readiness")
+    evaluation.add_argument("scenario_id")
+    evaluation.add_argument("--fixtures", type=Path, required=True, metavar="PATH")
     arguments = parser.parse_args(argv)
+    if arguments.command == "evaluate":
+        from .harness.evaluation import evaluate_scenario
+        report = evaluate_scenario(arguments.fixtures, arguments.scenario_id)
+        print(json.dumps(asdict(report), indent=2))
+        return 0 if report.outcome == "PASS" else 1 if report.outcome == "FAIL" else 2
     if arguments.command == "trace":
         from .observability import TraceValidationError, inspect_trace
         try:
