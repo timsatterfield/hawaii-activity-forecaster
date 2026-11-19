@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Callable, Sequence
+from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 import json
@@ -18,6 +19,7 @@ from hawaii_activity_forecaster.harness.synthetic import SyntheticDriver
 from hawaii_activity_forecaster.models import (
     EnvironmentalToolRequest, EnvironmentalToolResponse, EvidenceGap, SpecialistError,
     SpecialistInvestigationRequest, SpecialistInvestigationResponse,
+    TimeRange,
 )
 from hawaii_activity_forecaster.models.common import ContractModel, JsonObject, Text
 from hawaii_activity_forecaster.models.enums import AgentType, TraceEventType, ValidationStatus
@@ -29,6 +31,18 @@ if TYPE_CHECKING:
 
 class ToolPlanError(ValueError):
     """A trusted tool plan violates scope or recovery constraints."""
+
+
+@dataclass(frozen=True)
+class RetrievalGap:
+    """Trusted operational correlation; not an environmental policy verdict."""
+
+    gap_id: str
+    investigation_id: str
+    request_revision: int
+    category: Category
+    candidate_beach_ids: tuple[str, ...]
+    target_time_window: TimeRange
 
 
 class ToolAction(ContractModel):
@@ -77,6 +91,12 @@ class SyntheticToolDispatcher:
         self._seen = set()
         self._ran = set()
         self._closed = False
+        self._gap_scopes: dict[str, RetrievalGap] = {}
+
+    @property
+    def gap_scopes(self) -> tuple[RetrievalGap, ...]:
+        with self._lock:
+            return tuple(self._gap_scopes[key] for key in sorted(self._gap_scopes))
 
     def close(self):
         with self._lock:
@@ -134,7 +154,13 @@ class SyntheticToolDispatcher:
         scope = [*self._identity, sorted(candidates), category,
                  parent.target_time_window.start.astimezone(timezone.utc).isoformat(),
                  parent.target_time_window.end.astimezone(timezone.utc).isoformat()]
-        return "gap-" + sha256(json.dumps(scope, sort_keys=True).encode()).hexdigest()
+        gap_id = "gap-" + sha256(json.dumps(scope, sort_keys=True).encode()).hexdigest()
+        with self._lock:
+            self._gap_scopes[gap_id] = RetrievalGap(
+                gap_id, *self._identity, Category(category), tuple(sorted(candidates)),
+                TimeRange.model_validate(parent.target_time_window.model_dump()),
+            )
+        return gap_id
 
     def _invoke(self, parent, action, elapsed, outcomes, gaps):
         with self._lock:
