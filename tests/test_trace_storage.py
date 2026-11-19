@@ -124,7 +124,8 @@ def test_raw_messages_opaque_constraints_and_provider_payloads_are_not_persisted
                            api_key="EXAMPLE_CREDENTIAL", chain_of_thought="PRIVATE_REASONING", raw_response="RAW_PROVIDER_BODY",
                            headers={"Authorization": "Bearer EXAMPLE_CREDENTIAL"})
     sink.append(TraceEvent.model_validate(data))
-    data = sample[2].model_dump()
+    data = next(event for event in sample if event.event_type == "REQUEST_NORMALIZED").model_dump()
+    data["sequence_number"] = 3
     data["details"]["normalized_request"] = data["details"]["normalized_request_summary"] | {
         "original_request": "EXAMPLE_CREDENTIAL", "preferred_area": "PRIVATE_HOME_ADDRESS", "hard_constraints": [{"secret": "EXAMPLE_CREDENTIAL"}],
         "soft_preferences": [{"kind": "UNINTERPRETED", "text": "PRIVATE_REASONING"}],

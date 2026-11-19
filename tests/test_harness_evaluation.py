@@ -43,14 +43,11 @@ def test_authored_assertions_use_real_component_captures_without_claiming_scenar
     sample = asyncio.run(run_demo(case, FIXTURES, trace_settings=TraceSettings(directory=tmp_path)))
     capture = capture_report(1, sample.report, catalog=sample.catalog, policy=sample.policy, driver_inputs=scenario.driver)
     component = evaluate_assertions(scenario.evaluator.expected_results, (capture,))
-    assert component.outcome == "FAIL"
+    assert component.outcome == "PASS"
     assert component.scope == "COMPONENT"
-    if scenario_id == "SC-004":
-        assert [r.assertion_id for r in component.assertions if r.outcome == "FAIL"] == ["SC-004-A028"]
-    else:
-        assert [r.assertion_id for r in component.assertions if r.outcome == "FAIL"] == ["SC-010-A054"]
+    assert component.counts["PASS"] == len(component.assertions)
     report = evaluate_scenario(FIXTURES, scenario_id, captures=(capture,))
-    assert report.outcome == "FAIL"
+    assert report.outcome == "BLOCKED" and report.category == "AGENTIC_RUNTIME_UNAVAILABLE"
     assert report.scope == "SCENARIO" and report.artifact_digests and report.trace_digests
 
 

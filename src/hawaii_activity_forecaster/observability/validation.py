@@ -129,6 +129,7 @@ def _validate(trace, state, result, budgets, bindings, evidence, safety):
     observed_findings, merged_findings, finding_sources = set(), set(), {}
     evidence_decisions, policies, assessments, validations = {}, {}, {}, {}
     retries, fallbacks, limits_seen = set(), set(), set()
+    fallback_gaps = {}
     normalized = received = False
     response_contracts = set()
     terminal = None
@@ -193,6 +194,8 @@ def _validate(trace, state, result, budgets, bindings, evidence, safety):
             target = retries if kind == "RETRY_INITIATED" else fallbacks
             _require(call not in target, "TRACE_DUPLICATE_RECOVERY")
             target.add(call)
+            if kind == "FALLBACK_INITIATED":
+                fallback_gaps.setdefault(d["gap_id"], []).append(call)
         elif kind == "EVIDENCE_RECEIVED":
             _require(set(d["finding_ids"]) <= observed_findings, "TRACE_FINDING_NOT_OBSERVED")
             merged_findings.update(d["finding_ids"])
@@ -236,6 +239,14 @@ def _validate(trace, state, result, budgets, bindings, evidence, safety):
                 _require(set(d["assessment_ids"]) <= set(assessments), "TRACE_RESULT_ASSESSMENT_INVALID")
                 validations[d["result_id"]] = d
         elif kind == "INVESTIGATION_LIMIT_REACHED":
+            if d["budget_kind"] == "fallback_per_evidence_gap":
+                calls = fallback_gaps.get(d["gap_id"], [])
+                _require(d["configured_limit"] == InvestigationLimits().max_fallback_attempts_per_evidence_gap
+                         and len(calls) == d["configured_limit"]
+                         and all(call in tool_done and tool_done[call]["execution_status"] in {"ERROR", "TIMEOUT", "PARTIAL"}
+                                 and d["category"] in tools[call]["requested_evidence"]
+                                 and d["candidate_beach_ids"] == tools[call]["candidate_beach_ids"]
+                                 for call in calls), "TRACE_RECOVERY_LIMIT_UNGROUNDED")
             limits_seen.add(d["budget_kind"])
         elif kind == "CONTRACT_VALIDATED" and d.get("contract") == "candidate_selection" and d["valid"]:
             _require(not agents, "TRACE_SELECTION_AFTER_DISPATCH")

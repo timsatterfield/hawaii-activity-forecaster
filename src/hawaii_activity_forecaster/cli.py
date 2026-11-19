@@ -33,10 +33,23 @@ def main(argv: Sequence[str] | None = None) -> int:
     evaluation = commands.add_parser("evaluate", help="preflight a scenario and report independent evaluation readiness")
     evaluation.add_argument("scenario_id")
     evaluation.add_argument("--fixtures", type=Path, required=True, metavar="PATH")
+    evaluation.add_argument("--component", action="store_true", help="execute an explicit authored synthetic runtime; full acceptance remains blocked")
+    evaluation.add_argument("--trace-directory", type=Path, metavar="PATH")
     arguments = parser.parse_args(argv)
     if arguments.command == "evaluate":
         from .harness.evaluation import evaluate_scenario
-        report = evaluate_scenario(arguments.fixtures, arguments.scenario_id)
+        if arguments.component:
+            from .harness.execution import execute_scenario
+            from .demo import authored_component_runner
+            from .config.settings import TraceSettings
+            case = {"SC-004": "advisory", "SC-010": "outage"}.get(arguments.scenario_id)
+            report = asyncio.run(execute_scenario(arguments.fixtures, arguments.scenario_id,
+                runtime=authored_component_runner(case) if case else None,
+                trace_settings=TraceSettings(directory=arguments.trace_directory) if arguments.trace_directory else None))
+        else:
+            if arguments.trace_directory is not None:
+                parser.error("--trace-directory requires --component")
+            report = evaluate_scenario(arguments.fixtures, arguments.scenario_id)
         print(json.dumps(asdict(report), indent=2))
         return 0 if report.outcome == "PASS" else 1 if report.outcome == "FAIL" else 2
     if arguments.command == "trace":

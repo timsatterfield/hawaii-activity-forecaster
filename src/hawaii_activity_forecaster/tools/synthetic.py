@@ -93,11 +93,18 @@ class SyntheticToolDispatcher:
         self._ran = set()
         self._closed = False
         self._gap_scopes: dict[str, RetrievalGap] = {}
+        self._unresolved_gap_ids: set[str] = set()
 
     @property
     def gap_scopes(self) -> tuple[RetrievalGap, ...]:
         with self._lock:
             return tuple(self._gap_scopes[key] for key in sorted(self._gap_scopes))
+
+    @property
+    def exhausted_recovery_gaps(self) -> tuple[RetrievalGap, ...]:
+        with self._lock:
+            return tuple(self._gap_scopes[key] for key in sorted(self._unresolved_gap_ids)
+                         if self.budgets.fallback_allowance_exhausted(key))
 
     def close(self):
         with self._lock:
@@ -307,6 +314,13 @@ class SyntheticToolDispatcher:
                 for finding in response.findings:
                     findings[finding.finding_id] = finding.model_copy(update={"validation_status": ValidationStatus.PENDING})
             await asyncio.sleep(0)
+        with self._lock:
+            relevant = {self._gap_id(parent, parent.candidate_beach_ids, r.evidence_type)
+                        for r in parent.requested_evidence}
+            relevant.update(self._gap_id(parent, a.candidate_beach_ids, category)
+                            for a in actions for category in a.requested_evidence)
+            self._unresolved_gap_ids.difference_update(relevant)
+            self._unresolved_gap_ids.update(gaps)
         explicit_gaps = [EvidenceGap(gap_id=key, gap_type="MISSING", related_finding_ids=[],
                                      description=f"Synthetic retrieval incomplete for {gaps[key][0]}; independent evidence validation is still required")
                          for key in sorted(gaps)]

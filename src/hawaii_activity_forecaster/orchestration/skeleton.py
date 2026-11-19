@@ -450,6 +450,16 @@ async def _run_graph(
                  reason="REQUEST_SCHEMA_INVALID")
             raise SpecialistContractError("REQUEST_SCHEMA_INVALID") from None
         if not requests:
+            if dispatcher is not None and evidence_report is not None and safety_report is not None:
+                needs = {a.beach_id for a in safety_report.assessments if a.eligibility == "NEEDS_INVESTIGATION"}
+                missing = {(c.beach_id, category.category) for c in evidence_report.candidates
+                           for category in c.categories if category.priority == "MANDATORY" and not category.covered}
+                for gap in dispatcher.exhausted_recovery_gaps:
+                    if any(beach in needs and (beach, gap.category) in missing for beach in gap.candidate_beach_ids):
+                        emit(TraceEventType.INVESTIGATION_LIMIT_REACHED, budget_kind="fallback_per_evidence_gap",
+                             configured_limit=InvestigationLimits().max_fallback_attempts_per_evidence_gap,
+                             gap_id=gap.gap_id, category=gap.category, candidate_beach_ids=list(gap.candidate_beach_ids),
+                             reason="FALLBACK_ALLOWANCE_EXHAUSTED_WITH_UNRESOLVED_EVIDENCE")
             reason = ("NO_FURTHER_ACTION" if result_generation else
                       "RESULT_VALIDATION_NOT_IMPLEMENTED" if safety_evaluation else "VALIDATORS_NOT_IMPLEMENTED")
             return {**visit("plan_evidence"), "route": "assess_stop" if raw_admission else "stop", "reason": reason}

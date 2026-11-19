@@ -271,6 +271,13 @@ def _evaluate_scenario(root, scenario_id, *, captures=None) -> EvaluationReport:
         loaded = load_scenario(root, scenario_id)
     except FixtureLoadError:
         return EvaluationReport(scenario_id, "SCENARIO", "FAIL", "FIXTURE_INVALID", (), {k: 0 for k in ("PASS", "FAIL", "BLOCKED", "NOT_RUN")})
+    return evaluate_loaded(loaded, captures=captures)
+
+
+def evaluate_loaded(loaded, *, captures=None) -> EvaluationReport:
+    """Evaluate the preflight snapshot; never reopen expected artifacts after dispatch."""
+    from dataclasses import replace
+    scenario_id = loaded.definition.scenario_id
     expected = loaded.evaluator.expected_results
     status = loaded.definition.test_status
     if status != "ACTIVE":
