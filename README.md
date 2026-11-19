@@ -21,12 +21,12 @@ information, and user preferences.
 
 ## Current Status
 
-M1.3-A — Specialist Contracts and Trusted Evidence Merge. The graph can delegate
-approved specialist requests to synthetic callbacks and validate/merge their
-responses, preserving provenance and isolating invalid or stale deliveries.
-SC-004/SC-010 remain execution-blocked. Synthetic environmental tools,
-evidence/safety/result evaluation, authoritative JSONL tracing and environmental
-recommendations remain for later increments. The LLM provider/model is undecided.
+M1.3-B — Scoped Synthetic Tool Dispatch. The graph can execute explicitly planned
+synthetic environmental calls with shared budget accounting, bounded retries and
+fallbacks, and observed template/runtime identity bindings. SC-004/SC-010 remain
+execution-blocked. Independent evidence/safety/result evaluation, authoritative
+JSONL tracing and environmental recommendations remain for later increments.
+The LLM provider/model is undecided.
 
 ## Documentation
 
@@ -63,7 +63,7 @@ Package areas under `src/hawaii_activity_forecaster/` are `config`, `models`,
 package contains the Pydantic contracts, `config` contains settings and loading,
 `fixtures` loads local synthetic inputs, and `harness` validates v2 scenario contracts;
 `orchestration` contains the synthetic graph, trusted budgets and specialist merge components;
-the agent/validation/tool areas remain placeholders.
+`tools` executes scoped synthetic calls; the agent/validation areas remain placeholders.
 
 See [M1.1-B model notes](docs/development/m1-1b-models.md) for schema coverage,
 serialization choices, validation boundaries, and unresolved specification details.
@@ -191,6 +191,24 @@ uv run --locked pytest tests/test_specialist_exchange.py tests/test_specialist_g
 See the [M1.3-A notes](docs/development/m1-3a-specialist-contracts-and-merge.md) for
 the API, merge rules, deadline behavior and remaining execution boundaries.
 No environmental tool calls, model calls or recommendations execute in this chunk.
+
+### Scoped synthetic tool dispatch — M1.3-B
+
+`orchestration.run_synthetic_tool_graph()` combines trusted specialist and tool
+plans with the approved driver projection. `tools.ToolAction` explicitly scopes
+each source call and any retry/fallback. The script supplies declared behavior
+without selecting actions. Actual dispatches consume the shared tool budget;
+duplicate delivery does not consume another call. Runtime bindings preserve
+source provenance and evidence timestamps, and findings remain PENDING.
+
+```bash
+uv run --locked pytest tests/test_synthetic_tools.py tests/test_synthetic_tool_graph.py
+```
+
+See the [M1.3-B notes](docs/development/m1-3b-synthetic-tool-dispatch.md) for API
+ownership, virtual timeout semantics, recovery permissions, counters and tracing
+boundaries. The SC-010 component test exercises outage/recovery dispatch only;
+full scenario acceptance and environmental recommendations remain unavailable.
 
 ## Specification notes
 
