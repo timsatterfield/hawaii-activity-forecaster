@@ -15,6 +15,7 @@ from hawaii_activity_forecaster.models.enums import (
 )
 from hawaii_activity_forecaster.models.permissions import OCEAN_SOURCES, WEATHER_SOURCES
 from hawaii_activity_forecaster.tools.synthetic import RetrievalGap
+from hawaii_activity_forecaster.catalog import catalog_provenance_reasons
 
 
 class EvidenceValidationError(ValueError):
@@ -70,14 +71,6 @@ _CHECKS = {
     Category.OFFICIAL_ADVISORIES: "OFFICIAL_ADVISORY_CHECK_COMPLETE",
     Category.WATER_QUALITY_ADVISORY_CHECK: "WATER_CONTACT_ADVISORY_CHECK_COMPLETE",
 }
-# Verify provenance of existing required geographic/activity fields. This does
-# not choose the still-open minimum optional attributes for beach activation.
-_CATALOG_CORE = {"beach_id", "name", "region", "locality", "latitude", "longitude", "supported_activities", "lifeguard_status"}
-_CATALOG_MATERIAL = {
-    "shoreline_orientation", "coastline_exposure", "shore_type", "entry_characteristics",
-    "reef_presence", "known_hazards", "activity_notes", "access_notes",
-    "location_notes", "reef_notes", "lifeguard_notes", "aliases",
-}
 
 
 def _worst(statuses):
@@ -85,22 +78,9 @@ def _worst(statuses):
 
 
 def _catalog_reasons(beach, activity, reference):
-    if beach is None:
-        return ("CATALOG_RECORD_MISSING",)
-    reasons = []
-    local_date = reference.astimezone(timezone(timedelta(hours=-10))).date()
-    if beach.catalog_status != "VERIFIED":
-        reasons.append("CATALOG_NOT_VERIFIED")
-    if activity not in beach.supported_activities:
+    reasons = list(catalog_provenance_reasons(beach, reference))
+    if beach is not None and activity not in beach.supported_activities:
         reasons.append("ACTIVITY_UNSUPPORTED")
-    if beach.last_verified > local_date:
-        reasons.append("CATALOG_VERIFICATION_IN_FUTURE")
-    required = _CATALOG_CORE | {field for field in _CATALOG_MATERIAL
-                                if getattr(beach, field) not in (None, [], "")}
-    supported = {field for source in beach.sources if source.accessed_at <= local_date
-                 for field in source.supports_fields if source.url.strip()}
-    if not required <= supported:
-        reasons.append("CATALOG_ATTRIBUTE_PROVENANCE_MISSING")
     return tuple(sorted(reasons))
 
 
