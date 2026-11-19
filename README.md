@@ -21,11 +21,11 @@ information, and user preferences.
 
 ## Current Status
 
-M1.5-A — Candidate Comparison and Result Validation. The synthetic component graph
-can compare eligible assessments and return validated recommendation, abstention
-or technical-error results with matching terminal states. Full SC-004/SC-010
-acceptance remains BLOCKED. CLI workflows, authoritative JSONL tracing and session
-handling remain for later increments. The LLM provider/model is undecided.
+M1.5-B — CLI Presentation of Validated Results. Explicit fictional component demos
+render validated recommendations, explained abstention or sanitized technical errors.
+Full SC-004/SC-010 acceptance remains BLOCKED. Natural-language request handling,
+post-terminal follow-ups and authoritative JSONL tracing remain for later increments.
+The LLM provider/model is undecided.
 
 ## Documentation
 
@@ -43,6 +43,8 @@ uv sync --locked
 uv run --locked hafi
 uv run --locked hafi --version
 uv run --locked python -m hawaii_activity_forecaster
+uv run --locked hafi demo advisory --fixtures fixtures/scenario-pack-v1
+uv run --locked hafi demo outage --fixtures fixtures/scenario-pack-v1
 uv run --locked pytest
 ```
 
@@ -51,8 +53,11 @@ LangGraph), and the pytest development group into `.venv`. If Python is not
 available locally, uv can install it with `uv python install 3.12`; select it with
 `uv sync --locked --python 3.12`.
 
-The CLI only displays application/version information. No credentials, model
-provider, environmental data, or tracing service are needed for startup or tests.
+With no arguments the CLI displays application/version information. The `demo`
+command runs a fixed synthetic component example and requires an explicit fixture
+directory. It performs no natural-language request interpretation or full scenario
+acceptance. All locations, conditions and results are fictional. No credentials,
+model provider, live environmental data or tracing service are needed.
 Local JSONL is reserved for future authoritative investigation tracing.
 LangSmith is a transitive dependency of the orchestration stack; this bootstrap
 does not enable tracing, and its optional pytest plugin is disabled.
@@ -262,7 +267,35 @@ omits forced numeric ranks and selects at most three eligible locations. Handled
 outages may produce explained abstention; application failures remain ERROR outcomes.
 See the [M1.5-A notes](docs/development/m1-5a-comparison-and-results.md) for context
 guards, disclosures, outcome routing, trace-failure suppression and deferred work.
-Outputs are explicitly synthetic; the CLI remains information/version-only.
+Outputs are explicitly synthetic; M1.5-B below adds CLI presentation.
+
+### CLI presentation of validated results — M1.5-B
+
+From the repository root:
+
+```bash
+uv run --locked hafi demo advisory --fixtures fixtures/scenario-pack-v1
+uv run --locked hafi demo outage --fixtures fixtures/scenario-pack-v1
+uv run --locked pytest tests/test_presentation.py tests/test_cli_demo.py tests/test_cli_startup.py
+```
+
+The advisory example shows only eligible fictional Beach B; the outage example
+explains insufficient evidence. The module entry point supports the same commands
+(`uv run --locked python -m hawaii_activity_forecaster demo ...`). Outside the
+repository, pass an absolute fixture path. Fixture files are not bundled in the wheel.
+
+The renderer checks the committed result and its retained validation context before
+writing output. It preserves evidence coverage, units, timestamps, source links,
+required disclosures and limitations. Rejected output never appears as partial
+recommendations. Exit codes are `0` for recommendations or explained abstention,
+`1` for technical failures, and `2` for invalid arguments or fixture preflight errors.
+Successful results use stdout; errors use stderr.
+
+These are component demonstrations with memory event recording. They neither
+provide authoritative JSONL traces nor run independent scenario assertions, and
+they refuse BLOCKED or DISABLED definitions. Scenario acceptance readiness remains
+BLOCKED. See the [M1.5-B notes](docs/development/m1-5b-cli-presentation.md) for the
+presentation boundary and remaining request/session work.
 
 ## Specification notes
 

@@ -31,7 +31,7 @@ from hawaii_activity_forecaster.harness.policy import PolicyConfiguration
 from hawaii_activity_forecaster.validation import EvidenceValidationReport, validate_evidence
 from hawaii_activity_forecaster.validation import SafetyEvaluationReport, evaluate_safety as evaluate_safety_policies
 from hawaii_activity_forecaster.recommendations import (
-    CandidateComparison, ResultContext, ResultValidationError, build_error_result, build_result,
+    CandidateComparison, ResultContext, ResultValidationError, ResultValidationSnapshot, build_error_result, build_result,
     compare_candidates, validate_error_result, validate_result,
 )
 
@@ -65,6 +65,7 @@ class SkeletonReport:
     safety_report: SafetyEvaluationReport | None = None
     comparison: CandidateComparison | None = None
     result: RecommendationResult | None = None
+    result_validation: ResultValidationSnapshot | None = None
     # Without result_generation, state.result_id identifies only an operational stop.
 
 
@@ -171,6 +172,8 @@ async def _run_graph(
     proposed_result = None
     validated_result = None
     published_result = None
+    result_validation = None
+    published_validation = None
     latest_contract_failure = False
     trusted_error_code = None
     if evidence_policy is not None:
@@ -415,7 +418,7 @@ async def _run_graph(
         return {**visit("evaluate_safety"), "investigation": current}
 
     def finalize(state: _GraphState):
-        nonlocal current, published_result
+        nonlocal current, published_result, published_validation
         budget.close()
         if dispatcher is not None:
             dispatcher.close()
@@ -435,6 +438,7 @@ async def _run_graph(
             emit(event, result_id=validated_result.result_id, outcome=validated_result.outcome,
                  stop_reason=state["reason"], error_code=validated_result.error_code)
             current, published_result = proposed_state, validated_result
+            published_validation = result_validation
             return {**visit("finalize_investigation"), "investigation": current}
         current = _updated(state["investigation"], status=InvestigationStatus.FAILED, outcome=Outcome.ERROR,
                            result_id=str(uuid4()), completion_reason=state["reason"])
@@ -463,7 +467,7 @@ async def _run_graph(
         return visit("construct_result")
 
     def validate_output(state: _GraphState):
-        nonlocal validated_result
+        nonlocal validated_result, result_validation
         if trusted_error_code:
             candidate = validate_error_result(proposed_result, state["investigation"], now=datetime.now(timezone.utc),
                                                error_code=trusted_error_code)
@@ -472,6 +476,9 @@ async def _run_graph(
         emit(TraceEventType.RESULT_VALIDATED, result_id=candidate.result_id, outcome=candidate.outcome,
              assessment_ids=[r.assessment_id for r in candidate.recommendations])
         validated_result = candidate
+        result_validation = ResultValidationSnapshot(
+            InvestigationState.model_validate(state["investigation"].model_dump()), state["reason"], trusted_error_code, request_step,
+        )
         return visit("validate_result")
 
     graph = StateGraph(_GraphState)
@@ -537,13 +544,21 @@ async def _run_graph(
         if safety_evaluation:
             current = _updated(current, assessments=[])
             safety_report = None
+        counts = budget.snapshot()
+        current = _updated(current, tool_call_count=counts.tool_calls, retry_count=counts.retries,
+                           fallback_attempted=bool(counts.fallbacks))
         published_result = None
+        published_validation = None
         candidate_error = None
+        candidate_validation = None
         try:
             if result_generation and trace_writable and current.activity is not None and current.target_time_window is not None:
                 code = "RESULT_VALIDATION_FAILED" if isinstance(error, ResultValidationError) else "INVESTIGATION_EXECUTION_FAILED"
                 candidate_error = build_error_result(current, generated_at=datetime.now(timezone.utc), error_code=code)
                 candidate_error = validate_error_result(candidate_error, current, now=datetime.now(timezone.utc), error_code=code)
+                candidate_validation = ResultValidationSnapshot(
+                    InvestigationState.model_validate(current.model_dump()), None, code, request_step,
+                )
                 emit(TraceEventType.RESULT_VALIDATED, result_id=candidate_error.result_id, outcome=candidate_error.outcome,
                      assessment_ids=[])
             failed_state = _updated(current, status=InvestigationStatus.FAILED, outcome=Outcome.ERROR,
@@ -552,6 +567,7 @@ async def _run_graph(
                 emit(TraceEventType.INVESTIGATION_FAILED, reason=reason, result_id=failed_state.result_id,
                      error_code=candidate_error.error_code if candidate_error else None)
             current, published_result = failed_state, candidate_error
+            published_validation = candidate_validation
         except _TraceFailure:
             trace_writable = False
             current = _updated(current, status=InvestigationStatus.FAILED, outcome=Outcome.ERROR,
@@ -578,7 +594,7 @@ async def _run_graph(
                        fallback_attempted=bool(stats.fallbacks))
     return SkeletonReport(current, stats, tuple(visited), trace_writable,
                           dispatcher.driver.bindings if dispatcher is not None else (), evidence_report, safety_report,
-                          comparison, published_result)
+                          comparison, published_result, published_validation)
 
 
 async def run_synthetic_tool_graph(

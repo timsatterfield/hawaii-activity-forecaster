@@ -46,6 +46,19 @@ class ResultContext:
 
 
 @dataclass(frozen=True)
+class ResultValidationSnapshot:
+    """Read-only preterminal basis retained for later presentation checks.
+
+    This is runtime metadata, not a persisted schema or permission to resume.
+    """
+
+    state: InvestigationState
+    stop_reason: str | None
+    error_code: str | None
+    request_step: int = 1
+
+
+@dataclass(frozen=True)
 class CandidateComparison:
     investigation_id: str
     request_revision: int

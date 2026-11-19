@@ -44,5 +44,5 @@ def test_cli_rejects_investigation_request(tmp_path: Path) -> None:
         cwd=tmp_path, capture_output=True, text=True, timeout=10, check=False,
     )
     assert result.returncode == 2
-    assert "unrecognized arguments" in result.stderr
+    assert "invalid choice" in result.stderr
     assert result.stdout == ""
