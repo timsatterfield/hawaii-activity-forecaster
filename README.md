@@ -21,11 +21,12 @@ information, and user preferences.
 
 ## Current Status
 
-M1.5-B — CLI Presentation of Validated Results. Explicit fictional component demos
-render validated recommendations, explained abstention or sanitized technical errors.
-Full SC-004/SC-010 acceptance remains BLOCKED. Natural-language request handling,
-post-terminal follow-ups and authoritative JSONL tracing remain for later increments.
-The LLM provider/model is undecided.
+M1.5-C — Session Lifecycle and Post-Terminal Follow-ups. An in-memory session
+controller preserves normalized request context across fresh investigations with
+incrementing revisions, independent budgets and immutable terminal history. The CLI
+includes an explicit fictional two-request session demo. Natural-language request
+interpretation and authoritative JSONL tracing remain deferred; full scenario
+acceptance stays BLOCKED. The LLM provider/model is undecided.
 
 ## Documentation
 
@@ -45,6 +46,7 @@ uv run --locked hafi --version
 uv run --locked python -m hawaii_activity_forecaster
 uv run --locked hafi demo advisory --fixtures fixtures/scenario-pack-v1
 uv run --locked hafi demo outage --fixtures fixtures/scenario-pack-v1
+uv run --locked hafi demo session --fixtures fixtures/scenario-pack-v1
 uv run --locked pytest
 ```
 
@@ -66,7 +68,7 @@ Package areas under `src/hawaii_activity_forecaster/` are `config`, `models`,
 `fixtures`, `harness`, `agents`, `orchestration`, `validation`, `tools`, and `recommendations`. The `models`
 package contains the Pydantic contracts, `config` contains settings and loading,
 `fixtures` loads local synthetic inputs, and `harness` validates v2 scenario contracts;
-`orchestration` contains the synthetic graph, trusted budgets and specialist merge components;
+`orchestration` contains the synthetic graph, trusted budgets, session admission and specialist merge components;
 `tools` executes scoped synthetic calls, and `validation` evaluates evidence,
 synthetic safety policies and Candidate Assessments. `recommendations` compares
 eligible candidates and validates controlled synthetic results. The agent area remains a placeholder.
@@ -296,6 +298,35 @@ provide authoritative JSONL traces nor run independent scenario assertions, and
 they refuse BLOCKED or DISABLED definitions. Scenario acceptance readiness remains
 BLOCKED. See the [M1.5-B notes](docs/development/m1-5b-cli-presentation.md) for the
 presentation boundary and remaining request/session work.
+
+### Session lifecycle and post-terminal follow-ups — M1.5-C
+
+```bash
+uv run --locked hafi demo session --fixtures fixtures/scenario-pack-v1
+uv run --locked pytest tests/test_session_lifecycle.py tests/test_cli_demo.py
+```
+
+The session demo executes two authored normalized requests: an initial fictional
+snorkeling request near Kihei, then a preference change to Wailea. It preserves the
+activity, date/window, experience and calm-water preference. Each investigation
+retrieves its own synthetic evidence and produces separately validated output.
+This demonstrates the session component; it does not execute SC-012 acceptance or
+interpret arbitrary conversational text.
+
+`orchestration.SessionManager` admits a caller-normalized initial request with
+declared user-provided fields. Its `follow_up()` accepts explicit replacements of
+existing normalized fields; omitted values remain intact. The async runner receives
+immutable `SessionRequest` metadata and a detached request, then calls the graph
+with `session_request=admission`. Candidate selection remains the runner's responsibility.
+Session/revision/prior-investigation correlations flow into graph events and results.
+
+Follow-ups require a terminal investigation. Ambiguous inputs retain context and
+request clarification without tool calls or recommendations; resumption of that
+nonterminal investigation remains deferred. Prior findings/assessments are not
+imported into new execution. Cross-investigation evidence-reference storage,
+natural-language normalization and authoritative tracing remain separate work.
+See the [M1.5-C notes](docs/development/m1-5c-session-lifecycle.md) for the API,
+admission guards, origin declarations, acceptance coverage and open decisions.
 
 ## Specification notes
 

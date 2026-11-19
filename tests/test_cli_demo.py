@@ -20,7 +20,7 @@ FIXTURES = Path(__file__).resolve().parents[1] / "fixtures/scenario-pack-v1"
 @pytest.mark.parametrize("command", [
     [sys.executable, "-m", "hawaii_activity_forecaster"], [str(Path(sys.executable).parent / "hafi")],
 ])
-@pytest.mark.parametrize("case", ["advisory", "outage"])
+@pytest.mark.parametrize("case", ["advisory", "outage", "session"])
 def test_installed_demos_work_outside_repository(command, case, tmp_path):
     result = subprocess.run([*command, "demo", case, "--fixtures", str(FIXTURES)], cwd=tmp_path,
                             capture_output=True, text=True, timeout=15, check=False)
@@ -28,10 +28,15 @@ def test_installed_demos_work_outside_repository(command, case, tmp_path):
     assert result.stderr == ""
     assert "Component demonstration only; full scenario acceptance is not enabled." in result.stdout
     assert "SYNTHETIC TEST OUTPUT" in result.stdout and "Activity: Snorkeling" in result.stdout
-    if case == "advisory":
+    if case in {"advisory", "session"}:
         assert "- Fictional Test Beach B (SYNTHETIC)" in result.stdout
         assert "National Weather Service marine/surf" in result.stdout
         assert "https://example.invalid/" in result.stdout
+        if case == "session":
+            assert "Request revision 1 — initial request" in result.stdout
+            assert "Request revision 2 — post-terminal follow-up" in result.stdout
+            assert result.stdout.count("SYNTHETIC TEST OUTPUT") == 2
+            assert "Outside the preferred area" in result.stdout and "Matches the requested catalog area" in result.stdout
     else:
         assert "No recommendation\n" in result.stdout and "Technical error" not in result.stdout
 
@@ -52,15 +57,17 @@ def test_usage_errors_do_not_start_work(arguments, capsys, monkeypatch):
     assert captured.out == "" and "usage:" in captured.err
 
 
-def test_missing_fixture_package_is_a_sanitized_preflight_error(tmp_path, capsys):
-    assert cli.main(["demo", "advisory", "--fixtures", str(tmp_path / "private-location")]) == 2
+@pytest.mark.parametrize("case", ["advisory", "session"])
+def test_missing_fixture_package_is_a_sanitized_preflight_error(case, tmp_path, capsys):
+    assert cli.main(["demo", case, "--fixtures", str(tmp_path / "private-location")]) == 2
     captured = capsys.readouterr()
     assert captured.out == "" and "Cannot load the synthetic fixture package" in captured.err
     assert "private-location" not in captured.err and "Traceback" not in captured.err
 
 
 @pytest.mark.parametrize("status", ["BLOCKED", "DISABLED"])
-def test_nonactive_definitions_do_not_execute(status, tmp_path, monkeypatch, capsys):
+@pytest.mark.parametrize("case", ["advisory", "session"])
+def test_nonactive_definitions_do_not_execute(status, case, tmp_path, monkeypatch, capsys):
     import hawaii_activity_forecaster.demo as demo
     root = tmp_path / "pack"
     shutil.copytree(FIXTURES, root)
@@ -73,7 +80,7 @@ def test_nonactive_definitions_do_not_execute(status, tmp_path, monkeypatch, cap
     async def forbidden(*args, **kwargs):
         pytest.fail("A blocked/disabled definition executed")
     monkeypatch.setattr(demo, "run_synthetic_tool_graph", forbidden)
-    assert cli.main(["demo", "advisory", "--fixtures", str(root)]) == 2
+    assert cli.main(["demo", case, "--fixtures", str(root)]) == 2
     captured = capsys.readouterr()
     assert captured.out == "" and status in captured.err and "not executed" in captured.err
 
@@ -125,3 +132,35 @@ def test_validated_error_has_distinct_exit_status_and_sanitized_stderr(monkeypat
     assert "An application execution error prevented a validated result." in captured.err
     assert "SYNTHETIC TEST OUTPUT" in captured.err and "SECRET" not in captured.err
     assert "No recommendation\n" not in captured.err
+
+
+@pytest.mark.parametrize("failure", ["second-result", "exception", "no-results"])
+def test_session_failure_never_emits_partial_results_or_private_diagnostics(failure, monkeypatch, capsys):
+    import hawaii_activity_forecaster.demo as demo
+    output = asyncio.run(demo.run_session_demo(FIXTURES))
+    if failure == "second-result":
+        output.investigations[1].report.result.recommendations[0].source_references.append("SECRET invented source")
+    elif failure == "no-results":
+        output = demo.SessionDemoOutput(())
+    async def substitute(*args, **kwargs):
+        if failure == "exception":
+            from hawaii_activity_forecaster.orchestration import SessionError
+            raise SessionError("SECRET session exception")
+        return output
+    monkeypatch.setattr(demo, "run_session_demo", substitute)
+    assert cli.main(["demo", "session", "--fixtures", str(FIXTURES)]) == 1
+    captured = capsys.readouterr()
+    assert captured.out == "" and captured.err.startswith("Technical error:")
+    assert "SECRET" not in captured.err and "Fictional Test Beach B" not in captured.err
+
+
+def test_session_technical_outcome_uses_sanitized_stderr_and_failure_exit(monkeypatch, capsys):
+    import hawaii_activity_forecaster.orchestration.skeleton as graph
+    def fail(context):
+        raise RuntimeError("SECRET application failure")
+    monkeypatch.setattr(graph, "compare_candidates", fail)
+    assert cli.main(["demo", "session", "--fixtures", str(FIXTURES)]) == 1
+    captured = capsys.readouterr()
+    assert captured.out == "" and captured.err.count("Technical error\n") == 2
+    assert "Request revision 2 — post-terminal follow-up" in captured.err
+    assert "SECRET" not in captured.err and "No recommendation\n" not in captured.err

@@ -44,6 +44,7 @@ class DeliveryRejection:
     attempt_number: int
     response_id: str | None
     reason: str
+    response_correlation: tuple[tuple[str, str | int], ...] = ()
 
 
 @dataclass(frozen=True)
@@ -52,6 +53,18 @@ class MergeReport:
     accepted_response_ids: tuple[str, ...]
     duplicate_response_ids: tuple[str, ...]
     rejections: tuple[DeliveryRejection, ...]
+
+
+def _rejection(delivery: SpecialistDelivery, reason: str, response=None) -> DeliveryRejection:
+    """Keep schema-valid reported identities, never raw rejected payloads/errors."""
+    if response is None:
+        try:
+            response = SpecialistInvestigationResponse.model_validate(_data(delivery.response))
+        except (ValidationError, TypeError, ValueError):
+            return DeliveryRejection(delivery.request_id, delivery.attempt_number, None, reason)
+    fields = {"investigation_id", "request_revision", "request_id", "agent_type", "attempt_number"}
+    correlation = tuple(sorted(response.model_dump(mode="json", include=fields).items()))
+    return DeliveryRejection(delivery.request_id, delivery.attempt_number, response.response_id, reason, correlation)
 
 
 def _data(value):
@@ -236,7 +249,7 @@ class SpecialistExchange:
             self._active(state, now)
         except SpecialistContractError as error:
             return MergeReport(state, (), (), tuple(
-                DeliveryRejection(d.request_id, d.attempt_number, None, str(error)) for d in deliveries
+                _rejection(d, str(error)) for d in deliveries
             ))
         candidates = []
         for delivery in deliveries:
@@ -244,7 +257,7 @@ class SpecialistExchange:
                 response, request = self._validate(state, delivery, now)
                 candidates.append((delivery, response, request))
             except SpecialistContractError as error:
-                rejections.append(DeliveryRejection(delivery.request_id, delivery.attempt_number, None, str(error)))
+                rejections.append(_rejection(delivery, str(error)))
         # Compare to both prior state and prior deliveries, including findings that
         # independent validation might since have marked ACCEPTED/LIMITED/REJECTED.
         prior = dict(self._artifacts)
@@ -271,8 +284,7 @@ class SpecialistExchange:
             material = self._artifacts_for(response, request)
             keys = {("response", response.response_id)} | {key for key, _ in material}
             if keys & collisions:
-                rejections.append(DeliveryRejection(delivery.request_id, delivery.attempt_number,
-                                                     response.response_id, "IDENTIFIER_CONTENT_CONFLICT"))
+                rejections.append(_rejection(delivery, "IDENTIFIER_CONTENT_CONFLICT", response))
                 continue
             if response.response_id in responses:
                 duplicates.append(response.response_id)
