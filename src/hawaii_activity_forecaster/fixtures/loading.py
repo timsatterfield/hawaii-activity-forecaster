@@ -9,7 +9,10 @@ from typing import TypeVar
 from pydantic import BaseModel, ValidationError
 
 from hawaii_activity_forecaster.models import BeachCatalog, EnvironmentalToolResponse
-from hawaii_activity_forecaster.models.enums import AgentType, SourceId
+from hawaii_activity_forecaster.models.enums import AgentType
+from hawaii_activity_forecaster.models.permissions import (
+    OCEAN_SOURCES as _OCEAN_SOURCES, WEATHER_SOURCES as _WEATHER_SOURCES,
+)
 
 from .manifest import FixtureManifest
 
@@ -36,12 +39,6 @@ _SUPPORTED_VERSIONS = {
     "schema_version": "0.1",  # 03-data-schemas.md
     "policy_version": "0.2",  # 05-safety-policies.md, reference only
 }
-_WEATHER_SOURCES = frozenset({SourceId.NWS_WEATHER, SourceId.NWS_ALERTS,
-                              SourceId.HWT_WIND, SourceId.HWT_NARRATIVE})
-_OCEAN_SOURCES = frozenset({
-    SourceId.NWS_MARINE, SourceId.HI_DOH_CWB, SourceId.NDBC,
-    SourceId.SNORKEL_STORE, SourceId.HWT_VISIBILITY, SourceId.HWT_SURF,
-})
 _MODEL = TypeVar("_MODEL", bound=BaseModel)
 
 

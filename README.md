@@ -21,12 +21,12 @@ information, and user preferences.
 
 ## Current Status
 
-M1.2-A — LangGraph Skeleton and Trusted Budgets. The package includes synthetic
-graph traversal and atomic invocation reservations, alongside the contracts,
-configuration and authored SC-004/SC-010 fixtures. Both scenarios remain
-execution-blocked. Real specialist integration, evidence/safety/result evaluation,
-authoritative JSONL tracing and environmental recommendations remain for later
-increments. The LLM provider/model is undecided.
+M1.3-A — Specialist Contracts and Trusted Evidence Merge. The graph can delegate
+approved specialist requests to synthetic callbacks and validate/merge their
+responses, preserving provenance and isolating invalid or stale deliveries.
+SC-004/SC-010 remain execution-blocked. Synthetic environmental tools,
+evidence/safety/result evaluation, authoritative JSONL tracing and environmental
+recommendations remain for later increments. The LLM provider/model is undecided.
 
 ## Documentation
 
@@ -62,7 +62,7 @@ Package areas under `src/hawaii_activity_forecaster/` are `config`, `models`,
 `fixtures`, `harness`, `agents`, `orchestration`, `validation`, and `tools`. The `models`
 package contains the Pydantic contracts, `config` contains settings and loading,
 `fixtures` loads local synthetic inputs, and `harness` validates v2 scenario contracts;
-`orchestration` contains the synthetic graph and trusted budget components;
+`orchestration` contains the synthetic graph, trusted budgets and specialist merge components;
 the agent/validation/tool areas remain placeholders.
 
 See [M1.1-B model notes](docs/development/m1-1b-models.md) for schema coverage,
@@ -175,6 +175,22 @@ uv run --locked pytest tests/test_orchestration_budgets.py tests/test_orchestrat
 See the [M1.2-A notes](docs/development/m1-2a-graph-and-budgets.md) for the graph,
 failure semantics, tracing boundary and deferred runtime integration. The CLI
 continues to display application information only.
+
+### Specialist contracts and trusted merge — M1.3-A
+
+`orchestration.run_specialist_graph()` accepts a trusted synthetic planner,
+specialist callback and event recorder. Requests use the approved specialist
+contracts; the trusted join validates correlation and scope, deduplicates stable
+IDs, preserves independent findings and explicit gaps/errors, and isolates failed
+branches. New findings remain PENDING for independent evidence validation.
+
+```bash
+uv run --locked pytest tests/test_specialist_exchange.py tests/test_specialist_graph.py
+```
+
+See the [M1.3-A notes](docs/development/m1-3a-specialist-contracts-and-merge.md) for
+the API, merge rules, deadline behavior and remaining execution boundaries.
+No environmental tool calls, model calls or recommendations execute in this chunk.
 
 ## Specification notes
 
