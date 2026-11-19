@@ -24,6 +24,9 @@ from hawaii_activity_forecaster.models.enums import (
 )
 from .budgets import BudgetManager, BudgetSnapshot
 from .specialists import SpecialistContractError, SpecialistDelivery, SpecialistExchange
+from hawaii_activity_forecaster.harness.contracts import DriverInputs
+from hawaii_activity_forecaster.harness.synthetic import DispatchBinding, SyntheticDriver
+from hawaii_activity_forecaster.tools.synthetic import SyntheticToolDispatcher, ToolAction
 
 
 @dataclass(frozen=True)
@@ -50,6 +53,7 @@ class SkeletonReport:
     budgets: BudgetSnapshot
     visited_nodes: tuple[str, ...]
     trace_writable: bool
+    tool_bindings: tuple[DispatchBinding, ...] = ()
     # state.result_id identifies an operational stop, not a validated public result.
 
 
@@ -133,7 +137,7 @@ async def run_specialist_graph(
 
 async def _run_graph(
     request, *, candidate_beach_ids, record_event, session_id=None, branch=None,
-    catalog=None, plan=None, specialist_callback=None,
+    catalog=None, plan=None, specialist_callback=None, driver_inputs=None, tool_plan=None, request_step=1,
 ) -> SkeletonReport:
     request = NormalizedRequest.model_validate(request.model_dump())
     candidates = tuple(candidate_beach_ids)
@@ -145,6 +149,7 @@ async def _run_graph(
     trace_id = str(uuid4())
     trace_failed = False
     exchange = SpecialistExchange(initial, catalog) if catalog is not None else None
+    dispatcher = None
 
     def emit(event_type: TraceEventType, **details):
         nonlocal sequence, trace_failed
@@ -169,6 +174,15 @@ async def _run_graph(
     def visit(name: str):
         visited.append(name)
         return {"visited": (name,)}
+
+    if driver_inputs is not None:
+        driver = SyntheticDriver(driver_inputs)
+        reference = driver.reference_time(request_step)
+        dispatcher = SyntheticToolDispatcher(
+            driver, budget, investigation_id=initial.investigation_id, request_revision=initial.request_revision,
+            reference_time=reference, emit=emit, request_step=request_step,
+        )
+        specialist_callback = dispatcher.run
 
     def initialize(state: _GraphState):
         emit(TraceEventType.INVESTIGATION_STARTED, component_probe=True)
@@ -210,6 +224,10 @@ async def _run_graph(
             return {**visit("plan_evidence"), "route": "stop", "reason": "VALIDATORS_NOT_IMPLEMENTED"}
         try:
             proposed = exchange.authorize(state["investigation"], requests, now=datetime.now(timezone.utc))
+            if dispatcher is not None:
+                for scoped in requests:
+                    detached = SpecialistInvestigationRequest.model_validate(scoped.model_dump())
+                    dispatcher.register(scoped, tuple(tool_plan(detached)))
         except SpecialistContractError as error:
             emit(TraceEventType.CONTRACT_VALIDATED, contract="specialist_request", valid=False,
                  reason=str(error), request_ids=[r.request_id for r in requests])
@@ -289,7 +307,9 @@ async def _run_graph(
         if report.accepted_response_ids:
             emit(TraceEventType.EVIDENCE_RECEIVED, response_ids=list(report.accepted_response_ids),
                  validation_status="PENDING")
-        current = report.state
+        stats = budget.snapshot()
+        current = _updated(report.state, tool_call_count=stats.tool_calls, retry_count=stats.retries,
+                           fallback_attempted=bool(stats.fallbacks))
         return {**visit("validate_and_merge_specialist_responses"), "investigation": current}
 
     def decide(state: _GraphState):
@@ -307,6 +327,8 @@ async def _run_graph(
     def finalize(state: _GraphState):
         nonlocal current
         budget.close()
+        if dispatcher is not None:
+            dispatcher.close()
         if exchange is not None:
             exchange.close()
         current = _updated(state["investigation"], status=InvestigationStatus.FAILED, outcome=Outcome.ERROR,
@@ -364,6 +386,32 @@ async def _run_graph(
                 current = _updated(current, completion_reason="TRACE_WRITE_FAILED")
     finally:
         budget.close()
+        if dispatcher is not None:
+            dispatcher.close()
         if exchange is not None:
             exchange.close()
-    return SkeletonReport(current, budget.snapshot(), tuple(visited), trace_writable)
+    stats = budget.snapshot()
+    current = _updated(current, tool_call_count=stats.tool_calls, retry_count=stats.retries,
+                       fallback_attempted=bool(stats.fallbacks))
+    return SkeletonReport(current, stats, tuple(visited), trace_writable,
+                          dispatcher.driver.bindings if dispatcher is not None else ())
+
+
+async def run_synthetic_tool_graph(
+    request: NormalizedRequest, *, catalog: BeachCatalog, candidate_beach_ids: tuple[str, ...],
+    plan: SpecialistPlanner, tool_plan: Callable[[SpecialistInvestigationRequest], tuple[ToolAction, ...]],
+    driver_inputs: DriverInputs, record_event: EventRecorder, session_id: str | None = None,
+    request_step: int = 1,
+) -> SkeletonReport:
+    """Execute explicitly planned synthetic retrievals; never an acceptance run.
+
+    Driver inputs stay in the trusted layer; planners receive no script/oracle.
+    Evidence, safety, result evaluation and authoritative JSONL remain deferred.
+    """
+    if type(request_step) is not int or not 1 <= request_step <= len(driver_inputs.script.requests):
+        raise ValueError("Invalid synthetic request step")
+    return await _run_graph(
+        request, candidate_beach_ids=candidate_beach_ids, catalog=catalog, plan=plan,
+        tool_plan=tool_plan, driver_inputs=driver_inputs, request_step=request_step,
+        record_event=record_event, session_id=session_id,
+    )
