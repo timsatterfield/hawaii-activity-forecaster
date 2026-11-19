@@ -21,12 +21,12 @@ information, and user preferences.
 
 ## Current Status
 
-M1.3-B — Scoped Synthetic Tool Dispatch. The graph can execute explicitly planned
-synthetic environmental calls with shared budget accounting, bounded retries and
-fallbacks, and observed template/runtime identity bindings. SC-004/SC-010 remain
-execution-blocked. Independent evidence/safety/result evaluation, authoritative
-JSONL tracing and environmental recommendations remain for later increments.
-The LLM provider/model is undecided.
+M1.4-A — Deterministic Evidence Validation. The synthetic graph can independently
+validate received findings and account for required evidence categories using
+approved mappings and the fixed synthetic clock. SC-004/SC-010 remain execution-
+blocked. Safety-policy evaluation, eligibility, results, authoritative JSONL tracing
+and environmental recommendations remain for later increments. The LLM provider/
+model is undecided.
 
 ## Documentation
 
@@ -63,7 +63,8 @@ Package areas under `src/hawaii_activity_forecaster/` are `config`, `models`,
 package contains the Pydantic contracts, `config` contains settings and loading,
 `fixtures` loads local synthetic inputs, and `harness` validates v2 scenario contracts;
 `orchestration` contains the synthetic graph, trusted budgets and specialist merge components;
-`tools` executes scoped synthetic calls; the agent/validation areas remain placeholders.
+`tools` executes scoped synthetic calls, and `validation` evaluates synthetic
+evidence and category coverage. The agent area remains a placeholder.
 
 See [M1.1-B model notes](docs/development/m1-1b-models.md) for schema coverage,
 serialization choices, validation boundaries, and unresolved specification details.
@@ -209,6 +210,22 @@ See the [M1.3-B notes](docs/development/m1-3b-synthetic-tool-dispatch.md) for AP
 ownership, virtual timeout semantics, recovery permissions, counters and tracing
 boundaries. The SC-010 component test exercises outage/recovery dispatch only;
 full scenario acceptance and environmental recommendations remain unavailable.
+
+### Deterministic evidence validation — M1.4-A
+
+Pass `evidence_policy=application.policy_configuration` to
+`run_synthetic_tool_graph()` to validate observed findings after each specialist
+join. The report includes validation reasons and per-candidate category coverage.
+`validation.validate_evidence()` is also available for active component snapshots.
+
+```bash
+uv run --locked pytest tests/test_evidence_validation.py tests/test_evidence_graph.py
+```
+
+Category coverage does not establish safe conditions, sufficient overall evidence
+or eligibility. No recommendations are generated. See the
+[M1.4-A notes](docs/development/m1-4a-evidence-validation.md) for scope, provenance,
+time/coverage rules, conflict handling, gap resolution and remaining boundaries.
 
 ## Specification notes
 

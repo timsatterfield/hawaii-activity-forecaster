@@ -27,6 +27,8 @@ from .specialists import SpecialistContractError, SpecialistDelivery, Specialist
 from hawaii_activity_forecaster.harness.contracts import DriverInputs
 from hawaii_activity_forecaster.harness.synthetic import DispatchBinding, SyntheticDriver
 from hawaii_activity_forecaster.tools.synthetic import SyntheticToolDispatcher, ToolAction
+from hawaii_activity_forecaster.harness.policy import PolicyConfiguration
+from hawaii_activity_forecaster.validation import EvidenceValidationReport, validate_evidence
 
 
 @dataclass(frozen=True)
@@ -54,6 +56,7 @@ class SkeletonReport:
     visited_nodes: tuple[str, ...]
     trace_writable: bool
     tool_bindings: tuple[DispatchBinding, ...] = ()
+    evidence_report: EvidenceValidationReport | None = None
     # state.result_id identifies an operational stop, not a validated public result.
 
 
@@ -138,8 +141,11 @@ async def run_specialist_graph(
 async def _run_graph(
     request, *, candidate_beach_ids, record_event, session_id=None, branch=None,
     catalog=None, plan=None, specialist_callback=None, driver_inputs=None, tool_plan=None, request_step=1,
+    evidence_policy=None,
 ) -> SkeletonReport:
     request = NormalizedRequest.model_validate(request.model_dump())
+    if catalog is not None:
+        catalog = BeachCatalog.model_validate(catalog.model_dump())
     candidates = tuple(candidate_beach_ids)
     initial = _initial(request, candidates, session_id or str(uuid4()))
     budget = BudgetManager()
@@ -150,6 +156,9 @@ async def _run_graph(
     trace_failed = False
     exchange = SpecialistExchange(initial, catalog) if catalog is not None else None
     dispatcher = None
+    evidence_report = None
+    if evidence_policy is not None:
+        evidence_policy = PolicyConfiguration.model_validate(evidence_policy.model_dump())
 
     def emit(event_type: TraceEventType, **details):
         nonlocal sequence, trace_failed
@@ -212,6 +221,12 @@ async def _run_graph(
     def plan_evidence(state: _GraphState):
         nonlocal current
         snapshot = InvestigationState.model_validate(state["investigation"].model_dump())
+        if evidence_policy is not None and snapshot.iteration_count == 0:
+            # Validate the supplied configuration before any environmental call.
+            # No findings exist yet, so this produces no observed-evidence events
+            # or committed category/issue decisions.
+            validate_evidence(snapshot, catalog=catalog, policy=evidence_policy, bindings=(),
+                              reference_time=dispatcher.driver.reference_time(request_step), request_step=request_step)
         try:
             requests = tuple(SpecialistInvestigationRequest.model_validate(
                 r.model_dump() if isinstance(r, SpecialistInvestigationRequest) else deepcopy(r),
@@ -317,12 +332,35 @@ async def _run_graph(
         current = _updated(state["investigation"], status=InvestigationStatus.EVALUATING)
         more = (bool(current.unresolved_evidence_issues or current.active_errors) if exchange is not None
                 else any(signal.needs_another_cycle for signal in state["signals"][-2:]))
+        if evidence_report is not None:
+            more = (any(not candidate.mandatory_categories_covered for candidate in evidence_report.candidates)
+                    or bool(evidence_report.conflicted_finding_ids))
         repeat = more and current.iteration_count < current.max_iterations
         reason = "ITERATION_LIMIT_REACHED" if more else "VALIDATORS_NOT_IMPLEMENTED"
         if more and not repeat:
             emit(TraceEventType.INVESTIGATION_LIMIT_REACHED, iteration=current.iteration_count)
         return {**visit("decide_next_action"), "investigation": current,
                 "route": "dispatch" if repeat else "stop", "reason": reason}
+
+    def evaluate_evidence(state: _GraphState):
+        nonlocal current, evidence_report
+        proposed = validate_evidence(
+            _updated(state["investigation"], status=InvestigationStatus.EVALUATING),
+            catalog=catalog, policy=evidence_policy, bindings=dispatcher.driver.bindings,
+            reference_time=dispatcher.driver.reference_time(request_step), request_step=request_step,
+            retrieval_gaps=dispatcher.gap_scopes,
+        )
+        for decision in proposed.decisions:
+            event_type = (TraceEventType.EVIDENCE_REJECTED if decision.status == "REJECTED"
+                          else TraceEventType.EVIDENCE_VALIDATED)
+            emit(event_type, finding_id=decision.finding_id, rule_id=decision.rule_id,
+                 beach_id=decision.beach_id, category=decision.category,
+                 validation_status=decision.status, reasons=list(decision.reasons))
+        if proposed.conflicted_finding_ids:
+            emit(TraceEventType.EVIDENCE_CONFLICT_DETECTED, finding_ids=list(proposed.conflicted_finding_ids))
+        current = proposed.state
+        evidence_report = proposed
+        return {**visit("validate_evidence"), "investigation": current}
 
     def finalize(state: _GraphState):
         nonlocal current
@@ -359,7 +397,12 @@ async def _run_graph(
     join = "validate_and_merge_specialist_responses" if exchange is not None else "decide_next_action"
     graph.add_edge(["weather_investigation", "ocean_investigation"], join)
     if exchange is not None:
-        graph.add_edge(join, "decide_next_action")
+        if evidence_policy is not None:
+            graph.add_node("validate_evidence", evaluate_evidence)
+            graph.add_edge(join, "validate_evidence")
+            graph.add_edge("validate_evidence", "decide_next_action")
+        else:
+            graph.add_edge(join, "decide_next_action")
     graph.add_conditional_edges("decide_next_action", lambda state: state["route"], routes)
     graph.add_edge("finalize_investigation", END)
     trace_writable = True
@@ -368,7 +411,7 @@ async def _run_graph(
         with tracing_context(enabled=False):
             await graph.compile().ainvoke(
                 {"investigation": initial, "signals": (), "visited": (), "deliveries": ()},
-                config={"recursion_limit": 32},
+                config={"recursion_limit": initial.max_iterations * (6 if evidence_policy is not None else 5) + 8},
             )
     except Exception as error:
         reason = ("TRACE_WRITE_FAILED" if trace_failed else
@@ -394,7 +437,7 @@ async def _run_graph(
     current = _updated(current, tool_call_count=stats.tool_calls, retry_count=stats.retries,
                        fallback_attempted=bool(stats.fallbacks))
     return SkeletonReport(current, stats, tuple(visited), trace_writable,
-                          dispatcher.driver.bindings if dispatcher is not None else ())
+                          dispatcher.driver.bindings if dispatcher is not None else (), evidence_report)
 
 
 async def run_synthetic_tool_graph(
@@ -402,11 +445,13 @@ async def run_synthetic_tool_graph(
     plan: SpecialistPlanner, tool_plan: Callable[[SpecialistInvestigationRequest], tuple[ToolAction, ...]],
     driver_inputs: DriverInputs, record_event: EventRecorder, session_id: str | None = None,
     request_step: int = 1,
+    evidence_policy: PolicyConfiguration | None = None,
 ) -> SkeletonReport:
     """Execute explicitly planned synthetic retrievals; never an acceptance run.
 
     Driver inputs stay in the trusted layer; planners receive no script/oracle.
-    Evidence, safety, result evaluation and authoritative JSONL remain deferred.
+    Optional evidence_policy enables independent synthetic validation. Safety,
+    result evaluation and authoritative JSONL remain deferred.
     """
     if type(request_step) is not int or not 1 <= request_step <= len(driver_inputs.script.requests):
         raise ValueError("Invalid synthetic request step")
@@ -414,4 +459,5 @@ async def run_synthetic_tool_graph(
         request, candidate_beach_ids=candidate_beach_ids, catalog=catalog, plan=plan,
         tool_plan=tool_plan, driver_inputs=driver_inputs, request_step=request_step,
         record_event=record_event, session_id=session_id,
+        evidence_policy=evidence_policy,
     )
