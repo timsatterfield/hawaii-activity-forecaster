@@ -47,3 +47,24 @@ def fact(policy, name, *, remove=False, **changes):
 
 def evidence(snapshot, catalog, policy, bindings):
     return validate_evidence(snapshot, catalog=catalog, policy=policy, bindings=bindings, reference_time=NOW)
+
+
+def mixed_context(permission=True):
+    from hawaii_activity_forecaster.harness.synthetic import DispatchBinding, FindingBinding
+    from specialist_samples import finding
+    snapshot, catalog, policy, bindings = context("SNORKELING")
+    visibility = finding("OCEAN", finding_id="run-visibility", source_id="HWT_VISIBILITY", finding_type="REPORT")
+    snapshot = InvestigationState.model_validate(snapshot.model_dump() | {"ocean_findings": snapshot.ocean_findings + [visibility]})
+    data = policy.model_dump()
+    data["evidence_rules"].append(dict(rule_id="visibility", category="UNDERWATER_VISIBILITY", source_fixture_id="visibility",
+                                       finding_id="template-visibility", temporal_rule="DECLARED_REPORT_WINDOW", beach_ids=[BEACH]))
+    data["premises"].append(dict(premise_id="poor-visibility", beach_id=BEACH, activity="SNORKELING", time_window=WINDOW,
+                                 fact_type="NON_DISQUALIFYING_LIMITATION_PRESENT", value=True, limitation_code="SYNTHETIC_POOR_VISIBILITY",
+                                 finding_refs=[dict(source_fixture_id="visibility", finding_id="template-visibility")],
+                                 catalog_field_refs=[], rationale="Reviewed fictional non-disqualifying visibility limitation"))
+    if permission:
+        data["mixed_permissions"].append(dict(activity="SNORKELING", limitation_code="SYNTHETIC_POOR_VISIBILITY",
+                                              requirement_ids=["HM-VIS-003"], disclosure="Synthetic poor visibility must be disclosed"))
+    bindings += (DispatchBinding(1, "visibility", 1, snapshot.investigation_id, "visibility-call", "visibility",
+                                 (FindingBinding("template-visibility", "run-visibility"),)),)
+    return snapshot, catalog, PolicyConfiguration.model_validate(data), bindings

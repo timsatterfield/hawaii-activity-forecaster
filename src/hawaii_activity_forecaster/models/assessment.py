@@ -79,5 +79,5 @@ class CandidateAssessment(ContractModel):
                 c.result != ConstraintStatus.PASS for c in self.hard_constraint_results
             ):
                 raise ValueError("ELIGIBLE requires resolved policies and passing hard constraints")
-        # MIXED permission and actual policy classifications require the later safety evaluator.
+        # Runtime MIXED permission and policy classifications are checked by validation.evaluate_safety.
         return self

@@ -9,7 +9,7 @@ from hawaii_activity_forecaster.orchestration import run_synthetic_tool_graph
 from hawaii_activity_forecaster.tools import ToolAction
 
 
-def run_authored_graph(scenario_id, *, safety_evaluation=False, record_event=None):
+def run_authored_graph(scenario_id, *, safety_evaluation=False, record_event=None, result_generation=False):
     scenario = load_scenario(Path(__file__).resolve().parents[1] / "fixtures/scenario-pack-v1", scenario_id)
     application = scenario.application
     candidates = (("TEST_BEACH_A", "TEST_BEACH_B") if scenario_id == "SC-004" else
@@ -56,6 +56,8 @@ def run_authored_graph(scenario_id, *, safety_evaluation=False, record_event=Non
                                          clarification_needed=False, clarification_questions=[])
     report = asyncio.run(run_synthetic_tool_graph(
         normalized_input, catalog=application.catalog, candidate_beach_ids=candidates, plan=plan, tool_plan=tools,
-        driver_inputs=scenario.driver, evidence_policy=application.policy_configuration, record_event=record_event or (lambda event: None), safety_evaluation=safety_evaluation,
+        driver_inputs=scenario.driver, evidence_policy=application.policy_configuration,
+        record_event=record_event or (lambda event: None), safety_evaluation=safety_evaluation,
+        result_generation=result_generation,
     ))
     return report, scenario

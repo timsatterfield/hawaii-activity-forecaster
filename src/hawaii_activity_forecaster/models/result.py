@@ -65,6 +65,6 @@ class RecommendationResult(ContractModel):
                 raise ValueError("ERROR requires error_code, error_summary and recoverable")
         unique([r.recommendation_id for r in self.recommendations], "recommendation IDs")
         unique([r.beach_id for r in self.recommendations], "recommended beaches")
-        # Assessment existence/eligibility, evidence grounding and MIXED permission
-        # must be verified against external records by the future Result Validator.
+        # Current assessment eligibility, grounding and MIXED permission are checked
+        # against external records by recommendations.validate_result.
         return self

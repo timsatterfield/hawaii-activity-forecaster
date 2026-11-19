@@ -1,4 +1,4 @@
-"""Synthetic LangGraph control-flow probe, without agents or evidence evaluation."""
+"""Synthetic component graph for scoped investigation and trusted evaluation."""
 
 from collections.abc import Awaitable, Callable
 from asyncio import wait_for
@@ -17,7 +17,7 @@ from langsmith.run_helpers import tracing_context
 from hawaii_activity_forecaster.config.settings import InvestigationLimits
 from hawaii_activity_forecaster.models import (
     BeachCatalog, InvestigationState, NormalizedRequest, SpecialistInvestigationRequest,
-    TimeRange, TraceEvent,
+    TimeRange, TraceEvent, RecommendationResult,
 )
 from hawaii_activity_forecaster.models.enums import (
     AgentType, InvestigationStatus, Outcome, TraceActor, TraceEventType,
@@ -30,6 +30,10 @@ from hawaii_activity_forecaster.tools.synthetic import SyntheticToolDispatcher, 
 from hawaii_activity_forecaster.harness.policy import PolicyConfiguration
 from hawaii_activity_forecaster.validation import EvidenceValidationReport, validate_evidence
 from hawaii_activity_forecaster.validation import SafetyEvaluationReport, evaluate_safety as evaluate_safety_policies
+from hawaii_activity_forecaster.recommendations import (
+    CandidateComparison, ResultContext, ResultValidationError, build_error_result, build_result,
+    compare_candidates, validate_error_result, validate_result,
+)
 
 
 @dataclass(frozen=True)
@@ -59,7 +63,9 @@ class SkeletonReport:
     tool_bindings: tuple[DispatchBinding, ...] = ()
     evidence_report: EvidenceValidationReport | None = None
     safety_report: SafetyEvaluationReport | None = None
-    # state.result_id identifies an operational stop, not a validated public result.
+    comparison: CandidateComparison | None = None
+    result: RecommendationResult | None = None
+    # Without result_generation, state.result_id identifies only an operational stop.
 
 
 class _GraphState(TypedDict, total=False):
@@ -143,7 +149,7 @@ async def run_specialist_graph(
 async def _run_graph(
     request, *, candidate_beach_ids, record_event, session_id=None, branch=None,
     catalog=None, plan=None, specialist_callback=None, driver_inputs=None, tool_plan=None, request_step=1,
-    evidence_policy=None, safety_evaluation=False,
+    evidence_policy=None, safety_evaluation=False, result_generation=False,
 ) -> SkeletonReport:
     request = NormalizedRequest.model_validate(request.model_dump())
     if catalog is not None:
@@ -160,6 +166,13 @@ async def _run_graph(
     dispatcher = None
     evidence_report = None
     safety_report = None
+    comparison = None
+    result_context = None
+    proposed_result = None
+    validated_result = None
+    published_result = None
+    latest_contract_failure = False
+    trusted_error_code = None
     if evidence_policy is not None:
         evidence_policy = PolicyConfiguration.model_validate(evidence_policy.model_dump())
 
@@ -239,7 +252,8 @@ async def _run_graph(
                  reason="REQUEST_SCHEMA_INVALID")
             raise SpecialistContractError("REQUEST_SCHEMA_INVALID") from None
         if not requests:
-            reason = "RESULT_VALIDATION_NOT_IMPLEMENTED" if safety_evaluation else "VALIDATORS_NOT_IMPLEMENTED"
+            reason = ("NO_FURTHER_ACTION" if result_generation else
+                      "RESULT_VALIDATION_NOT_IMPLEMENTED" if safety_evaluation else "VALIDATORS_NOT_IMPLEMENTED")
             return {**visit("plan_evidence"), "route": "stop", "reason": reason}
         try:
             proposed = exchange.authorize(state["investigation"], requests, now=datetime.now(timezone.utc))
@@ -312,11 +326,12 @@ async def _run_graph(
         return await specialist(state, AgentType.OCEAN)
 
     def merge_responses(state: _GraphState):
-        nonlocal current
+        nonlocal current, latest_contract_failure
         # Only this cycle's isolated outputs participate in its trusted join.
         deliveries = state["deliveries"][-len(state["requests"]):]
         report = exchange.merge(state["investigation"], deliveries,
                                 now=datetime.now(timezone.utc))
+        latest_contract_failure = bool(report.rejections)
         for response_id in report.accepted_response_ids:
             origin = next(d for d in deliveries if (
                 d.response.get("response_id") if isinstance(d.response, dict)
@@ -347,7 +362,8 @@ async def _run_graph(
         if safety_report is not None:
             more = any(a.eligibility == "NEEDS_INVESTIGATION" for a in safety_report.assessments)
         repeat = more and current.iteration_count < current.max_iterations
-        boundary = "RESULT_VALIDATION_NOT_IMPLEMENTED" if safety_evaluation else "VALIDATORS_NOT_IMPLEMENTED"
+        boundary = ("ASSESSMENT_COMPLETE" if result_generation else
+                    "RESULT_VALIDATION_NOT_IMPLEMENTED" if safety_evaluation else "VALIDATORS_NOT_IMPLEMENTED")
         reason = "ITERATION_LIMIT_REACHED" if more else boundary
         if more and not repeat:
             emit(TraceEventType.INVESTIGATION_LIMIT_REACHED, iteration=current.iteration_count)
@@ -399,16 +415,64 @@ async def _run_graph(
         return {**visit("evaluate_safety"), "investigation": current}
 
     def finalize(state: _GraphState):
-        nonlocal current
+        nonlocal current, published_result
         budget.close()
         if dispatcher is not None:
             dispatcher.close()
         if exchange is not None:
             exchange.close()
+        if result_generation:
+            if validated_result is None:
+                raise ResultValidationError("No validated result is available for finalization")
+            terminal = {
+                Outcome.RECOMMENDATIONS: (InvestigationStatus.COMPLETED, TraceEventType.INVESTIGATION_COMPLETED),
+                Outcome.NO_RECOMMENDATION: (InvestigationStatus.ABSTAINED, TraceEventType.INVESTIGATION_ABSTAINED),
+                Outcome.ERROR: (InvestigationStatus.FAILED, TraceEventType.INVESTIGATION_FAILED),
+            }
+            status, event = terminal[validated_result.outcome]
+            proposed_state = _updated(state["investigation"], status=status, outcome=validated_result.outcome,
+                                      result_id=validated_result.result_id, completion_reason="Validated " + validated_result.outcome.value)
+            emit(event, result_id=validated_result.result_id, outcome=validated_result.outcome,
+                 stop_reason=state["reason"], error_code=validated_result.error_code)
+            current, published_result = proposed_state, validated_result
+            return {**visit("finalize_investigation"), "investigation": current}
         current = _updated(state["investigation"], status=InvestigationStatus.FAILED, outcome=Outcome.ERROR,
                            result_id=str(uuid4()), completion_reason=state["reason"])
         emit(TraceEventType.INVESTIGATION_FAILED, reason=state["reason"])
         return {**visit("finalize_investigation"), "investigation": current}
+
+    def compare(state: _GraphState):
+        nonlocal result_context, comparison, trusted_error_code
+        if evidence_report is None or safety_report is None:
+            raise ResultValidationError("Current evidence and assessments are required for comparison")
+        result_context = ResultContext(state["investigation"], evidence_report, safety_report, catalog,
+                                       evidence_policy, dispatcher.driver.bindings, request_step)
+        comparison = compare_candidates(result_context)
+        # A handled provider response ERROR is not a contract rejection. An
+        # unrecovered malformed/failed specialist boundary with no eligible
+        # alternative is an operational error, not environmental abstention.
+        trusted_error_code = ("INVESTIGATION_EXECUTION_FAILED" if latest_contract_failure
+                              and not comparison.selected_assessment_ids else None)
+        return visit("compare_candidates")
+
+    def construct(state: _GraphState):
+        nonlocal proposed_result
+        generated_at = datetime.now(timezone.utc)
+        proposed_result = (build_error_result(state["investigation"], generated_at=generated_at, error_code=trusted_error_code)
+                           if trusted_error_code else build_result(result_context, generated_at=generated_at, stop_reason=state["reason"]))
+        return visit("construct_result")
+
+    def validate_output(state: _GraphState):
+        nonlocal validated_result
+        if trusted_error_code:
+            candidate = validate_error_result(proposed_result, state["investigation"], now=datetime.now(timezone.utc),
+                                               error_code=trusted_error_code)
+        else:
+            candidate = validate_result(proposed_result, result_context, now=datetime.now(timezone.utc), stop_reason=state["reason"])
+        emit(TraceEventType.RESULT_VALIDATED, result_id=candidate.result_id, outcome=candidate.outcome,
+             assessment_ids=[r.assessment_id for r in candidate.recommendations])
+        validated_result = candidate
+        return visit("validate_result")
 
     graph = StateGraph(_GraphState)
     for name, node in (
@@ -421,12 +485,20 @@ async def _run_graph(
     graph.add_edge(START, "initialize_investigation")
     graph.add_edge("initialize_investigation", "validate_request")
     routes = {"dispatch": "authorize_dispatch", "stop": "finalize_investigation", "end": END}
+    if result_generation:
+        graph.add_node("compare_candidates", compare)
+        graph.add_node("construct_result", construct)
+        graph.add_node("validate_result", validate_output)
+        routes["stop"] = "compare_candidates"
+        graph.add_edge("compare_candidates", "construct_result")
+        graph.add_edge("construct_result", "validate_result")
+        graph.add_edge("validate_result", "finalize_investigation")
     if exchange is not None:
         graph.add_node("plan_evidence", plan_evidence)
         graph.add_node("validate_and_merge_specialist_responses", merge_responses)
         routes["dispatch"] = "plan_evidence"
         graph.add_conditional_edges("plan_evidence", lambda state: state["route"],
-                                    {"authorize": "authorize_dispatch", "stop": "finalize_investigation"})
+                                    {"authorize": "authorize_dispatch", "stop": routes["stop"]})
     graph.add_conditional_edges("validate_request", lambda state: state["route"], routes)
     graph.add_edge("authorize_dispatch", "weather_investigation")
     graph.add_edge("authorize_dispatch", "ocean_investigation")
@@ -457,20 +529,44 @@ async def _run_graph(
     except Exception as error:
         reason = ("TRACE_WRITE_FAILED" if trace_failed else
                   "SPECIALIST_CONTRACT_FAILED" if isinstance(error, SpecialistContractError) else
+                  "RESULT_VALIDATION_FAILED" if result_generation and isinstance(error, ResultValidationError) else
+                  "INVESTIGATION_EXECUTION_FAILED" if result_generation else
                   "SKELETON_EXECUTION_FAILED")
         trace_writable = not trace_failed
         budget.close()
         if safety_evaluation:
             current = _updated(current, assessments=[])
             safety_report = None
-        current = _updated(current, status=InvestigationStatus.FAILED, outcome=Outcome.ERROR,
-                           result_id=str(uuid4()), completion_reason=reason)
-        if trace_writable:
-            try:
-                emit(TraceEventType.INVESTIGATION_FAILED, reason=reason)
-            except _TraceFailure:
-                trace_writable = False
-                current = _updated(current, completion_reason="TRACE_WRITE_FAILED")
+        published_result = None
+        candidate_error = None
+        try:
+            if result_generation and trace_writable and current.activity is not None and current.target_time_window is not None:
+                code = "RESULT_VALIDATION_FAILED" if isinstance(error, ResultValidationError) else "INVESTIGATION_EXECUTION_FAILED"
+                candidate_error = build_error_result(current, generated_at=datetime.now(timezone.utc), error_code=code)
+                candidate_error = validate_error_result(candidate_error, current, now=datetime.now(timezone.utc), error_code=code)
+                emit(TraceEventType.RESULT_VALIDATED, result_id=candidate_error.result_id, outcome=candidate_error.outcome,
+                     assessment_ids=[])
+            failed_state = _updated(current, status=InvestigationStatus.FAILED, outcome=Outcome.ERROR,
+                                    result_id=candidate_error.result_id if candidate_error else str(uuid4()), completion_reason=reason)
+            if trace_writable:
+                emit(TraceEventType.INVESTIGATION_FAILED, reason=reason, result_id=failed_state.result_id,
+                     error_code=candidate_error.error_code if candidate_error else None)
+            current, published_result = failed_state, candidate_error
+        except _TraceFailure:
+            trace_writable = False
+            current = _updated(current, status=InvestigationStatus.FAILED, outcome=Outcome.ERROR,
+                               result_id=str(uuid4()), completion_reason="TRACE_WRITE_FAILED")
+        except ResultValidationError:
+            # An incomplete request cannot be forced into the result schema by
+            # inventing its activity/window. Keep only the operational diagnostic.
+            current = _updated(current, status=InvestigationStatus.FAILED, outcome=Outcome.ERROR,
+                               result_id=str(uuid4()), completion_reason=reason)
+            if trace_writable:
+                try:
+                    emit(TraceEventType.INVESTIGATION_FAILED, reason=reason, result_id=current.result_id)
+                except _TraceFailure:
+                    trace_writable = False
+                    current = _updated(current, completion_reason="TRACE_WRITE_FAILED")
     finally:
         budget.close()
         if dispatcher is not None:
@@ -481,7 +577,8 @@ async def _run_graph(
     current = _updated(current, tool_call_count=stats.tool_calls, retry_count=stats.retries,
                        fallback_attempted=bool(stats.fallbacks))
     return SkeletonReport(current, stats, tuple(visited), trace_writable,
-                          dispatcher.driver.bindings if dispatcher is not None else (), evidence_report, safety_report)
+                          dispatcher.driver.bindings if dispatcher is not None else (), evidence_report, safety_report,
+                          comparison, published_result)
 
 
 async def run_synthetic_tool_graph(
@@ -491,22 +588,27 @@ async def run_synthetic_tool_graph(
     request_step: int = 1,
     evidence_policy: PolicyConfiguration | None = None,
     safety_evaluation: bool = False,
+    result_generation: bool = False,
 ) -> SkeletonReport:
     """Execute explicitly planned synthetic retrievals; never an acceptance run.
 
     Driver inputs stay in the trusted layer; planners receive no script/oracle.
     Optional evidence_policy enables independent synthetic validation; the
     safety_evaluation flag additionally creates trusted Candidate Assessments.
-    Result evaluation and authoritative JSONL remain deferred.
+    result_generation additionally validates controlled synthetic outcomes.
+    CLI presentation, authoritative JSONL and full acceptance remain deferred.
     """
     if type(request_step) is not int or not 1 <= request_step <= len(driver_inputs.script.requests):
         raise ValueError("Invalid synthetic request step")
     if type(safety_evaluation) is not bool or (safety_evaluation and evidence_policy is None):
         raise ValueError("Safety evaluation requires an explicit evidence policy and boolean flag")
+    if type(result_generation) is not bool or (result_generation and not safety_evaluation):
+        raise ValueError("Result generation requires explicit safety evaluation and a boolean flag")
     return await _run_graph(
         request, candidate_beach_ids=candidate_beach_ids, catalog=catalog, plan=plan,
         tool_plan=tool_plan, driver_inputs=driver_inputs, request_step=request_step,
         record_event=record_event, session_id=session_id,
         evidence_policy=evidence_policy,
         safety_evaluation=safety_evaluation,
+        result_generation=result_generation,
     )

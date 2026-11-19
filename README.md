@@ -21,11 +21,11 @@ information, and user preferences.
 
 ## Current Status
 
-M1.4-B — Safety Policy Evaluation and Candidate Assessments. The synthetic graph
-can derive policy outcomes and independent eligibility, suitability and evidence-
-quality fields from validated evidence. SC-004/SC-010 remain execution-blocked.
-Recommendation Results, CLI workflows, authoritative JSONL tracing and full
-acceptance remain for later increments. The LLM provider/model is undecided.
+M1.5-A — Candidate Comparison and Result Validation. The synthetic component graph
+can compare eligible assessments and return validated recommendation, abstention
+or technical-error results with matching terminal states. Full SC-004/SC-010
+acceptance remains BLOCKED. CLI workflows, authoritative JSONL tracing and session
+handling remain for later increments. The LLM provider/model is undecided.
 
 ## Documentation
 
@@ -58,12 +58,13 @@ LangSmith is a transitive dependency of the orchestration stack; this bootstrap
 does not enable tracing, and its optional pytest plugin is disabled.
 
 Package areas under `src/hawaii_activity_forecaster/` are `config`, `models`,
-`fixtures`, `harness`, `agents`, `orchestration`, `validation`, and `tools`. The `models`
+`fixtures`, `harness`, `agents`, `orchestration`, `validation`, `tools`, and `recommendations`. The `models`
 package contains the Pydantic contracts, `config` contains settings and loading,
 `fixtures` loads local synthetic inputs, and `harness` validates v2 scenario contracts;
 `orchestration` contains the synthetic graph, trusted budgets and specialist merge components;
 `tools` executes scoped synthetic calls, and `validation` evaluates evidence,
-synthetic safety policies and Candidate Assessments. The agent area remains a placeholder.
+synthetic safety policies and Candidate Assessments. `recommendations` compares
+eligible candidates and validates controlled synthetic results. The agent area remains a placeholder.
 
 See [M1.1-B model notes](docs/development/m1-1b-models.md) for schema coverage,
 serialization choices, validation boundaries, and unresolved specification details.
@@ -242,7 +243,26 @@ Opaque hard constraints remain UNKNOWN pending an approved input interpretation;
 soft preferences cannot override exclusions. See the
 [M1.4-B notes](docs/development/m1-4b-safety-and-assessments.md) for policy handling,
 independent dimensions, revision/invalidation rules, open input semantics and
-tracing boundaries. No recommendation result is generated.
+tracing boundaries. This assessment-only path produces no Recommendation Result.
+
+### Candidate comparison and Result Validation — M1.5-A
+
+Add `result_generation=True` alongside explicit evidence and safety evaluation on
+`run_synthetic_tool_graph()` to construct and validate controlled synthetic results.
+`report.result` is assigned only after result validation and terminal-event recording
+succeed. The `recommendations` package also exposes standalone comparison,
+construction and contextual validation functions for current active snapshots.
+
+```bash
+uv run --locked pytest tests/test_results.py tests/test_result_graph.py
+```
+
+Comparison uses qualitative suitability/area criteria, preserves unresolved ties,
+omits forced numeric ranks and selects at most three eligible locations. Handled
+outages may produce explained abstention; application failures remain ERROR outcomes.
+See the [M1.5-A notes](docs/development/m1-5a-comparison-and-results.md) for context
+guards, disclosures, outcome routing, trace-failure suppression and deferred work.
+Outputs are explicitly synthetic; the CLI remains information/version-only.
 
 ## Specification notes
 
