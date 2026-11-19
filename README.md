@@ -21,11 +21,11 @@ information, and user preferences.
 
 ## Current Status
 
-M1.1-G — SC-004 / SC-010 Scenario Fixtures. The Python package, information CLI,
-structural contracts, configuration, v1 inputs, and v2 preflight/projections are
-available, with authored SC-004/SC-010 inputs and independent assertion plans.
-Both scenarios remain execution-blocked. Runtime/evaluator execution, agent
-workflows, environmental recommendations and safety evaluation remain for later
+M1.2-A — LangGraph Skeleton and Trusted Budgets. The package includes synthetic
+graph traversal and atomic invocation reservations, alongside the contracts,
+configuration and authored SC-004/SC-010 fixtures. Both scenarios remain
+execution-blocked. Real specialist integration, evidence/safety/result evaluation,
+authoritative JSONL tracing and environmental recommendations remain for later
 increments. The LLM provider/model is undecided.
 
 ## Documentation
@@ -62,7 +62,8 @@ Package areas under `src/hawaii_activity_forecaster/` are `config`, `models`,
 `fixtures`, `harness`, `agents`, `orchestration`, `validation`, and `tools`. The `models`
 package contains the Pydantic contracts, `config` contains settings and loading,
 `fixtures` loads local synthetic inputs, and `harness` validates v2 scenario contracts;
-the agent/orchestration/validation/tool areas remain placeholders.
+`orchestration` contains the synthetic graph and trusted budget components;
+the agent/validation/tool areas remain placeholders.
 
 See [M1.1-B model notes](docs/development/m1-1b-models.md) for schema coverage,
 serialization choices, validation boundaries, and unresolved specification details.
@@ -156,8 +157,24 @@ assert scenario.execution_readiness.outcome == "BLOCKED"
 Run authoring/preflight tests with `uv run --locked pytest tests/test_scenario_fixtures.py`.
 See the [M1.1-G coverage notes](docs/development/m1-1g-scenario-fixtures.md) for
 explicit evidence/gap inputs, independent expectations, budget-boundary semantics,
-and the temporal assertion-validation fix. Next is the bounded graph/runtime work,
-starting with M1.2's graph skeleton and trusted budget enforcement.
+and the temporal assertion-validation fix. M1.2-A below begins the bounded
+graph/runtime work with the graph skeleton and trusted budget enforcement.
+
+### Graph skeleton and trusted budgets — M1.2-A
+
+`orchestration.run_skeleton()` is an async component-test API with injected
+synthetic control signals and an event recorder. It exercises parallel Weather
+and Ocean branch entry/exit, conditional looping and bounded termination. It
+produces no evidence or public recommendation results. `BudgetManager` provides
+atomic per-investigation tool/model reservations and scoped recovery allowances.
+
+```bash
+uv run --locked pytest tests/test_orchestration_budgets.py tests/test_orchestration_skeleton.py
+```
+
+See the [M1.2-A notes](docs/development/m1-2a-graph-and-budgets.md) for the graph,
+failure semantics, tracing boundary and deferred runtime integration. The CLI
+continues to display application information only.
 
 ## Specification notes
 
