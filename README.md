@@ -21,12 +21,11 @@ information, and user preferences.
 
 ## Current Status
 
-M1.4-A — Deterministic Evidence Validation. The synthetic graph can independently
-validate received findings and account for required evidence categories using
-approved mappings and the fixed synthetic clock. SC-004/SC-010 remain execution-
-blocked. Safety-policy evaluation, eligibility, results, authoritative JSONL tracing
-and environmental recommendations remain for later increments. The LLM provider/
-model is undecided.
+M1.4-B — Safety Policy Evaluation and Candidate Assessments. The synthetic graph
+can derive policy outcomes and independent eligibility, suitability and evidence-
+quality fields from validated evidence. SC-004/SC-010 remain execution-blocked.
+Recommendation Results, CLI workflows, authoritative JSONL tracing and full
+acceptance remain for later increments. The LLM provider/model is undecided.
 
 ## Documentation
 
@@ -63,8 +62,8 @@ Package areas under `src/hawaii_activity_forecaster/` are `config`, `models`,
 package contains the Pydantic contracts, `config` contains settings and loading,
 `fixtures` loads local synthetic inputs, and `harness` validates v2 scenario contracts;
 `orchestration` contains the synthetic graph, trusted budgets and specialist merge components;
-`tools` executes scoped synthetic calls, and `validation` evaluates synthetic
-evidence and category coverage. The agent area remains a placeholder.
+`tools` executes scoped synthetic calls, and `validation` evaluates evidence,
+synthetic safety policies and Candidate Assessments. The agent area remains a placeholder.
 
 See [M1.1-B model notes](docs/development/m1-1b-models.md) for schema coverage,
 serialization choices, validation boundaries, and unresolved specification details.
@@ -226,6 +225,24 @@ Category coverage does not establish safe conditions, sufficient overall evidenc
 or eligibility. No recommendations are generated. See the
 [M1.4-A notes](docs/development/m1-4a-evidence-validation.md) for scope, provenance,
 time/coverage rules, conflict handling, gap resolution and remaining boundaries.
+
+### Safety policy evaluation and assessments — M1.4-B
+
+Add `safety_evaluation=True` alongside `evidence_policy` on the synthetic graph to
+evaluate approved supported premises and create trusted Candidate Assessments.
+`validation.evaluate_safety()` is also available for active evidence snapshots.
+Verified exclusions take precedence; mandatory unknowns prevent eligibility.
+Reviewed MIXED visibility requires explicit permission and retained disclosure.
+
+```bash
+uv run --locked pytest tests/test_safety_evaluation.py tests/test_safety_graph.py
+```
+
+Opaque hard constraints remain UNKNOWN pending an approved input interpretation;
+soft preferences cannot override exclusions. See the
+[M1.4-B notes](docs/development/m1-4b-safety-and-assessments.md) for policy handling,
+independent dimensions, revision/invalidation rules, open input semantics and
+tracing boundaries. No recommendation result is generated.
 
 ## Specification notes
 

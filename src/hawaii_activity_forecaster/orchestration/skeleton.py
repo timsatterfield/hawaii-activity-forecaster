@@ -29,6 +29,7 @@ from hawaii_activity_forecaster.harness.synthetic import DispatchBinding, Synthe
 from hawaii_activity_forecaster.tools.synthetic import SyntheticToolDispatcher, ToolAction
 from hawaii_activity_forecaster.harness.policy import PolicyConfiguration
 from hawaii_activity_forecaster.validation import EvidenceValidationReport, validate_evidence
+from hawaii_activity_forecaster.validation import SafetyEvaluationReport, evaluate_safety as evaluate_safety_policies
 
 
 @dataclass(frozen=True)
@@ -57,6 +58,7 @@ class SkeletonReport:
     trace_writable: bool
     tool_bindings: tuple[DispatchBinding, ...] = ()
     evidence_report: EvidenceValidationReport | None = None
+    safety_report: SafetyEvaluationReport | None = None
     # state.result_id identifies an operational stop, not a validated public result.
 
 
@@ -141,7 +143,7 @@ async def run_specialist_graph(
 async def _run_graph(
     request, *, candidate_beach_ids, record_event, session_id=None, branch=None,
     catalog=None, plan=None, specialist_callback=None, driver_inputs=None, tool_plan=None, request_step=1,
-    evidence_policy=None,
+    evidence_policy=None, safety_evaluation=False,
 ) -> SkeletonReport:
     request = NormalizedRequest.model_validate(request.model_dump())
     if catalog is not None:
@@ -157,6 +159,7 @@ async def _run_graph(
     exchange = SpecialistExchange(initial, catalog) if catalog is not None else None
     dispatcher = None
     evidence_report = None
+    safety_report = None
     if evidence_policy is not None:
         evidence_policy = PolicyConfiguration.model_validate(evidence_policy.model_dump())
 
@@ -219,7 +222,7 @@ async def _run_graph(
         return {**visit("authorize_dispatch"), "investigation": current}
 
     def plan_evidence(state: _GraphState):
-        nonlocal current
+        nonlocal current, safety_report
         snapshot = InvestigationState.model_validate(state["investigation"].model_dump())
         if evidence_policy is not None and snapshot.iteration_count == 0:
             # Validate the supplied configuration before any environmental call.
@@ -236,7 +239,8 @@ async def _run_graph(
                  reason="REQUEST_SCHEMA_INVALID")
             raise SpecialistContractError("REQUEST_SCHEMA_INVALID") from None
         if not requests:
-            return {**visit("plan_evidence"), "route": "stop", "reason": "VALIDATORS_NOT_IMPLEMENTED"}
+            reason = "RESULT_VALIDATION_NOT_IMPLEMENTED" if safety_evaluation else "VALIDATORS_NOT_IMPLEMENTED"
+            return {**visit("plan_evidence"), "route": "stop", "reason": reason}
         try:
             proposed = exchange.authorize(state["investigation"], requests, now=datetime.now(timezone.utc))
             if dispatcher is not None:
@@ -247,8 +251,13 @@ async def _run_graph(
             emit(TraceEventType.CONTRACT_VALIDATED, contract="specialist_request", valid=False,
                  reason=str(error), request_ids=[r.request_id for r in requests])
             raise
+        invalidated = []
+        if safety_evaluation:
+            invalidated = [a.assessment_id for a in proposed.assessments]
+            proposed = _updated(proposed, assessments=[])
+            safety_report = None
         emit(TraceEventType.CONTRACT_VALIDATED, contract="specialist_request", valid=True,
-             request_ids=[r.request_id for r in requests])
+             request_ids=[r.request_id for r in requests], invalidated_assessment_ids=invalidated)
         current = proposed
         # Planner-owned nested lists never become shared graph authority.
         return {**visit("plan_evidence"), "investigation": current, "route": "authorize",
@@ -335,8 +344,11 @@ async def _run_graph(
         if evidence_report is not None:
             more = (any(not candidate.mandatory_categories_covered for candidate in evidence_report.candidates)
                     or bool(evidence_report.conflicted_finding_ids))
+        if safety_report is not None:
+            more = any(a.eligibility == "NEEDS_INVESTIGATION" for a in safety_report.assessments)
         repeat = more and current.iteration_count < current.max_iterations
-        reason = "ITERATION_LIMIT_REACHED" if more else "VALIDATORS_NOT_IMPLEMENTED"
+        boundary = "RESULT_VALIDATION_NOT_IMPLEMENTED" if safety_evaluation else "VALIDATORS_NOT_IMPLEMENTED"
+        reason = "ITERATION_LIMIT_REACHED" if more else boundary
         if more and not repeat:
             emit(TraceEventType.INVESTIGATION_LIMIT_REACHED, iteration=current.iteration_count)
         return {**visit("decide_next_action"), "investigation": current,
@@ -361,6 +373,30 @@ async def _run_graph(
         current = proposed.state
         evidence_report = proposed
         return {**visit("validate_evidence"), "investigation": current}
+
+    def assess_candidates(state: _GraphState):
+        nonlocal current, safety_report
+        if evidence_report is None or evidence_report.state != state["investigation"]:
+            raise ValueError("Safety evaluation requires the current evidence snapshot")
+        proposed = evaluate_safety_policies(
+            evidence_report, catalog=catalog, policy=evidence_policy,
+            bindings=dispatcher.driver.bindings, request_step=request_step,
+        )
+        for assessment in proposed.assessments:
+            for result in assessment.policy_results:
+                emit(TraceEventType.POLICY_EVALUATED, assessment_id=assessment.assessment_id,
+                     beach_id=assessment.beach_id, policy_id=result.policy_id, result=result.result,
+                     supporting_finding_ids=result.supporting_finding_ids)
+            emit(TraceEventType.CANDIDATE_ASSESSED, assessment_id=assessment.assessment_id,
+                 assessment_version=assessment.assessment_version, beach_id=assessment.beach_id,
+                 eligibility=assessment.eligibility, evidence_quality=assessment.evidence_quality,
+                 environmental_suitability=assessment.environmental_suitability)
+            if assessment.eligibility in {"EXCLUDED", "ELIGIBLE"}:
+                event = TraceEventType.CANDIDATE_EXCLUDED if assessment.eligibility == "EXCLUDED" else TraceEventType.CANDIDATE_ELIGIBLE
+                emit(event, beach_id=assessment.beach_id, assessment_id=assessment.assessment_id,
+                     disqualifying_policy_ids=assessment.disqualifying_policy_ids)
+        current, safety_report = proposed.state, proposed
+        return {**visit("evaluate_safety"), "investigation": current}
 
     def finalize(state: _GraphState):
         nonlocal current
@@ -400,7 +436,12 @@ async def _run_graph(
         if evidence_policy is not None:
             graph.add_node("validate_evidence", evaluate_evidence)
             graph.add_edge(join, "validate_evidence")
-            graph.add_edge("validate_evidence", "decide_next_action")
+            if safety_evaluation:
+                graph.add_node("evaluate_safety", assess_candidates)
+                graph.add_edge("validate_evidence", "evaluate_safety")
+                graph.add_edge("evaluate_safety", "decide_next_action")
+            else:
+                graph.add_edge("validate_evidence", "decide_next_action")
         else:
             graph.add_edge(join, "decide_next_action")
     graph.add_conditional_edges("decide_next_action", lambda state: state["route"], routes)
@@ -411,7 +452,7 @@ async def _run_graph(
         with tracing_context(enabled=False):
             await graph.compile().ainvoke(
                 {"investigation": initial, "signals": (), "visited": (), "deliveries": ()},
-                config={"recursion_limit": initial.max_iterations * (6 if evidence_policy is not None else 5) + 8},
+                config={"recursion_limit": initial.max_iterations * (7 if safety_evaluation else 6 if evidence_policy is not None else 5) + 8},
             )
     except Exception as error:
         reason = ("TRACE_WRITE_FAILED" if trace_failed else
@@ -419,6 +460,9 @@ async def _run_graph(
                   "SKELETON_EXECUTION_FAILED")
         trace_writable = not trace_failed
         budget.close()
+        if safety_evaluation:
+            current = _updated(current, assessments=[])
+            safety_report = None
         current = _updated(current, status=InvestigationStatus.FAILED, outcome=Outcome.ERROR,
                            result_id=str(uuid4()), completion_reason=reason)
         if trace_writable:
@@ -437,7 +481,7 @@ async def _run_graph(
     current = _updated(current, tool_call_count=stats.tool_calls, retry_count=stats.retries,
                        fallback_attempted=bool(stats.fallbacks))
     return SkeletonReport(current, stats, tuple(visited), trace_writable,
-                          dispatcher.driver.bindings if dispatcher is not None else (), evidence_report)
+                          dispatcher.driver.bindings if dispatcher is not None else (), evidence_report, safety_report)
 
 
 async def run_synthetic_tool_graph(
@@ -446,18 +490,23 @@ async def run_synthetic_tool_graph(
     driver_inputs: DriverInputs, record_event: EventRecorder, session_id: str | None = None,
     request_step: int = 1,
     evidence_policy: PolicyConfiguration | None = None,
+    safety_evaluation: bool = False,
 ) -> SkeletonReport:
     """Execute explicitly planned synthetic retrievals; never an acceptance run.
 
     Driver inputs stay in the trusted layer; planners receive no script/oracle.
-    Optional evidence_policy enables independent synthetic validation. Safety,
-    result evaluation and authoritative JSONL remain deferred.
+    Optional evidence_policy enables independent synthetic validation; the
+    safety_evaluation flag additionally creates trusted Candidate Assessments.
+    Result evaluation and authoritative JSONL remain deferred.
     """
     if type(request_step) is not int or not 1 <= request_step <= len(driver_inputs.script.requests):
         raise ValueError("Invalid synthetic request step")
+    if type(safety_evaluation) is not bool or (safety_evaluation and evidence_policy is None):
+        raise ValueError("Safety evaluation requires an explicit evidence policy and boolean flag")
     return await _run_graph(
         request, candidate_beach_ids=candidate_beach_ids, catalog=catalog, plan=plan,
         tool_plan=tool_plan, driver_inputs=driver_inputs, request_step=request_step,
         record_event=record_event, session_id=session_id,
         evidence_policy=evidence_policy,
+        safety_evaluation=safety_evaluation,
     )
