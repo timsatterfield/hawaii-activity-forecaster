@@ -157,3 +157,11 @@ class BudgetManager:
                 sum(c.fallback_gap is not None for c in dispatched),
                 len(self._active), self._closed,
             )
+
+    def fallback_allowance_exhausted(self, gap_id: str) -> bool:
+        """Observed dispatched capacity only; availability is not script-driven."""
+        with self._lock:
+            if not isinstance(gap_id, str) or not gap_id.strip():
+                raise BudgetError("fallback allowance requires a stable evidence-gap ID")
+            return sum(c.fallback_gap == gap_id and c.state in {"dispatched", "failed", "succeeded"}
+                       for c in self._calls.values()) >= self._limits.max_fallback_attempts_per_evidence_gap

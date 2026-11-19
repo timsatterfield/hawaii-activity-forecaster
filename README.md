@@ -21,11 +21,11 @@ information, and user preferences.
 
 ## Current Status
 
-M1.6-B — Independent Scenario Assertion Evaluation and Reporting is implemented.
-Evaluator-owned expected files can now be compared against verified, detached
-component captures, with strict selectors/operators and explicit readiness outcomes.
-Synthetic demonstrations
-now persist one append-only trace per investigation, with independent correlation,
+M1.6-C — Scenario Execution Adapter and Demo Alignment is implemented. Explicit
+authored component runs now connect preflight, raw session admission, execution,
+verified capture and independent evaluation. Both current scenario assertion sets
+pass as component checks; full agentic scenario acceptance remains BLOCKED.
+Synthetic demonstrations persist one append-only trace per investigation, with independent correlation,
 completeness, budget and terminal-result checks before publication. Session commits
 and presentation recheck the retained trace receipt. Raw request/session integration,
 catalog selection, evidence/safety validation and post-terminal follow-ups remain
@@ -468,12 +468,33 @@ FAIL (exit 1). The evaluator-only Python API can compare verified component
 captures with the approved expected files; component assertion success cannot
 be presented as a full scenario PASS.
 
-Independent evaluation currently detects two demo gaps: SC-004 omits the Kihei
-preference (A028), and SC-010 stops before an investigation-limit event (A054).
-Those attempted component evaluations report FAIL; missing runtime capabilities
-do not hide active mandatory failures. Expected fixtures remain unchanged.
+M1.6-B identified two demo gaps in request preference and limit reporting. M1.6-C
+below resolves them without changing expected fixtures or inventing events.
 See the [M1.6-B notes](docs/development/m1-6b-scenario-evaluation-and-reporting.md)
 for APIs, comparison semantics, diagnostic categories and remaining gates.
+
+### Scenario execution adapter and demo alignment — M1.6-C
+
+```bash
+uv run --locked hafi evaluate SC-004 --fixtures fixtures/scenario-pack-v1 --component --trace-directory traces
+uv run --locked hafi evaluate SC-010 --fixtures fixtures/scenario-pack-v1 --component --trace-directory traces
+uv run --locked pytest tests/test_scenario_execution.py
+```
+
+`--component` explicitly executes the existing authored synthetic plan. JSON output
+separates `component` assertion results from the overall `scenario` result. SC-004
+passes 84 component assertions and SC-010 passes 61; overall readiness remains
+BLOCKED (exit 2), because no real Coordinator/model runtime is enabled. Without
+the flag, `evaluate` remains preflight/readiness-only and dispatches no work.
+
+Default demos now use raw admission and independently validated interpretation
+proposals. SC-004 retains the requested Kihei preference. SC-010 records actual
+exhaustion of the one-fallback-per-evidence-gap allowance, with eight tool calls
+and one investigation cycle; it does not manufacture iteration exhaustion.
+The normalized session demo remains available.
+
+See the [M1.6-C notes](docs/development/m1-6c-scenario-execution-and-demo-alignment.md)
+for runtime boundaries, snapshots, lifecycle checks and remaining gates.
 
 ## Specification notes
 
