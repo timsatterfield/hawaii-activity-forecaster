@@ -117,6 +117,9 @@ class RequestContext:
     inherited: ValidatedRequest | None = None
     prior_status: Literal["COMPLETED", "ABSTAINED", "FAILED"] | None = None
     rule_profile: str = PROFILE_ID
+    # Correlates a post-terminal admission even if its predecessor failed before
+    # producing a normalized receipt. No guessed values are inherited in that case.
+    previous_investigation_id: str | None = None
 
 
 @dataclass(frozen=True)

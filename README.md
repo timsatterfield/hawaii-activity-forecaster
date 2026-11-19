@@ -21,14 +21,15 @@ information, and user preferences.
 
 ## Current Status
 
-M1.5-E — Deterministic Request Validation and Catalog Selection components are
-implemented against the approved M1.5-D design. Authored interpretation proposals
-are checked against bounded clause rules, source spans, clocks and catalog facts.
-Follow-up merges preserve context/origins; selection separates assessment candidates
-from supported investigation candidates. Existing synthetic CLI demos remain
-available. General conversational CLI execution, raw graph integration and
-authoritative JSONL tracing remain deferred; full scenario acceptance stays BLOCKED.
-The LLM provider/model is undecided.
+M1.5-F — Raw Request/Session Graph Integration is implemented against the approved
+M1.5-D design. Raw admission, independent interpretation receipts, catalog selection,
+bounded dispatch, safety and result validation now share one synthetic investigation.
+Post-terminal revisions preserve normalized context and assumed time precision.
+Catalog-only empty selections produce grounded abstention. Explicit synthetic
+adapter tests exercise shared model accounting; authored callbacks record no model
+usage. Existing synthetic CLI demos remain available. General conversational CLI
+execution and authoritative JSONL tracing remain deferred; full scenario acceptance
+stays BLOCKED. The LLM provider/model is undecided.
 
 ## Documentation
 
@@ -385,6 +386,38 @@ enable a general natural-language CLI, select an LLM provider, record model usag
 resume clarification or implement zero-candidate result routing. See the
 [M1.5-E notes](docs/development/m1-5e-request-validation-and-catalog-selection.md)
 for the runnable component example, supported clause limits and deferred RI-T checks.
+
+### Raw request/session graph integration — M1.5-F
+
+`SessionManager.start_raw()` admits text, a detached catalog and an explicit clock
+before normalization. `follow_up_raw()` creates a fresh investigation after a
+terminal raw request. Each runner calls `run_raw_synthetic_tool_graph()` with an
+authored interpreter, trusted planner/tool plan, synthetic driver and policy.
+Session commit independently replays the receipt against its owned admission.
+
+The graph retains unsupported records for real assessments while restricting
+specialist and tool dispatch to the verified investigation subset. A current
+selection audit with no supported candidates yields `NO_RECOMMENDATION` rather
+than a technical error or invented hazard. Results disclose default time windows,
+unresolved soft preferences and incomplete candidate investigations.
+
+`SyntheticModelAdapter` is an explicitly labeled accounting test double with the
+same per-investigation model ledger used by later planner work: 12 calls, a
+30-second timeout and no automatic model retry. Environmental calls retain their
+separate 12-call limit. It enables no provider and does not use model BehaviorScript
+operations. Authored interpretation callbacks use neither invocation budget.
+
+```bash
+uv sync --locked
+uv run --locked pytest tests/test_raw_request_graph.py tests/test_raw_session_lifecycle.py tests/test_raw_selection_scope.py tests/test_raw_model_accounting.py
+uv run --locked pytest
+uv run --locked hafi --version
+uv run --locked hafi demo session --fixtures fixtures/scenario-pack-v1
+```
+
+See the [M1.5-F integration notes](docs/development/m1-5f-raw-request-session-graph-integration.md)
+for API wiring, trust checks, verification results and remaining runtime gates.
+These are component APIs; the existing CLI accepts fixed synthetic demos only.
 
 ## Specification notes
 

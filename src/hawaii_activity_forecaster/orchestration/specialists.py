@@ -94,9 +94,14 @@ class SpecialistExchange:
     execution, retries, tools, or budgets; those remain the dispatcher's concern.
     """
 
-    def __init__(self, state: InvestigationState, catalog: BeachCatalog):
+    def __init__(self, state: InvestigationState, catalog: BeachCatalog, *,
+                 investigation_candidate_ids: tuple[str, ...] | None = None):
         catalog = BeachCatalog.model_validate(catalog.model_dump())
         self._beaches = frozenset(beach.beach_id for beach in catalog.root)
+        self._dispatch_beaches = (self._beaches if investigation_candidate_ids is None
+                                  else frozenset(investigation_candidate_ids))
+        if investigation_candidate_ids is not None and not self._dispatch_beaches <= self._beaches & set(state.candidate_beach_ids):
+            raise SpecialistContractError("CANDIDATE_SCOPE_INVALID")
         self._identity = (state.investigation_id, state.request_revision)
         self._requests: dict[str, SpecialistInvestigationRequest] = {}
         self._responses: dict[str, str] = {}
@@ -136,7 +141,7 @@ class SpecialistExchange:
                     or request.schema_version != state.schema_version):
                 raise SpecialistContractError("REQUEST_CORRELATION_INVALID")
             if (not request.candidate_beach_ids
-                    or not set(request.candidate_beach_ids) <= self._beaches & set(state.candidate_beach_ids)):
+                    or not set(request.candidate_beach_ids) <= self._dispatch_beaches & set(state.candidate_beach_ids)):
                 raise SpecialistContractError("CANDIDATE_SCOPE_INVALID")
             if request.target_time_window != state.target_time_window:
                 raise SpecialistContractError("TARGET_WINDOW_INVALID")

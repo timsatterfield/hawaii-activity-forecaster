@@ -81,11 +81,12 @@ class SyntheticToolDispatcher:
 
     def __init__(self, driver: SyntheticDriver, budgets: BudgetManager, *, investigation_id: str,
                  request_revision: int, reference_time: datetime, emit: Callable,
-                 request_step: int = 1):
+                 request_step: int = 1, investigation_candidate_ids: tuple[str, ...] | None = None):
         self.driver, self.budgets = driver, budgets
         self._identity = investigation_id, request_revision
         self._reference_time, self._emit_callback = reference_time, emit
         self._step = request_step
+        self._dispatch_beaches = (None if investigation_candidate_ids is None else frozenset(investigation_candidate_ids))
         self._lock = RLock()
         self._plans = {}
         self._seen = set()
@@ -116,6 +117,8 @@ class SyntheticToolDispatcher:
         with self._lock:
             if self._closed or (parent.investigation_id, parent.request_revision) != self._identity:
                 raise ToolPlanError("Inactive tool execution")
+            if self._dispatch_beaches is not None and not set(parent.candidate_beach_ids) <= self._dispatch_beaches:
+                raise ToolPlanError("Delegation exceeds the selected investigation scope")
             key = parent.request_id, parent.attempt_number
             if key in self._plans:
                 raise ToolPlanError("Tool plan already registered")
@@ -192,7 +195,10 @@ class SyntheticToolDispatcher:
                                  fallback_gap=gap_id)
             details = dict(tool_call_id=call_id, request_id=parent.request_id,
                            specialist_attempt=parent.attempt_number, operation_id=operation_id,
-                           operation_attempt=attempt, source_id=action.source_id)
+                           operation_attempt=attempt, source_id=action.source_id,
+                           candidate_beach_ids=list(action.candidate_beach_ids),
+                           requested_evidence=list(action.requested_evidence),
+                           target_time_window=parent.target_time_window.model_dump(mode="json"))
             if action.retry_of:
                 self._emit(TraceEventType.RETRY_INITIATED, **details, original_tool_call_id=origin[0])
             if action.fallback_of:

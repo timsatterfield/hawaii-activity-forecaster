@@ -104,14 +104,17 @@ def _verified(report, catalog, policy):
         if state.model_dump(exclude=final_fields) != prior.model_dump(exclude=final_fields):
             raise ValueError("Terminal state differs from its validation basis")
         if result.outcome == "ERROR":
-            result = validate_error_result(result, prior, now=state.updated_at, error_code=basis.error_code)
+            result = validate_error_result(result, prior, now=state.updated_at, error_code=basis.error_code,
+                                           request_context=report.request_context, request_receipt=report.request_receipt)
         else:
             if report.evidence_report is None or report.safety_report is None or catalog is None or policy is None or basis.error_code is not None:
                 raise ValueError("Grounding context is absent")
             catalog = BeachCatalog.model_validate(catalog.model_dump())
             policy = PolicyConfiguration.model_validate(policy.model_dump())
             context = ResultContext(prior, report.evidence_report, report.safety_report, catalog, policy,
-                                    report.tool_bindings, request_step=basis.request_step)
+                                    report.tool_bindings, request_step=basis.request_step,
+                                    request_context=report.request_context, request_receipt=report.request_receipt,
+                                    selection=report.selection)
             result = validate_result(result, context, now=state.updated_at, stop_reason=basis.stop_reason)
     except (ValueError, TypeError, AttributeError, KeyError, IndexError):
         raise PresentationError("No validated result is available for presentation.") from None
