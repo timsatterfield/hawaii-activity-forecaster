@@ -21,13 +21,14 @@ information, and user preferences.
 
 ## Current Status
 
-M1.5-C — Session Lifecycle and Post-Terminal Follow-ups is implemented. The in-memory
-controller preserves normalized context, revisions, independent investigation budgets
-and immutable history; the CLI includes a fictional two-request session demo.
-M1.5-D provides an **approved design** covering request interpretation and candidate
-selection, including disclosed morning and afternoon time windows. Natural-language
-execution and authoritative JSONL tracing remain deferred; full scenario acceptance
-stays BLOCKED. The LLM provider/model is undecided.
+M1.5-E — Deterministic Request Validation and Catalog Selection components are
+implemented against the approved M1.5-D design. Authored interpretation proposals
+are checked against bounded clause rules, source spans, clocks and catalog facts.
+Follow-up merges preserve context/origins; selection separates assessment candidates
+from supported investigation candidates. Existing synthetic CLI demos remain
+available. General conversational CLI execution, raw graph integration and
+authoritative JSONL tracing remain deferred; full scenario acceptance stays BLOCKED.
+The LLM provider/model is undecided.
 
 ## Documentation
 
@@ -70,7 +71,8 @@ Package areas under `src/hawaii_activity_forecaster/` are `config`, `models`,
 package contains the Pydantic contracts, `config` contains settings and loading,
 `fixtures` loads local synthetic inputs, and `harness` validates v2 scenario contracts;
 `orchestration` contains the synthetic graph, trusted budgets, session admission and specialist merge components;
-`tools` executes scoped synthetic calls, and `validation` evaluates evidence,
+`interpretation` checks authored request proposals and selects catalog candidates;
+`catalog.py` shares catalog provenance/location checks. `tools` executes scoped synthetic calls, and `validation` evaluates evidence,
 synthetic safety policies and Candidate Assessments. `recommendations` compares
 eligible candidates and validates controlled synthetic results. The agent area remains a placeholder.
 
@@ -343,12 +345,46 @@ afternoon**. Explicit user times override defaults; assumed windows are disclose
 and require evidence covering the entire interval. The approved distinction between
 assessment candidates and supported dispatch candidates resolves RI-C01's tension
 between architecture filtering and SC-003's required UNSUPPORTED assessments.
-The next increment is M1.5-E's deterministic validation/selection components with
-synthetic interpreter outputs, subject to a separate implementation request.
-General conversational CLI execution remains separately gated.
+M1.5-E below implements the deterministic validation/selection components with
+synthetic interpreter outputs. General conversational CLI execution remains
+separately gated.
 
 See the [M1.5-D review notes](docs/development/m1-5d-request-interpretation-design.md)
 for the current-code gaps, approval scope and validation performed in this increment.
+
+### Deterministic request validation and catalog selection — M1.5-E
+
+`interpretation.validate_request(proposal, context)` checks the internal authored
+proposal transport and returns a detached `ValidatedRequest`. Its `.request` is an
+existing `NormalizedRequest`; `.origins`, `.assumed_fields` and
+`.assumption_disclosures` preserve explicit/default/inherited precision. Both the
+morning (08:00–11:00 HST) and afternoon (12:00–16:00 HST) defaults use the injected
+Hawaii clock. Explicit hours take precedence. Unresolved material meaning produces
+clarification fields, while invalid proposals raise sanitized `RequestValidationError`.
+
+`select_candidates(receipt, context)` independently rechecks the receipt and
+catalog, returning assessment/investigation ID sets, planning order and attribution
+audit. `verify_request` and `verify_selection` reject changed or stale snapshots.
+For SUP in South Maui, the common fixture's assessment set is A/B/E and its supported
+investigation set is B. No eligibility, dispatch or public result follows from
+selection alone; the graph does not consume this audit yet.
+
+Recognized LOCATION_RESTRICTION payloads now receive independent catalog-based
+PASS/FAIL/UNKNOWN checks in safety evaluation. Unknown/legacy payloads remain
+UNKNOWN, and the CALM_WATER preference stays UNKNOWN with disclosure even when
+environmental suitability is favorable.
+
+```bash
+uv run --locked pytest tests/test_request_validation.py tests/test_request_followups.py tests/test_candidate_selection.py tests/test_location_constraints.py
+uv run --locked pytest
+uv run --locked hafi demo session --fixtures fixtures/scenario-pack-v1
+```
+
+This component API requires explicit context and interpreter proposals; it does not
+enable a general natural-language CLI, select an LLM provider, record model usage,
+resume clarification or implement zero-candidate result routing. See the
+[M1.5-E notes](docs/development/m1-5e-request-validation-and-catalog-selection.md)
+for the runnable component example, supported clause limits and deferred RI-T checks.
 
 ## Specification notes
 

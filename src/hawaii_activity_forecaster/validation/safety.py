@@ -16,6 +16,7 @@ from hawaii_activity_forecaster.harness.synthetic import DispatchBinding
 from hawaii_activity_forecaster.models import (
     BeachCatalog, CandidateAssessment, ConstraintResult, InvestigationState, PolicyResult, PreferenceResult,
 )
+from hawaii_activity_forecaster.catalog import check_location_constraint, location_descriptor
 from .evidence import EvidenceValidationReport, _catalog_support, validate_evidence
 
 
@@ -52,21 +53,31 @@ def _digest(value):
     return sha256(json.dumps(value, sort_keys=True, default=encode, separators=(",", ":")).encode()).hexdigest()
 
 
-def _constraint_results(state):
-    # The input JsonObject vocabulary/normalization is still open. Do not adopt
-    # an ad hoc DSL or trust caller-supplied result/eligibility keys as verdicts.
-    return [ConstraintResult(
-        constraint_id="constraint-" + _digest([state.investigation_id, state.request_revision, index, payload])[:24],
-        constraint_description=f"Hard constraint {index + 1} requires approved normalization",
-        result="UNKNOWN", explanation="No approved deterministic interpretation is available for this constraint input",
-    ) for index, payload in enumerate(state.hard_constraints)]
+def _constraint_results(state, beach, catalog, reference_time):
+    results = []
+    for index, payload in enumerate(state.hard_constraints):
+        known = location_descriptor(payload)
+        outcome = check_location_constraint(payload, beach, catalog, reference_time)
+        results.append(ConstraintResult(
+            constraint_id="constraint-" + _digest([state.investigation_id, state.request_revision, index, payload])[:24],
+            constraint_description=(f"Required {payload['scope'].lower()}: {payload['value']}" if known else
+                                    f"Hard constraint {index + 1} requires approved normalization"),
+            result=outcome, explanation=("Attributed catalog facts establish the mandatory location match" if outcome == "PASS" else
+                "Attributed catalog facts establish a different mandatory location" if outcome == "FAIL" else
+                "No approved or sufficiently attributed interpretation establishes this constraint" if known else
+                "No approved deterministic interpretation is available for this constraint input"),
+        ))
+    return results
 
 
 def _preferences(state, beach, catalog):
     results = [PreferenceResult(
         preference_id="preference-" + _digest([state.investigation_id, state.request_revision, index, payload])[:24],
-        preference_description=f"Soft preference {index + 1} requires approved normalization", alignment="UNKNOWN",
-        explanation="Uninterpreted preference cannot override any safety or eligibility decision",
+        preference_description=("Calm-water preference" if payload == {"kind": "CALM_WATER"} else
+                                f"Soft preference {index + 1} requires approved normalization"), alignment="UNKNOWN",
+        explanation=("Calm-water alignment requires a separately approved evidence interpretation; favorable suitability does not establish it"
+                     if payload == {"kind": "CALM_WATER"} else
+                     "Uninterpreted preference cannot override any safety or eligibility decision"),
     ) for index, payload in enumerate(state.soft_preferences)]
     if state.preferred_area is None:
         return results, "NOT_SPECIFIED", []
@@ -225,8 +236,9 @@ def evaluate_safety(
 
     Revalidation guards against caller-forged or stale evidence reports. The fixed
     reference clock, actual bindings and full scope are required on every call.
-    Opaque hard constraints remain UNKNOWN until their input interpretation is
-    approved; source/model-provided PASS/FAIL fields cannot bypass this boundary.
+    Approved LOCATION_RESTRICTION shapes receive independent catalog checks;
+    opaque hard constraints remain UNKNOWN. Source/model-provided verdict fields
+    cannot bypass either boundary.
     """
     catalog = BeachCatalog.model_validate(catalog.model_dump())
     policy = PolicyConfiguration.model_validate(policy.model_dump())
@@ -255,7 +267,7 @@ def evaluate_safety(
         suitability = ("UNFAVORABLE" if failed else "UNDETERMINED" if not positive else
                        "MIXED" if limitation is True else "UNDETERMINED" if limitation is None
                        and FactType.NON_DISQUALIFYING_LIMITATION_PRESENT in evaluator.premises else "FAVORABLE")
-        constraints = _constraint_results(state)
+        constraints = _constraint_results(state, beaches[beach_id], catalog, evidence.reference_time)
         preferences, geography, area_notes = _preferences(state, beaches[beach_id], catalog)
         eligible = ("EXCLUDED" if failed or any(c.result == "FAIL" for c in constraints) else
                     "UNSUPPORTED" if not catalog_ok else
@@ -270,18 +282,22 @@ def evaluate_safety(
         limits = sorted({reason for d in scoped for reason in d.reasons}
                         | {f"Missing {c.priority.lower()} evidence: {c.category}" for c in evaluator.coverage.values() if not c.covered}
                         | {note for fid in supporting for note in evaluator.findings[fid].limitations or ()})
-        safety_notes = sorted(set(evaluator.limitations + area_notes + (["Hard constraints require approved normalization"] if constraints else [])))
+        safety_notes = sorted(set(evaluator.limitations + area_notes + (["Hard constraints require approved normalization"]
+                                                                      if any(c.result == "UNKNOWN" for c in constraints) else [])))
+        if {"kind": "CALM_WATER"} in state.soft_preferences:
+            safety_notes.append("Calm-water preference alignment is UNKNOWN; favorable suitability does not establish calm water.")
         questions = [f"Resolve policy {key}" for key in unresolved] + [f"Clarify {c.constraint_id}" for c in constraints if c.result == "UNKNOWN"]
         reasons = [f"{eligible}: evidence={quality}; environmental suitability={suitability}"]
         if failed:
             reasons.append("Disqualifying policy failures take precedence: " + ", ".join(failed))
         if unresolved:
             reasons.append("Unresolved policy checks: " + ", ".join(unresolved))
-        if constraints:
+        if any(c.result == "UNKNOWN" for c in constraints):
             reasons.append("Uninterpreted hard constraints are not treated as passing")
         actions = (["CONSIDER_ALTERNATIVE_BEACH"] if eligible in {"EXCLUDED", "UNSUPPORTED"} else
                    ["READY_FOR_COMPARISON"] if eligible == "ELIGIBLE" else
-                   ["REQUEST_USER_CLARIFICATION"] if constraints else ["INVESTIGATE_ALTERNATIVE_SOURCE"])
+                   ["REQUEST_USER_CLARIFICATION"] if any(c.result == "UNKNOWN" for c in constraints)
+                   else ["INVESTIGATE_ALTERNATIVE_SOURCE"])
         payload = dict(
             investigation_id=state.investigation_id, beach_id=beach_id, activity=state.activity,
             target_time_window=state.target_time_window, evaluated_at=canonical.reference_time,
