@@ -21,12 +21,13 @@ information, and user preferences.
 
 ## Current Status
 
-M1.5-C — Session Lifecycle and Post-Terminal Follow-ups. An in-memory session
-controller preserves normalized request context across fresh investigations with
-incrementing revisions, independent budgets and immutable terminal history. The CLI
-includes an explicit fictional two-request session demo. Natural-language request
-interpretation and authoritative JSONL tracing remain deferred; full scenario
-acceptance stays BLOCKED. The LLM provider/model is undecided.
+M1.5-C — Session Lifecycle and Post-Terminal Follow-ups is implemented. The in-memory
+controller preserves normalized context, revisions, independent investigation budgets
+and immutable history; the CLI includes a fictional two-request session demo.
+M1.5-D now provides a **proposed design for human review** covering request
+interpretation and candidate selection. Natural-language execution and authoritative
+JSONL tracing remain deferred; full scenario acceptance stays BLOCKED. The LLM
+provider/model is undecided.
 
 ## Documentation
 
@@ -327,6 +328,25 @@ imported into new execution. Cross-investigation evidence-reference storage,
 natural-language normalization and authoritative tracing remain separate work.
 See the [M1.5-C notes](docs/development/m1-5c-session-lifecycle.md) for the API,
 admission guards, origin declarations, acceptance coverage and open decisions.
+
+### Request interpretation and candidate-selection proposal — M1.5-D
+
+The [M1.5-D design draft](docs/implementation/m1-request-interpretation-and-candidate-selection-design.md)
+is **PROPOSED, not approved**. It defines reviewable interpretation rules, hard/soft
+constraint payloads, catalog selection, follow-up origins, shared model-budget
+admission and empty-selection abstention. It selects no provider and changes no
+application behavior or approved specifications.
+
+Key review items include the proposed disclosed **08:00–11:00 HST morning default**
+and the distinction between assessment candidates and supported dispatch candidates.
+That distinction addresses a documented tension between the architecture's filtering
+step and SC-003's required UNSUPPORTED assessments. See RI-C01 and decisions
+RI-OD-001 through RI-OD-010 in the draft. After approval, proposed M1.5-E would
+implement deterministic validation/selection components with synthetic interpreter
+outputs. General conversational CLI execution remains separately gated.
+
+See the [M1.5-D review notes](docs/development/m1-5d-request-interpretation-design.md)
+for the current-code gaps, approval scope and validation performed in this increment.
 
 ## Specification notes
 
