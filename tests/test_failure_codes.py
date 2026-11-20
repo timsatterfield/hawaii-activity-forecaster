@@ -139,3 +139,20 @@ def test_every_mislabeled_condition_has_its_own_closed_code():
     codes = [agent_failure_code(ToolPlanError(message)) for message in _MISLABELED.values()]
     assert len(set(codes)) == 6 and set(codes) <= AGENT_FAILURE_CODES and "UNCLASSIFIED" not in codes
     assert "PLAN_RECOVERY_CONDITION_INVALID" in AGENT_FAILURE_CODES  # Earlier traces still validate.
+
+
+@pytest.mark.parametrize("change,code", [
+    (dict(steps=[dict(option_id="INVENTED_X", condition="ALWAYS", origin_step=None)]), "MODEL_PLAN_OPTION_NOT_ALLOWED"),
+    (dict(unresolved_gap_ids=["gap-not-offered"]), "MODEL_PLAN_GAP_NOT_ALLOWED"),
+    (dict(steps=[dict(option_id="MARINE_X", condition="ALWAYS", origin_step=None)] * 3), "MODEL_PLAN_TOO_LONG"),
+])
+def test_specialist_plan_rejections_name_their_cause(change, code):
+    from hawaii_activity_forecaster.model_runtime.contracts import parse_proposal
+    from hawaii_activity_forecaster.model_runtime.errors import ERROR_CODES
+    plan = dict(steps=[dict(option_id="MARINE_X", condition="ALWAYS", origin_step=None)],
+                unresolved_gap_ids=[], reason_code="PLANNED_WORK") | change
+    context = dict(legal_option_ids=["MARINE_X"], gap_ids=[], remaining_tool_calls=2)
+    with pytest.raises(ProposalError, match=f"^{code}$"):
+        parse_proposal("ocean_investigation", json.dumps(plan), context)
+    assert code in ERROR_CODES and agent_failure_code(ProposalError(code)) == code
+    assert "MODEL_PLAN_NOT_ALLOWED" in ERROR_CODES  # Coordinator budget check and earlier traces.
