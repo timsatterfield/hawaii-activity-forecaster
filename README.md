@@ -21,6 +21,12 @@ information, and user preferences.
 
 ## Current Status
 
+M1.6-F — Synthetic Source Capability Profile Design is available as a
+[draft for review](docs/implementation/m1-synthetic-source-capability-profile-design.md).
+It specifies finite legal queries, private fixture-coverage checks, model-visible
+options and recovery bindings. No capability artifact, wire revision or runtime
+behavior is implemented by this design increment.
+
 M1.6-E — Provider Gateway and Structured Model Contracts is implemented as an
 offline foundation. Versioned prompts and strict proposals exercise the OpenAI
 Responses adapter through an explicit mock HTTP transport, sharing investigation
@@ -541,10 +547,21 @@ API key or installed SDK cannot enable calls. Do not add credentials to TOML.
 See the [M1.6-E notes](docs/development/m1-6e-provider-gateway-and-model-contracts.md)
 for API boundaries, trace-detail fields, verification and remaining activation work.
 
+### Synthetic source capability profile design — M1.6-F
+
+Review the [draft profile design](docs/implementation/m1-synthetic-source-capability-profile-design.md)
+and [M1.6-F notes](docs/development/m1-6f-synthetic-source-capability-profile-design.md).
+The proposal keeps source interface capabilities separate from scripted outcomes
+and expected assertions. It records current exact-query, candidate-batch and
+cross-delegation recovery limitations, with explicit proposed compatibility changes.
+Existing setup, demo and test commands remain unchanged; live model execution and
+full agentic scenario acceptance remain unavailable.
+
 ## Specification notes
 
 All seven core requirements and eight approved M1 implementation/design
-documents are present. The additional M1.6-D model/runtime design is a draft.
+documents are present. The additional M1.6-D model/runtime and M1.6-F capability
+profile designs are drafts.
 The older technical plan still marks dependency management and several safeguards
 as open; the approved configuration baseline resolves uv and its lockfile,
 invocation limits/timeouts, and trace write-failure handling. Its provider/model
