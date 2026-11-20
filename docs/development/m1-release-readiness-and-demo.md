@@ -6,6 +6,12 @@ Approved requirements/architecture, fixtures, schemas, safety decisions, model
 targets and execution limits remain unchanged. Local Qwen work is deferred.
 No paid model call, commit or push is part of this batch.
 
+> Current live gate: the owner temporarily deferred SC-006 and SC-008 after the
+> profile 0.7 rerun passed 10/12. The selected rerun now reports them as NOT_RUN;
+> offline tests and safety validation remain enabled. See the
+> [deferment record](m1-live-acceptance-deferments.md). Historical passes below do
+> not establish that the current all-twelve live rerun is green.
+
 ## GitHub test gate
 
 The old `.github/workflow/tests.yml` contained two shell commands and was not a
