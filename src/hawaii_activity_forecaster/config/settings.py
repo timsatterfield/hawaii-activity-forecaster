@@ -61,7 +61,7 @@ class LLMSettings(ConfigurationModel):
     profile_id: Literal["m1-agent-runtime-0.1", "m1-saturday-runtime-0.1",
                         "m1-saturday-runtime-0.2", "m1-saturday-runtime-0.3",
                         "m1-saturday-runtime-0.4", "m1-saturday-runtime-0.5",
-                        "m1-saturday-runtime-0.6",
+                        "m1-saturday-runtime-0.6", "m1-saturday-runtime-0.7",
                         "m1-ollama-qwen3.5-9b-0.1", "m1-ollama-qwen3.5-9b-0.2",
                         "m1-ollama-qwen3.5-9b-0.3", "m1-ollama-qwen3.5-9b-0.4",
                         "m1-ollama-qwen3.5-9b-0.5"] | None = None

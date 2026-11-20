@@ -11,7 +11,7 @@ import json
 from typing import Sequence
 from pydantic import BaseModel
 
-from hawaii_activity_forecaster.harness.policy import Category, FactType, PolicyConfiguration
+from hawaii_activity_forecaster.harness.policy import REVIEWED_LIMITATIONS, Category, FactType, PolicyConfiguration
 from hawaii_activity_forecaster.harness.synthetic import DispatchBinding
 from hawaii_activity_forecaster.models import (
     BeachCatalog, CandidateAssessment, ConstraintResult, InvestigationState, PolicyResult, PreferenceResult,
@@ -213,16 +213,20 @@ class _CandidatePolicies:
         support, ids, explanation = self.fact(FactType.ACTIVITY_SUPPORTING_CONDITIONS_PRESENT, set(Category))
         self.result("ES-007", "PASS" if support is True else "UNKNOWN", ids,
                     explanation if support is True else "Accepted positive activity-supporting conditions have not been established", mandatory=False)
-        limitation, ids, explanation = self.fact(FactType.NON_DISQUALIFYING_LIMITATION_PRESENT, {Category.UNDERWATER_VISIBILITY})
+        declared = self.premises.get(FactType.NON_DISQUALIFYING_LIMITATION_PRESENT)
+        code = declared.limitation_code if declared else "SYNTHETIC_POOR_VISIBILITY"
+        category, policy_id = REVIEWED_LIMITATIONS.get((self.state.activity, code), ("UNDERWATER_VISIBILITY", "HM-VIS-003"))
+        limitation, ids, explanation = self.fact(FactType.NON_DISQUALIFYING_LIMITATION_PRESENT, {Category(category)})
         permission = next((p for p in self.policy.mixed_permissions if p.activity == self.state.activity
-                           and p.limitation_code == "SYNTHETIC_POOR_VISIBILITY"), None)
-        if FactType.NON_DISQUALIFYING_LIMITATION_PRESENT not in self.premises:
+                           and p.limitation_code == code), None)
+        label = "wind-driven chop" if code == "SYNTHETIC_WIND_CHOP" else "visibility"
+        if declared is None:
             self.result("HM-VIS-003", "NOT_APPLICABLE", (), "No reviewed non-disqualifying limitation is declared", mandatory=False)
         else:
             permitted = limitation is False or (limitation is True and permission is not None)
-            self.result("HM-VIS-003", "PASS" if permitted else "UNKNOWN", ids,
-                        "Reviewed non-disqualifying visibility limitation requires disclosure" if limitation is True and permission else
-                        "MIXED visibility permission is missing" if limitation is True else explanation, mandatory=False)
+            self.result(policy_id, "PASS" if permitted else "UNKNOWN", ids,
+                        f"Reviewed non-disqualifying {label} limitation requires disclosure" if limitation is True and permission else
+                        f"MIXED {label} permission is missing" if limitation is True else explanation, mandatory=False)
             if limitation is True and permission:
                 self.limitations.append(permission.disclosure)
         return catalog_ok, limitation, permission

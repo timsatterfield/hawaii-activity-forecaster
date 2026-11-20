@@ -38,7 +38,9 @@ def adapter(calls, *, failure=None, profile=SATURDAY_PROFILE):
                 if part in text:
                     add('target_time_window',dict(start='2026-11-17T'+start+':00-10:00',end='2026-11-17T'+end+':00-10:00'),part)
             for area in ('Kihei','Napili','Wailea'):
-                if area in text: add('preferred_area',area,('near '+area) if 'near '+area in text else area)
+                if area in text:
+                    phrase=next((p+area for p in ('prefer somewhere near ','near ') if p+area in text),area)
+                    add('preferred_area',area,phrase)
             for phrase in ('only South Maui','in South Maui'):
                 if phrase in text:
                     add('hard_constraints',[dict(kind='LOCATION_RESTRICTION',scope='REGION',value='SOUTH_MAUI')],phrase)
