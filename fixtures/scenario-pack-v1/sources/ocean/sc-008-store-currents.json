@@ -1,0 +1,37 @@
+{
+  "tool_call_id": "SC-008_STORE_CURRENTS_TEMPLATE_CALL",
+  "source_id": "SNORKEL_STORE",
+  "retrieval_status": "SUCCESS",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/sc-008/store-currents",
+  "findings": [
+    {
+      "finding_id": "SC-008_STORE_CURRENTS_FINDING",
+      "investigation_id": "SYNTHETIC_TEMPLATE",
+      "agent_type": "OCEAN",
+      "source_id": "SNORKEL_STORE",
+      "source_reference": "https://example.invalid/haf/sc-008/store-currents",
+      "finding_type": "FORECAST",
+      "coverage_type": "BEACH",
+      "coverage_id": "TEST_BEACH_A",
+      "coverage_description": "Fictional test coverage only; not a verified Maui source mapping.",
+      "retrieved_at": "2026-11-16T09:00:00-10:00",
+      "issued_at": "2026-11-16T08:30:00-10:00",
+      "valid_from": "2026-11-17T08:00:00-10:00",
+      "valid_until": "2026-11-17T11:00:00-10:00",
+      "retrieval_status": "SUCCESS",
+      "validation_status": "PENDING",
+      "descriptive_findings": [
+        "Synthetic local report of current conditions at fictional Beach A that materially differs from the regional forecast."
+      ],
+      "limitations": [
+        "SYNTHETIC evidence only; no real-world conditions or numeric hazard thresholds."
+      ],
+      "advisories": [],
+      "beach_id": "TEST_BEACH_A"
+    }
+  ],
+  "missing_evidence": [],
+  "errors": [],
+  "duration_ms": 1
+}

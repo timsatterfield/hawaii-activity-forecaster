@@ -23,7 +23,7 @@ from .preflight import (
     check_sources, require, requirement_refs,
 )
 
-_V2 = {"fixture_format_version": "2.0.0", "fixture_package_version": "1.4.0",
+_V2 = {"fixture_format_version": "2.0.0", "fixture_package_version": "1.5.0",
        "schema_version": "0.1", "policy_version": "0.2", "harness_contract_version": "1.0.0"}
 _POLICY = {"harness_contract_version": "1.0.0", "policy_version": "0.2",
            "policy_configuration_version": "synthetic-policy-1.0.0"}

@@ -1,12 +1,13 @@
-# SC-001, SC-003, SC-004, SC-006, SC-007, SC-009, SC-010, SC-011 and SC-012 synthetic scenario inputs
+# SC-001 and SC-003 to SC-012 synthetic scenario inputs (SC-002 deferred)
 
-**Dataset:** `1.4.0`; **fixture format:** `2.0.0`; **harness contracts:** `1.0.0`.
+**Dataset:** `1.5.0`; **fixture format:** `2.0.0`; **harness contracts:** `1.0.0`.
 The directory name identifies the first authored scenario pack, not the fixture
 format version. All geography, numeric measurements, reporting regions, advisory
 issuers and environmental statements are fictional. No live provider is queried.
 
-The package contains nine ACTIVE **definitions** (SC-001, SC-003, SC-004, SC-006, SC-007, SC-009, SC-010, SC-011, SC-012).
+The package contains eleven ACTIVE **definitions** (SC-001 and SC-003 to SC-012).
 SC-006, SC-007 and SC-011 were added in dataset `1.4.0` ([M1.10](../../docs/development/m1-10-sc-006-sc-007-sc-011.md)).
+SC-005 and SC-008 (partially blocked by design) were added in `1.5.0` ([M1.11](../../docs/development/m1-11-sc-005-sc-008.md)).
 SC-001 and SC-003 were added in dataset `1.3.0` ([M1.9](../../docs/development/m1-9-sc-001-sc-003.md)); SC-002 is deferred.
 SC-012's follow-up needs model profile `m1-saturday-runtime-0.3`, whose input bound is larger. Preflight passing is not a scenario acceptance pass.
 SC-009 and SC-012 were added in dataset `1.2.0`. Their inputs derive from the release

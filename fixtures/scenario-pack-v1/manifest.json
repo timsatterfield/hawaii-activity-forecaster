@@ -1,6 +1,6 @@
 {
   "fixture_format_version": "2.0.0",
-  "fixture_package_version": "1.4.0",
+  "fixture_package_version": "1.5.0",
   "schema_version": "0.1",
   "policy_version": "0.2",
   "harness_contract_version": "1.0.0",
@@ -449,6 +449,96 @@
       "path": "sources/ocean/sc-007-store-report.json",
       "agent_type": "OCEAN",
       "source_id": "SNORKEL_STORE"
+    },
+    {
+      "fixture_id": "sc-005-alerts",
+      "path": "sources/weather/sc-005-alerts.json",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_ALERTS"
+    },
+    {
+      "fixture_id": "sc-005-wind",
+      "path": "sources/weather/sc-005-wind.json",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_WEATHER"
+    },
+    {
+      "fixture_id": "sc-005-marine",
+      "path": "sources/ocean/sc-005-marine.json",
+      "agent_type": "OCEAN",
+      "source_id": "NWS_MARINE"
+    },
+    {
+      "fixture_id": "sc-005-visibility",
+      "path": "sources/ocean/sc-005-visibility.json",
+      "agent_type": "OCEAN",
+      "source_id": "HWT_VISIBILITY"
+    },
+    {
+      "fixture_id": "sc-005-water-b",
+      "path": "sources/ocean/sc-005-water-b.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "sc-005-water-d",
+      "path": "sources/ocean/sc-005-water-d.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "sc-008-alerts",
+      "path": "sources/weather/sc-008-alerts.json",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_ALERTS"
+    },
+    {
+      "fixture_id": "sc-008-wind",
+      "path": "sources/weather/sc-008-wind.json",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_WEATHER"
+    },
+    {
+      "fixture_id": "sc-008-marine",
+      "path": "sources/ocean/sc-008-marine.json",
+      "agent_type": "OCEAN",
+      "source_id": "NWS_MARINE"
+    },
+    {
+      "fixture_id": "sc-008-visibility",
+      "path": "sources/ocean/sc-008-visibility.json",
+      "agent_type": "OCEAN",
+      "source_id": "HWT_VISIBILITY"
+    },
+    {
+      "fixture_id": "sc-008-water-a",
+      "path": "sources/ocean/sc-008-water-a.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "sc-008-water-b",
+      "path": "sources/ocean/sc-008-water-b.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "sc-008-water-c",
+      "path": "sources/ocean/sc-008-water-c.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "sc-008-water-d",
+      "path": "sources/ocean/sc-008-water-d.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "sc-008-store-currents",
+      "path": "sources/ocean/sc-008-store-currents.json",
+      "agent_type": "OCEAN",
+      "source_id": "SNORKEL_STORE"
     }
   ],
   "scenarios": [
@@ -465,12 +555,20 @@
       "path": "scenarios/SC-004/scenario.json"
     },
     {
+      "scenario_id": "SC-005",
+      "path": "scenarios/SC-005/scenario.json"
+    },
+    {
       "scenario_id": "SC-006",
       "path": "scenarios/SC-006/scenario.json"
     },
     {
       "scenario_id": "SC-007",
       "path": "scenarios/SC-007/scenario.json"
+    },
+    {
+      "scenario_id": "SC-008",
+      "path": "scenarios/SC-008/scenario.json"
     },
     {
       "scenario_id": "SC-009",

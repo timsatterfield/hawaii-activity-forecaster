@@ -1,0 +1,985 @@
+{
+  "harness_contract_version": "1.0.0",
+  "scenario_id": "SC-005",
+  "assertions": [
+    {
+      "assertion_id": "SC-005-A001",
+      "requirement_ids": [
+        "PR-002"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/activity",
+      "expected": "SUP"
+    },
+    {
+      "assertion_id": "SC-005-A002",
+      "requirement_ids": [
+        "PR-002"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/target_time_window/start",
+      "expected": "2026-11-17T08:00:00-10:00"
+    },
+    {
+      "assertion_id": "SC-005-A003",
+      "requirement_ids": [
+        "PR-002"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/target_time_window/end",
+      "expected": "2026-11-17T11:00:00-10:00"
+    },
+    {
+      "assertion_id": "SC-005-A004",
+      "requirement_ids": [
+        "RR-001"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/request_revision",
+      "expected": 1
+    },
+    {
+      "assertion_id": "SC-005-A005",
+      "requirement_ids": [
+        "IS-007"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/status",
+      "expected": "COMPLETED"
+    },
+    {
+      "assertion_id": "SC-005-A006",
+      "requirement_ids": [
+        "DS-009"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/outcome",
+      "expected": "RECOMMENDATIONS"
+    },
+    {
+      "assertion_id": "SC-005-A007",
+      "requirement_ids": [
+        "RR-002"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation_result",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/outcome",
+      "expected": "RECOMMENDATIONS"
+    },
+    {
+      "assertion_id": "SC-005-A008",
+      "requirement_ids": [
+        "RR-001"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "SAME_AS",
+      "field": "/investigation_id",
+      "expected_ref": {
+        "target": "recommendation_result",
+        "selector": {
+          "request_step": 1
+        },
+        "field": "/investigation_id"
+      }
+    },
+    {
+      "assertion_id": "SC-005-A009",
+      "requirement_ids": [
+        "IT-001"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "harness_execution",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "SAME_AS",
+      "field": "/investigation_id",
+      "expected_ref": {
+        "target": "investigation_state",
+        "selector": {
+          "request_step": 1
+        },
+        "field": "/investigation_id"
+      }
+    },
+    {
+      "assertion_id": "SC-005-A010",
+      "requirement_ids": [
+        "IT-008"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "harness_execution",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "SAME_AS",
+      "field": "/tool_invocation_count",
+      "expected_ref": {
+        "target": "investigation_state",
+        "selector": {
+          "request_step": 1
+        },
+        "field": "/tool_call_count"
+      }
+    },
+    {
+      "assertion_id": "SC-005-A011",
+      "requirement_ids": [
+        "IT-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "TOOL_CALLED"
+      },
+      "operator": "COUNT_AT_MOST",
+      "expected": 12
+    },
+    {
+      "assertion_id": "SC-005-A012",
+      "requirement_ids": [
+        "IT-009"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "INVESTIGATION_COMPLETED"
+      },
+      "operator": "EQUALS",
+      "field": "/details/final_status",
+      "expected": "COMPLETED"
+    },
+    {
+      "assertion_id": "SC-005-A013",
+      "requirement_ids": [
+        "IT-009"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "INVESTIGATION_COMPLETED"
+      },
+      "operator": "SAME_AS",
+      "field": "/details/result_id",
+      "expected_ref": {
+        "target": "recommendation_result",
+        "selector": {
+          "request_step": 1
+        },
+        "field": "/result_id"
+      }
+    },
+    {
+      "assertion_id": "SC-005-A014",
+      "requirement_ids": [
+        "IT-008"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "INVESTIGATION_COMPLETED"
+      },
+      "operator": "SAME_AS",
+      "field": "/details/total_tool_calls",
+      "expected_ref": {
+        "target": "harness_execution",
+        "selector": {
+          "request_step": 1
+        },
+        "field": "/tool_invocation_count"
+      }
+    },
+    {
+      "assertion_id": "SC-005-A015",
+      "requirement_ids": [
+        "TW-013"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "INVESTIGATION_FAILED"
+      },
+      "operator": "ABSENT"
+    },
+    {
+      "assertion_id": "SC-005-A016",
+      "requirement_ids": [
+        "DS-009"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "INVESTIGATION_ABSTAINED"
+      },
+      "operator": "ABSENT"
+    },
+    {
+      "assertion_id": "SC-005-A017",
+      "requirement_ids": [
+        "IT-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "REQUEST_NORMALIZED"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-005-A018",
+      "requirement_ids": [
+        "IT-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "EVIDENCE_RECEIVED"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-005-A019",
+      "requirement_ids": [
+        "IT-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "EVIDENCE_VALIDATED"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-005-A020",
+      "requirement_ids": [
+        "IT-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "CANDIDATE_ASSESSED"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-005-A021",
+      "requirement_ids": [
+        "IT-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "CANDIDATE_ELIGIBLE"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-005-A022",
+      "requirement_ids": [
+        "IT-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "POLICY_EVALUATED"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-005-A023",
+      "requirement_ids": [
+        "IT-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "RESULT_VALIDATED"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-005-A024",
+      "requirement_ids": [
+        "IT-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "INVESTIGATION_COMPLETED"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-005-A025",
+      "requirement_ids": [
+        "TW-001"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "AGENT_STARTED",
+        "actor": "WEATHER"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-005-A026",
+      "requirement_ids": [
+        "TW-001"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "AGENT_STARTED",
+        "actor": "OCEAN"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-005-A027",
+      "requirement_ids": [
+        "EF-011"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-005-marine",
+        "template_finding_id": "SC-005_MARINE_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/retrieval_status",
+      "expected": "SUCCESS"
+    },
+    {
+      "assertion_id": "SC-005-A028",
+      "requirement_ids": [
+        "EF-011"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-005-marine",
+        "template_finding_id": "SC-005_MARINE_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/validation_status",
+      "expected": "ACCEPTED"
+    },
+    {
+      "assertion_id": "SC-005-A029",
+      "requirement_ids": [
+        "EF-002",
+        "EF-003"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-005-marine",
+        "template_finding_id": "SC-005_MARINE_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/coverage_type",
+      "expected": "REGIONAL"
+    },
+    {
+      "assertion_id": "SC-005-A030",
+      "requirement_ids": [
+        "EF-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-005-marine",
+        "template_finding_id": "SC-005_MARINE_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/valid_from",
+      "expected": "2026-11-17T08:00:00-10:00"
+    },
+    {
+      "assertion_id": "SC-005-A031",
+      "requirement_ids": [
+        "EF-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-005-marine",
+        "template_finding_id": "SC-005_MARINE_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/valid_until",
+      "expected": "2026-11-17T11:00:00-10:00"
+    },
+    {
+      "assertion_id": "SC-005-A032",
+      "requirement_ids": [
+        "RR-006"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "ALL_EQUALS",
+      "field": "/evidence_quality",
+      "expected": "SUFFICIENT"
+    },
+    {
+      "assertion_id": "SC-005-A033",
+      "requirement_ids": [
+        "RR-007"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "ALL_EQUALS",
+      "field": "/environmental_suitability",
+      "expected": "FAVORABLE"
+    },
+    {
+      "assertion_id": "SC-005-A034",
+      "requirement_ids": [
+        "HM-WIND-002",
+        "EL-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_B",
+        "activity": "SUP"
+      },
+      "operator": "EQUALS",
+      "field": "/eligibility",
+      "expected": "EXCLUDED"
+    },
+    {
+      "assertion_id": "SC-005-A035",
+      "requirement_ids": [
+        "HM-WIND-002"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_B",
+        "activity": "SUP"
+      },
+      "operator": "INCLUDES",
+      "field": "/disqualifying_policy_ids",
+      "expected": "HM-WIND-002"
+    },
+    {
+      "assertion_id": "SC-005-A036",
+      "requirement_ids": [
+        "HM-WIND-002"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_B",
+        "activity": "SUP"
+      },
+      "operator": "EQUALS",
+      "field": "/environmental_suitability",
+      "expected": "UNFAVORABLE"
+    },
+    {
+      "assertion_id": "SC-005-A037",
+      "requirement_ids": [
+        "HM-WIND-002"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "CANDIDATE_EXCLUDED"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-005-A038",
+      "requirement_ids": [
+        "RR-005",
+        "RR-014"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_B"
+      },
+      "operator": "ABSENT"
+    },
+    {
+      "assertion_id": "SC-005-A039",
+      "requirement_ids": [
+        "EF-002",
+        "EF-003"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-005-wind",
+        "template_finding_id": "SC-005_WIND_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/coverage_type",
+      "expected": "REGIONAL"
+    },
+    {
+      "assertion_id": "SC-005-A040",
+      "requirement_ids": [
+        "EF-002",
+        "EF-003"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-005-wind",
+        "template_finding_id": "SC-005_WIND_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/coverage_id",
+      "expected": "SYNTHETIC_SC-005_REGION"
+    },
+    {
+      "assertion_id": "SC-005-A041",
+      "requirement_ids": [
+        "EF-011"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-005-wind",
+        "template_finding_id": "SC-005_WIND_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/validation_status",
+      "expected": "ACCEPTED"
+    },
+    {
+      "assertion_id": "SC-005-A042",
+      "requirement_ids": [
+        "RR-005"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_D",
+        "activity": "SUP"
+      },
+      "operator": "EQUALS",
+      "field": "/eligibility",
+      "expected": "ELIGIBLE"
+    },
+    {
+      "assertion_id": "SC-005-A043",
+      "requirement_ids": [
+        "RR-006"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_D",
+        "activity": "SUP"
+      },
+      "operator": "EQUALS",
+      "field": "/evidence_quality",
+      "expected": "SUFFICIENT"
+    },
+    {
+      "assertion_id": "SC-005-A044",
+      "requirement_ids": [
+        "RR-007"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_D",
+        "activity": "SUP"
+      },
+      "operator": "EQUALS",
+      "field": "/environmental_suitability",
+      "expected": "FAVORABLE"
+    },
+    {
+      "assertion_id": "SC-005-A045",
+      "requirement_ids": [
+        "EL-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_D",
+        "activity": "SUP"
+      },
+      "operator": "EQUALS",
+      "field": "/disqualifying_policy_ids",
+      "expected": []
+    },
+    {
+      "assertion_id": "SC-005-A046",
+      "requirement_ids": [
+        "EL-007"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_D",
+        "activity": "SUP"
+      },
+      "operator": "EQUALS",
+      "field": "/unresolved_policy_ids",
+      "expected": []
+    },
+    {
+      "assertion_id": "SC-005-A047",
+      "requirement_ids": [
+        "EF-012"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_D",
+        "activity": "SUP"
+      },
+      "operator": "NOT_EQUALS",
+      "field": "/supporting_finding_ids",
+      "expected": []
+    },
+    {
+      "assertion_id": "SC-005-A048",
+      "requirement_ids": [
+        "RR-005"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_D"
+      },
+      "operator": "COUNT_EQUALS",
+      "expected": 1
+    },
+    {
+      "assertion_id": "SC-005-A049",
+      "requirement_ids": [
+        "RR-005"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_D"
+      },
+      "operator": "SAME_AS",
+      "field": "/assessment_id",
+      "expected_ref": {
+        "target": "candidate_assessment",
+        "selector": {
+          "request_step": 1,
+          "beach_id": "TEST_BEACH_D"
+        },
+        "field": "/assessment_id"
+      }
+    },
+    {
+      "assertion_id": "SC-005-A050",
+      "requirement_ids": [
+        "RR-010"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_D"
+      },
+      "operator": "INCLUDES",
+      "field": "/source_references",
+      "expected": "HI_DOH_CWB"
+    },
+    {
+      "assertion_id": "SC-005-A051",
+      "requirement_ids": [
+        "EF-011"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-005-water-d",
+        "template_finding_id": "SC-005_WATER-TEST_BEACH_D_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/retrieval_status",
+      "expected": "SUCCESS"
+    },
+    {
+      "assertion_id": "SC-005-A052",
+      "requirement_ids": [
+        "EF-011"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-005-water-d",
+        "template_finding_id": "SC-005_WATER-TEST_BEACH_D_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/validation_status",
+      "expected": "ACCEPTED"
+    },
+    {
+      "assertion_id": "SC-005-A053",
+      "requirement_ids": [
+        "EF-002",
+        "EF-003"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-005-water-d",
+        "template_finding_id": "SC-005_WATER-TEST_BEACH_D_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/coverage_type",
+      "expected": "BEACH"
+    },
+    {
+      "assertion_id": "SC-005-A054",
+      "requirement_ids": [
+        "EF-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-005-water-d",
+        "template_finding_id": "SC-005_WATER-TEST_BEACH_D_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/valid_from",
+      "expected": "2026-11-17T08:00:00-10:00"
+    },
+    {
+      "assertion_id": "SC-005-A055",
+      "requirement_ids": [
+        "EF-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-005-water-d",
+        "template_finding_id": "SC-005_WATER-TEST_BEACH_D_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/valid_until",
+      "expected": "2026-11-17T11:00:00-10:00"
+    },
+    {
+      "assertion_id": "SC-005-A056",
+      "requirement_ids": [
+        "CA-014"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_A"
+      },
+      "operator": "ABSENT"
+    },
+    {
+      "assertion_id": "SC-005-A057",
+      "requirement_ids": [
+        "CA-014"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_C"
+      },
+      "operator": "ABSENT"
+    },
+    {
+      "assertion_id": "SC-005-A058",
+      "requirement_ids": [
+        "CA-014"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_E"
+      },
+      "operator": "ABSENT"
+    },
+    {
+      "assertion_id": "SC-005-A059",
+      "requirement_ids": [
+        "RR-003"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "COUNT_EQUALS",
+      "expected": 1
+    },
+    {
+      "assertion_id": "SC-005-A060",
+      "requirement_ids": [
+        "HM-WIND-002"
+      ],
+      "mandatory": false,
+      "test_status": "BLOCKED",
+      "blocking_reason": "Approved wind-hazard criteria are unresolved: this verifies enforcement of a declared disqualifying result, not that wind measurements and shoreline orientation produce it.",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_B",
+        "activity": "SUP"
+      },
+      "operator": "EQUALS",
+      "field": "/eligibility",
+      "expected": "EXCLUDED"
+    }
+  ]
+}

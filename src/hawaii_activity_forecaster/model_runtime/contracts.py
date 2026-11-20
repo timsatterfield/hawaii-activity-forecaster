@@ -236,10 +236,13 @@ def parse_proposal(operation: Operation, content: str, context: dict) -> WireMod
             if proposal.action == "CONCLUDE" and proposal.reason_code not in context["allowed_stop_reasons"]:
                 raise ProposalError("MODEL_STOP_NOT_ALLOWED")
         else:
-            if (any(step.option_id not in context["legal_option_ids"] for step in proposal.steps)
-                    or not set(proposal.unresolved_gap_ids) <= set(context["gap_ids"])
-                    or len(proposal.steps) > context["remaining_tool_calls"]):
-                raise ProposalError("MODEL_PLAN_NOT_ALLOWED")
+            # One closed code per rejected condition, so a live failure names its cause.
+            if any(step.option_id not in context["legal_option_ids"] for step in proposal.steps):
+                raise ProposalError("MODEL_PLAN_OPTION_NOT_ALLOWED")
+            if not set(proposal.unresolved_gap_ids) <= set(context["gap_ids"]):
+                raise ProposalError("MODEL_PLAN_GAP_NOT_ALLOWED")
+            if len(proposal.steps) > context["remaining_tool_calls"]:
+                raise ProposalError("MODEL_PLAN_TOO_LONG")
         return proposal
     except ProposalError:
         raise
