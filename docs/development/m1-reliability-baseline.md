@@ -13,6 +13,8 @@ uv run --locked hafi reliability traces/acceptance --reports traces/acceptance -
 ```
 
 Pass one or more JSONL files or directories; directories are searched recursively.
+Give `--reports` **once**, followed by every report path; repeating the flag keeps
+only the last value, which silently drops earlier batches' reports.
 `--reports` optionally takes saved scenario JSON files or directories. It reads
 existing evidence only: no fixture evaluation, provider client, model server,
 credential or network access is needed. Input files are never repaired or modified.

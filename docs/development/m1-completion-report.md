@@ -243,6 +243,65 @@ retaining profile 0.7 bytes and all deterministic guards. No prompt, policy, sch
 fixture, application code or test file was changed during this investigation.
 SC-008's separate assertion failure is not diagnosed by the SC-006 finding.
 
+## Profile 0.8 reliability sample (2026-11-20)
+
+After the 12/12 confirmation batch, the owner ran the full selected live gate
+(`scripts/run_live_acceptance.py --live`) **three more times** on
+`m1-saturday-runtime-0.8` (`gpt-6-luna`, `LIVE_PROVIDER`). That makes four full
+rounds. The combined summary uses `hafi reliability` over all four batch directories.
+All 52 traces validated with no input issues, and every saved report bound to its
+traces.
+
+| Round | Scenario result | Batch directory (local, ignored) |
+|---|---|---|
+| 0 (confirmation) | 12/12 PASS | `traces/acceptance-subset-1bf7ac46-…` |
+| 1 | 12/12 PASS | `traces/acceptance-subset-bae52ab1-…` |
+| 2 | 12/12 PASS | `traces/acceptance-subset-96b39600-…` |
+| 3 | 11/12 PASS (SC-012 FAIL) | `traces/acceptance-subset-2d828b70-…` |
+
+| Measure | Four-round sample |
+|---|---|
+| Scenario-level PASS | **47/48 (98%)**; 11 scenarios passed 4/4, SC-012 passed 3/4 |
+| Investigations | 52, with SC-012 counted as two steps |
+| Operational success | **51/52**: 43 completed, 8 explained abstentions, 1 technical failure |
+| Model calls / tool calls | 259 / 414, about 5.0 model calls per investigation |
+| Median terminal duration | 9,477 ms |
+
+**The one failure: SC-012 round 3, step 2.** This was the Napili follow-up; step 1
+passed. The Ocean proposal named an option outside the legal list, and the gateway
+rejected it with `MODEL_PLAN_OPTION_NOT_ALLOWED`. The in-flight Weather call was then
+refused with `MODEL_INVESTIGATION_INACTIVE` as the investigation closed, which is a
+consequence, not a second fault. No ocean tool ran and no recommendation was made, so
+the run failed closed. This is the first live capture of the split plan-rejection
+code. It is consistent with, but does not prove, the earlier uncategorized
+`MODEL_PLAN_NOT_ALLOWED` failures on profile 0.6 (SC-007 #2, SC-005 #1). Privacy rules
+deliberately do not record which option name was invented.
+
+**Optional outcomes were stable across rounds.** SC-007's six optional Snorkel Store
+checks failed in all four rounds (24 in total), because the model never retrieved
+that redundant source. The blocked rows in SC-005, SC-006, SC-007, SC-008 and SC-012
+behaved as designed.
+
+**Limits.** This is a small development sample: four repetitions of fixed requests
+against synthetic fixtures, with one model and profile. It is not a controlled
+benchmark or a production reliability estimate.
+
+**Reproduce the summary.** Pass every batch directory once as a trace path and once
+after a single `--reports`:
+
+```bash
+uv run --locked hafi reliability DIR0 DIR1 DIR2 DIR3 --reports DIR0 DIR1 DIR2 DIR3
+```
+
+**Possible follow-up.** Ocean plans that invent option IDs are now the leading live
+failure mode, at 1 in 52 investigations here. Candidate mitigations, which need
+review:
+
+- Prompt guidance to copy option IDs verbatim from `legal_option_ids`.
+- A bounded single re-ask on `MODEL_PLAN_OPTION_NOT_ALLOWED`. The approved design
+  currently disallows automatic model retries, so this would be an architecture
+  change.
+
 ## Work outside this completion claim
 
 Verified real-beach catalog completion, live environmental providers, production
