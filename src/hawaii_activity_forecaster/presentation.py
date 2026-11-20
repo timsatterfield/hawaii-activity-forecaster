@@ -46,6 +46,16 @@ _REASONS = {
     "INVESTIGATION_MISMATCH": "The finding belongs to another investigation.",
     "RUNTIME_BINDING_MISSING": "A finding lacks observed retrieval provenance.", "APPLICABILITY_RULE_MISSING": "A finding lacks an approved applicability mapping.",
 }
+# Fixed wording for disqualifying safety policies (validation/safety.py _HAZARDS).
+# Policy identifiers are never presentation fields; the trace keeps them.
+_EXCLUSIONS = {
+    "HM-WATER-001": "an applicable official water-contact avoidance advisory",
+    "HM-SURF-004": "disqualifying surf conditions for this activity",
+    "HM-CURRENT-004": "a dangerous current or persistent hazard",
+    "HM-WEATHER-003": "an applicable official weather or marine warning",
+    "HM-WIND-002": "dangerous offshore wind for this activity",
+    "HM-BEACH-004": "a disqualifying beach characteristic",
+}
 _MEASUREMENTS = {
     "WIND_SPEED": "Wind speed", "WIND_DIRECTION": "Wind direction", "WIND_GUST": "Wind gust",
     "PRECIPITATION": "Precipitation", "AIR_TEMPERATURE": "Air temperature", "WEATHER_CONDITION": "Weather condition",
@@ -129,6 +139,25 @@ def _verified(report, catalog, policy):
     return report, state, result, catalog
 
 
+def _exclusions(state, beaches):
+    """Validated EXCLUDED candidates with fixed reasons; never recommendations or scores."""
+    items = []
+    for assessment in sorted(state.assessments, key=lambda a: a.beach_id):
+        if assessment.eligibility != "EXCLUDED" or assessment.beach_id not in beaches:
+            continue
+        reasons = [_EXCLUSIONS.get(policy_id, "a disqualifying safety policy")
+                   for policy_id in assessment.disqualifying_policy_ids]
+        for constraint in assessment.hard_constraint_results:
+            kind, _, value = constraint.constraint_description.partition(": ")
+            if constraint.result == "FAIL" and kind.startswith("Required ") and value:
+                reasons.append(f"outside your required {kind.removeprefix('Required ')} "
+                               f"({value.replace('_', ' ').title()})")
+            elif constraint.result == "FAIL":
+                reasons.append("a required condition you specified is not met")
+        items.append(f"{beaches[assessment.beach_id].name}: " + "; ".join(reasons or ["excluded by a safety policy"]))
+    return items
+
+
 def _section(lines, title, items, *, indent=""):
     items = list(dict.fromkeys(_text(item) for item in items if _text(item)))
     if items:
@@ -176,6 +205,7 @@ def render_report(report: SkeletonReport, *, catalog: BeachCatalog | None = None
     if result.outcome == "NO_RECOMMENDATION":
         lines.extend(["No recommendation", _text(result.explanation)])
         _section(lines, "Affected locations:", [beaches[key].name for key in result.affected_beach_ids or () if key in beaches])
+        _section(lines, "Not recommended (excluded):", _exclusions(state, beaches))
         issues = []
         for issue in result.unresolved_issues or ():
             prefix, separator, detail = issue.partition(": ")
@@ -217,5 +247,6 @@ def render_report(report: SkeletonReport, *, catalog: BeachCatalog | None = None
                               f"      Accessed: {source.accessed_at.isoformat()}; catalog verified: {beach.last_verified.isoformat()}",
                               "      Reference: " + _text(source.url)])
     lines.append("")
+    _section(lines, "Not recommended (excluded):", _exclusions(state, beaches))
     _section(lines, "General limitations:", [_limitation(item) for item in result.general_limitations])
     return "\n".join(lines) + "\n"

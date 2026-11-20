@@ -62,7 +62,9 @@ def test_recommendations_show_activity_time_reasons_actual_evidence_and_attribut
     assert "2026-11-17 08:00 HST (UTC-10:00)" in output
     assert "2026-11-17 11:00 HST (UTC-10:00)" in output
     assert "- Fictional Test Beach B (SYNTHETIC)" in output
-    assert "Fictional Test Beach A (SYNTHETIC)" not in output
+    recommended, _, excluded = output.partition("Not recommended (excluded):")
+    assert "Fictional Test Beach A (SYNTHETIC)" not in recommended  # Never offered as a recommendation...
+    assert "Fictional Test Beach A (SYNTHETIC): an applicable official water-contact" in excluded  # ...but disclosed.
     recommendation = report.result.recommendations[0]
     assert recommendation.recommendation_reason in output
     assert recommendation.environmental_summary in output
