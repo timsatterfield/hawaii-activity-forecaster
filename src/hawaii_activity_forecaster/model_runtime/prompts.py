@@ -10,7 +10,7 @@ from .contracts import (CoordinatorInput, InvocationIdentity, Operation, OUTPUTS
                         ProposalError, SpecialistInput)
 from .targets import (
     PROFILE, SATURDAY_PROFILE, SATURDAY_PROFILE_V1, SATURDAY_PROFILE_V2, SATURDAY_PROFILE_V3, SATURDAY_PROFILE_V4,
-    SATURDAY_PROFILE_V5,
+    SATURDAY_PROFILE_V5, SATURDAY_PROFILE_V6,
     OLLAMA_PROFILE, OLLAMA_PROFILE_V1, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4,
     MODEL, CALL_RESERVE_MICROUSD, DEFAULT_INPUT_LIMIT, SUPPORTED_PROFILES, TARGETS,
 )
@@ -20,10 +20,11 @@ from .targets import (
 # appends ocean_investigation recovery-condition guidance (template release-0.3).
 # Use these explicit sets, never bare SATURDAY_PROFILE, so older profiles stay fixed.
 _SATURDAY_RELEASE = frozenset({SATURDAY_PROFILE, SATURDAY_PROFILE_V2, SATURDAY_PROFILE_V3, SATURDAY_PROFILE_V4,
-                               SATURDAY_PROFILE_V5})
-_NORMALIZE_GUIDED = frozenset({SATURDAY_PROFILE, SATURDAY_PROFILE_V4, SATURDAY_PROFILE_V5})
-_OCEAN_GUIDED = frozenset({SATURDAY_PROFILE, SATURDAY_PROFILE_V5})
-_OCEAN_NO_RETRY_GUIDED = frozenset({SATURDAY_PROFILE})  # 0.6: ocean template release-0.4.
+                               SATURDAY_PROFILE_V5, SATURDAY_PROFILE_V6})
+_NORMALIZE_GUIDED = frozenset({SATURDAY_PROFILE, SATURDAY_PROFILE_V4, SATURDAY_PROFILE_V5, SATURDAY_PROFILE_V6})
+_OCEAN_GUIDED = frozenset({SATURDAY_PROFILE, SATURDAY_PROFILE_V5, SATURDAY_PROFILE_V6})
+_OCEAN_NO_RETRY_GUIDED = frozenset({SATURDAY_PROFILE, SATURDAY_PROFILE_V6})  # 0.6+: ocean template release-0.4.
+_NORMALIZE_SOMEWHERE_GUIDED = frozenset({SATURDAY_PROFILE})  # 0.7: normalize template release-0.4.
 
 
 def input_limit(profile: str) -> int:
@@ -72,7 +73,8 @@ def template_version(operation: Operation, profile: str = PROFILE) -> str:
         return f"{operation}-ollama-0.2"
     if profile == OLLAMA_PROFILE_V1:
         return f"{operation}-ollama-0.1"
-    if profile in _OCEAN_NO_RETRY_GUIDED and operation == "ocean_investigation":
+    if (profile in _OCEAN_NO_RETRY_GUIDED and operation == "ocean_investigation"
+            or profile in _NORMALIZE_SOMEWHERE_GUIDED and operation == "normalize_request"):
         return f"{operation}-release-0.4"
     if (profile in _NORMALIZE_GUIDED and operation == "normalize_request"
             or profile in _OCEAN_GUIDED and operation == "ocean_investigation"):
@@ -88,7 +90,7 @@ def template_text(operation: Operation, profile: str = PROFILE) -> str:
     instruction = (_NORMALIZE if operation == "normalize_request" else _COORDINATE
                    if operation == "coordinator_plan" else _SPECIALIST.format(role=_ROLE[operation]))
     text = _COMMON + "\n\n" + instruction
-    if profile in {SATURDAY_PROFILE, SATURDAY_PROFILE_V5, SATURDAY_PROFILE_V4, SATURDAY_PROFILE_V3, SATURDAY_PROFILE_V2, SATURDAY_PROFILE_V1, OLLAMA_PROFILE, OLLAMA_PROFILE_V1, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4}:
+    if profile in {SATURDAY_PROFILE, SATURDAY_PROFILE_V6, SATURDAY_PROFILE_V5, SATURDAY_PROFILE_V4, SATURDAY_PROFILE_V3, SATURDAY_PROFILE_V2, SATURDAY_PROFILE_V1, OLLAMA_PROFILE, OLLAMA_PROFILE_V1, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4}:
         if operation == "normalize_request":
             text += """\nUse existing logical values: activity SWIMMING/SNORKELING/SUP; target_date
 YYYY-MM-DD; target_time_window {start: ISO-aware datetime, end: ISO-aware datetime};
@@ -141,6 +143,10 @@ preferred_area; 'at' a beach is a BEACH restriction. Give every changed field a
 source span covering its whole phrase: the activity word, 'tomorrow', the daypart
 word, the experience word, 'prefer calm water' including 'prefer', and the full
 location clause with its preposition, such as 'near Kihei' or 'in South Maui'."""
+    if profile in _NORMALIZE_SOMEWHERE_GUIDED and operation == "normalize_request":
+        text += """
+'prefer somewhere near' before an area is the same soft preferred_area preference;
+cite the whole phrase, such as 'prefer somewhere near Kihei'."""
     if profile in _OCEAN_GUIDED and operation == "ocean_investigation":
         # Mirrors the runtime's fixed option roles; the runtime stays the authority.
         text += """
@@ -231,7 +237,7 @@ def prepare(operation: Operation, inputs: object, identity: InvocationIdentity, 
             **actual.model_dump(), rule_profile=inputs.rule_profile, catalog_summary=inputs.catalog_summary,
             inherited_origins=[asdict(o) for o in inputs.inherited_origins],
             inherited_request=inputs.inherited_request.model_dump(mode="json") if inputs.inherited_request else None)
-        if profile in {SATURDAY_PROFILE, SATURDAY_PROFILE_V5, SATURDAY_PROFILE_V4, SATURDAY_PROFILE_V3, SATURDAY_PROFILE_V2, OLLAMA_PROFILE, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4}:
+        if profile in {SATURDAY_PROFILE, SATURDAY_PROFILE_V6, SATURDAY_PROFILE_V5, SATURDAY_PROFILE_V4, SATURDAY_PROFILE_V3, SATURDAY_PROFILE_V2, OLLAMA_PROFILE, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4}:
             # Mechanical Unicode offsets only. The model still selects meaning;
             # the existing verifier checks every proposed value and cited span.
             context["request_tokens"] = [dict(text=m.group(), start=m.start(), end=m.end())

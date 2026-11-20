@@ -111,14 +111,26 @@ def test_profile_0_5_changes_only_ocean_guidance():
 
 def test_profile_0_6_changes_only_ocean_no_retry_guidance():
     from hawaii_activity_forecaster.model_runtime.prompts import template_text, template_version
-    from hawaii_activity_forecaster.model_runtime.targets import TARGETS, SATURDAY_PROFILE_V5
-    assert TARGETS[SATURDAY_PROFILE] == TARGETS[SATURDAY_PROFILE_V5]
+    from hawaii_activity_forecaster.model_runtime.targets import TARGETS, SATURDAY_PROFILE_V5, SATURDAY_PROFILE_V6
+    assert TARGETS[SATURDAY_PROFILE_V6] == TARGETS[SATURDAY_PROFILE_V5]
     for operation in ('normalize_request', 'coordinator_plan', 'weather_investigation'):
-        assert template_text(operation, SATURDAY_PROFILE) == template_text(operation, SATURDAY_PROFILE_V5)
-        assert template_version(operation, SATURDAY_PROFILE) == template_version(operation, SATURDAY_PROFILE_V5)
-    old, new = template_text('ocean_investigation', SATURDAY_PROFILE_V5), template_text('ocean_investigation', SATURDAY_PROFILE)
+        assert template_text(operation, SATURDAY_PROFILE_V6) == template_text(operation, SATURDAY_PROFILE_V5)
+        assert template_version(operation, SATURDAY_PROFILE_V6) == template_version(operation, SATURDAY_PROFILE_V5)
+    old, new = template_text('ocean_investigation', SATURDAY_PROFILE_V5), template_text('ocean_investigation', SATURDAY_PROFILE_V6)
     assert new.startswith(old) and "there is no retry" in new
-    assert template_version('ocean_investigation', SATURDAY_PROFILE) == 'ocean_investigation-release-0.4'
+    assert template_version('ocean_investigation', SATURDAY_PROFILE_V6) == 'ocean_investigation-release-0.4'
+
+
+def test_profile_0_7_changes_only_normalize_somewhere_guidance():
+    from hawaii_activity_forecaster.model_runtime.prompts import template_text, template_version
+    from hawaii_activity_forecaster.model_runtime.targets import TARGETS, SATURDAY_PROFILE_V6
+    assert TARGETS[SATURDAY_PROFILE] == TARGETS[SATURDAY_PROFILE_V6]
+    for operation in ('coordinator_plan', 'weather_investigation', 'ocean_investigation'):
+        assert template_text(operation, SATURDAY_PROFILE) == template_text(operation, SATURDAY_PROFILE_V6)
+        assert template_version(operation, SATURDAY_PROFILE) == template_version(operation, SATURDAY_PROFILE_V6)
+    old, new = template_text('normalize_request', SATURDAY_PROFILE_V6), template_text('normalize_request', SATURDAY_PROFILE)
+    assert new.startswith(old) and "'prefer somewhere near Kihei'" in new
+    assert template_version('normalize_request', SATURDAY_PROFILE) == 'normalize_request-release-0.4'
 
 
 def test_profile_0_6_no_retry_example_is_a_valid_plan():

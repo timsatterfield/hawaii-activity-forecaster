@@ -34,7 +34,7 @@ The [bounded OpenAI pilot](docs/development/m1-openai-pilot.md) additionally ver
 genuine three-role execution for the listed recommendation, recovery, abstention
 and follow-up checks. It used all ten authorized investigations, retaining two
 early normalization failures; all seven later checks passed on the
-`m1-saturday-runtime-0.2` profile. The release configuration now uses `0.6`: `0.3` raised the input bound
+`m1-saturday-runtime-0.2` profile. The release configuration now uses `0.7`: `0.3` raised the input bound
 ([M1.8](docs/development/m1-8-sc-009-sc-012.md)), `0.4` adds request-interpretation
 guidance ([M1.9](docs/development/m1-9-sc-001-sc-003.md)), `0.5` adds Ocean
 recovery-condition guidance, and `0.6` adds no-retry guidance ([M1.9-B](docs/development/m1-9b-profile-0.4-rebaseline.md)). This is a synthetic M1
@@ -642,7 +642,9 @@ input bound to 12,000 bytes so revised follow-ups fit.
 SC-003 (55 assertions) with dataset `1.3.0`. [M1.10](docs/development/m1-10-sc-006-sc-007-sc-011.md) adds
 SC-006 (permitted MIXED), SC-007 (stale reports) and SC-011 (prompt injection) with
 dataset `1.4.0`. [M1.11](docs/development/m1-11-sc-005-sc-008.md) adds the partially
-blocked SC-005 (SUP offshore wind) and SC-008 (material conflict) with dataset `1.5.0`. SC-002 is deferred until a swimming MIXED
+blocked SC-005 (SUP offshore wind) and SC-008 (material conflict) with dataset `1.5.0`.
+[M1.12](docs/development/m1-12-sc-002-wind-chop.md) completes the set with SC-002, adding the
+owner-approved swimming wind-chop MIXED permission, dataset `1.6.0` and profile `0.7`. SC-002 is deferred until a swimming MIXED
 permission has an approved safety-policy basis.
 
 Default demos now use raw admission and independently validated interpretation

@@ -28,7 +28,7 @@ from hawaii_activity_forecaster.observability import inspect_trace
 from release_samples import adapter
 
 ROOT = Path(__file__).resolve().parents[1] / "fixtures" / "scenario-pack-v1"
-COUNTS = {"SC-001": 86, "SC-003": 55, "SC-004": 84, "SC-005": 59, "SC-006": 62, "SC-007": 84, "SC-008": 45,
+COUNTS = {"SC-001": 86, "SC-002": 65, "SC-003": 55, "SC-004": 84, "SC-005": 59, "SC-006": 62, "SC-007": 84, "SC-008": 45,
           "SC-009": 73, "SC-010": 61, "SC-011": 70}
 OPTIONAL_BLOCKED = {"SC-005": 1, "SC-006": 1, "SC-007": 1, "SC-008": 1}
 MANDATORY_PASSES = {**COUNTS, "SC-012": 83}  # SC-012 also has one optional BLOCKED assertion.
@@ -78,6 +78,8 @@ def test_offline_agent_run_passes_component_assertions_but_not_full_acceptance(s
         assert (metrics.eligible_candidates, metrics.outcome) == (3, "RECOMMENDATIONS")
     elif scenario_id == "SC-003":  # One supported candidate inside the hard area; A/E assessed UNSUPPORTED.
         assert (metrics.candidates_considered, metrics.candidates_investigated, metrics.eligible_candidates) == (3, 1, 1)
+    elif scenario_id == "SC-002":  # A permitted wind-chop MIXED (preferred), C farther FAVORABLE.
+        assert (metrics.eligible_candidates, metrics.outcome) == (2, "RECOMMENDATIONS")
     elif scenario_id == "SC-005":  # Declared SUP offshore wind excludes B; D eligible.
         assert (metrics.excluded_candidates, metrics.eligible_candidates, metrics.outcome) == (1, 1, "RECOMMENDATIONS")
     elif scenario_id == "SC-008":  # Declared material conflict: both findings LIMITED; abstention.
@@ -101,6 +103,7 @@ OLLAMA_AREA_LIMIT = pytest.mark.xfail(strict=True, reason=(
     ("SC-006", SATURDAY_PROFILE, "LIVE_PROVIDER"), ("SC-007", SATURDAY_PROFILE, "LIVE_PROVIDER"),
     ("SC-011", SATURDAY_PROFILE, "LIVE_PROVIDER"),
     ("SC-005", SATURDAY_PROFILE, "LIVE_PROVIDER"), ("SC-008", SATURDAY_PROFILE, "LIVE_PROVIDER"),
+    ("SC-002", SATURDAY_PROFILE, "LIVE_PROVIDER"),
     ("SC-004", SATURDAY_PROFILE, "LIVE_PROVIDER"), ("SC-009", SATURDAY_PROFILE, "LIVE_PROVIDER"),
     ("SC-010", SATURDAY_PROFILE, "LIVE_PROVIDER"), ("SC-012", SATURDAY_PROFILE, "LIVE_PROVIDER"),
     pytest.param("SC-004", OLLAMA_PROFILE, "LOCAL_PROVIDER", marks=OLLAMA_AREA_LIMIT),
@@ -288,3 +291,17 @@ def test_sc007_passes_when_the_redundant_store_source_is_skipped(tmp_path):
     assert result.outcome == result.scenario.outcome == "PASS"
     optional_failures = [a for a in result.scenario.assertions if not a.mandatory and a.outcome == "FAIL"]
     assert len(optional_failures) == 6 and all(a.reason == "REFERENCE_UNBOUND_OR_AMBIGUOUS" for a in optional_failures)
+
+
+def test_sc002_without_the_chop_permission_fails(tmp_path):
+    """The permission is load-bearing: without it, A's declared chop leaves A non-recommendable."""
+    root = tmp_path / "pack"
+    shutil.copytree(ROOT, root)
+    path = root / "policies" / "sc-002.json"
+    policy = json.loads(path.read_text())
+    policy["mixed_permissions"] = []
+    path.write_text(json.dumps(policy))
+    result = run(root, "SC-002", tmp_path, adapter([]))
+    assert result.outcome == "FAIL"
+    failed = {a.assertion_id for a in result.scenario.assertions if a.outcome == "FAIL"}
+    assert any(a.assertion_id in failed for a in result.scenario.assertions if a.requirement_ids == ("HM-T05", "RR-005"))

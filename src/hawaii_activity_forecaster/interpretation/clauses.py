@@ -21,7 +21,7 @@ _DATE = r"\b(?:today|tomorrow|\d{4}-\d{2}-\d{2}|(?:January|February|March|April|
 _ISO = r"\d{4}-\d\d-\d\dT\d\d:\d\d(?::\d\d(?:\.\d{1,6})?)?(?:Z|[+-]\d\d:\d\d)"
 _CLOCK = r"(?P<h{}>\d{{1,2}})(?::(?P<m{}>\d{{2}}))?\s*(?P<a{}>[ap]\.?m\.?)?"
 _RANGE = re.compile(r"(?<![\d:\w-])(?:from\s+)?" + _CLOCK.format(1, 1, 1) + r"\s*(?:to|[–-])\s*" + _CLOCK.format(2, 2, 2) + r"(?![\d:\w])", re.I)
-_FILLER = frozenset("where what about try should can could would may i we me us you my our go want like to the a an please actually let let's look instead and or on for is am i'm im from at hst hawaii time request fictional demo recommend somewhere location locations beach beaches thanks thank with now it be do that have of".split())
+_FILLER = frozenset("where what about try should can could would may i we me us you my our go want like to the a an please actually let let's look instead and or on for is am i'm im i'd from at hst hawaii time request fictional demo recommend somewhere location locations beach beaches thanks thank with now it be do that have of".split())
 
 
 @dataclass
@@ -259,13 +259,13 @@ def analyze(context, prior):
             add("hard_constraints", {"kind": "UNINTERPRETED", "text": match[0]}, match.span(), unresolved=True)
             result.question("Please clarify the mandatory condition; no approved interpretation can establish it.")
     # Location phrases end at punctuation, a time phrase or an explicit connector.
-    location_pattern = (r"\b(?P<prefix>staying\s+in|must\s+stay\s+in|prefer\s+near|near|prefer|ideally|only|in|at)\s+"
+    location_pattern = (r"\b(?P<prefix>staying\s+in|must\s+stay\s+in|prefer\s+somewhere\s+near|prefer\s+near|near|prefer|ideally|only|in|at)\s+"
                         r"(?P<target>.+?)(?=\s+(?:tomorrow|today|morning|afternoon|from\s+\d|and|instead)\b|[,;.!?]|$)")
     for match in re.finditer(location_pattern, text, re.I):
         if _overlaps(match.span(), result.consumed):
             continue
         prefix = " ".join(match["prefix"].casefold().split())
-        soft = prefix in {"near", "prefer", "prefer near", "ideally"}
+        soft = prefix in {"near", "prefer", "prefer near", "prefer somewhere near", "ideally"}
         scopes = ("REGION", "LOCALITY") if soft or prefix == "in" else ("BEACH",) if prefix == "at" else ("REGION", "LOCALITY", "BEACH")
         choices = resolve_location(context.catalog, match["target"].strip(), scopes)
         if _negative(text, match.start()):
@@ -292,7 +292,7 @@ def analyze(context, prior):
             add(name, {"kind": "UNINTERPRETED", "text": match[0]}, match.span(), unresolved=True)
             if soft:
                 result.limitations.append("An uninterpreted soft preference cannot be claimed as satisfied; no nearby relationship is inferred.")
-                if prefix in {"near", "prefer near"} and base.get("preferred_area"):
+                if prefix in {"near", "prefer near", "prefer somewhere near"} and base.get("preferred_area"):
                     result.put("preferred_area", None, match.span())
             else:
                 result.question("Please provide a unique supported location for the mandatory restriction.")

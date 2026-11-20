@@ -85,6 +85,17 @@ class EvidenceRule(ContractModel):
         return self
 
 
+LimitationCode = Literal["SYNTHETIC_POOR_VISIBILITY", "SYNTHETIC_WIND_CHOP"]
+# Owner-reviewed non-disqualifying limitations: (activity, code) -> (evidence category,
+# governing requirement). Poor visibility: safety policy HM-VIS-003. Wind-driven chop for
+# swimming: safety policy §8.1 / matrix "non-disqualifying wind or chop: DISCLOSE" (HM-T05),
+# owner decision 2026-11-20. Neither sets a real-world threshold.
+REVIEWED_LIMITATIONS = {
+    (Activity.SNORKELING, "SYNTHETIC_POOR_VISIBILITY"): ("UNDERWATER_VISIBILITY", "HM-VIS-003"),
+    (Activity.SWIMMING, "SYNTHETIC_WIND_CHOP"): ("WIND_CONDITIONS", "HM-T05"),
+}
+
+
 class Premise(ContractModel):
     premise_id: Text
     beach_id: Text
@@ -95,7 +106,7 @@ class Premise(ContractModel):
     finding_refs: list[FindingRef]
     catalog_field_refs: list[CatalogFieldRef]
     rationale: Text
-    limitation_code: Literal["SYNTHETIC_POOR_VISIBILITY"] | None = None
+    limitation_code: LimitationCode | None = None
 
     @model_validator(mode="after")
     def structure(self) -> Self:
@@ -106,8 +117,8 @@ class Premise(ContractModel):
         limitation = self.fact_type == FactType.NON_DISQUALIFYING_LIMITATION_PRESENT
         if limitation != (self.limitation_code is not None):
             raise ValueError("only limitation premises require/permit limitation_code")
-        if limitation and self.activity != Activity.SNORKELING:
-            raise ValueError("the initial reviewed limitation code is scoped to snorkeling")
+        if limitation and (self.activity, self.limitation_code) not in REVIEWED_LIMITATIONS:
+            raise ValueError("limitation code is not reviewed for this activity")
         if any(ref.beach_id != self.beach_id for ref in self.catalog_field_refs):
             raise ValueError("catalog support must name the same candidate")
         unique([(ref.source_fixture_id, ref.finding_id) for ref in self.finding_refs], "premise finding refs")
@@ -115,15 +126,18 @@ class Premise(ContractModel):
 
 
 class MixedPermission(ContractModel):
-    activity: Literal[Activity.SNORKELING]
-    limitation_code: Literal["SYNTHETIC_POOR_VISIBILITY"]
+    activity: Literal[Activity.SNORKELING, Activity.SWIMMING]
+    limitation_code: LimitationCode
     requirement_ids: list[Text] = Field(min_length=1)
     disclosure: Text
 
     @model_validator(mode="after")
     def basis(self) -> Self:
-        if "HM-VIS-003" not in self.requirement_ids:
-            raise ValueError("visibility permission must reference HM-VIS-003")
+        reviewed = REVIEWED_LIMITATIONS.get((self.activity, self.limitation_code))
+        if reviewed is None:
+            raise ValueError("limitation code is not reviewed for this activity")
+        if reviewed[1] not in self.requirement_ids:
+            raise ValueError(f"permission must reference its governing basis {reviewed[1]}")
         return self
 
 

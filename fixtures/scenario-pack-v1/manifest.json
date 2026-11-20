@@ -1,6 +1,6 @@
 {
   "fixture_format_version": "2.0.0",
-  "fixture_package_version": "1.5.0",
+  "fixture_package_version": "1.6.0",
   "schema_version": "0.1",
   "policy_version": "0.2",
   "harness_contract_version": "1.0.0",
@@ -539,12 +539,70 @@
       "path": "sources/ocean/sc-008-store-currents.json",
       "agent_type": "OCEAN",
       "source_id": "SNORKEL_STORE"
+    },
+    {
+      "fixture_id": "sc-002-alerts",
+      "path": "sources/weather/sc-002-alerts.json",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_ALERTS"
+    },
+    {
+      "fixture_id": "sc-002-wind",
+      "path": "sources/weather/sc-002-wind.json",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_WEATHER"
+    },
+    {
+      "fixture_id": "sc-002-marine",
+      "path": "sources/ocean/sc-002-marine.json",
+      "agent_type": "OCEAN",
+      "source_id": "NWS_MARINE"
+    },
+    {
+      "fixture_id": "sc-002-visibility",
+      "path": "sources/ocean/sc-002-visibility.json",
+      "agent_type": "OCEAN",
+      "source_id": "HWT_VISIBILITY"
+    },
+    {
+      "fixture_id": "sc-002-water-a",
+      "path": "sources/ocean/sc-002-water-a.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "sc-002-water-b",
+      "path": "sources/ocean/sc-002-water-b.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "sc-002-water-c",
+      "path": "sources/ocean/sc-002-water-c.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "sc-002-water-d",
+      "path": "sources/ocean/sc-002-water-d.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "sc-002-water-e",
+      "path": "sources/ocean/sc-002-water-e.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
     }
   ],
   "scenarios": [
     {
       "scenario_id": "SC-001",
       "path": "scenarios/SC-001/scenario.json"
+    },
+    {
+      "scenario_id": "SC-002",
+      "path": "scenarios/SC-002/scenario.json"
     },
     {
       "scenario_id": "SC-003",
