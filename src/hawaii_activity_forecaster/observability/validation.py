@@ -16,6 +16,7 @@ from hawaii_activity_forecaster.harness.policy import CATEGORY_SOURCES
 from .privacy import sanitize_event
 from .storage import TERMINAL
 from .model_validation import ModelTraceLedger, MODEL_IDENTIFIERS, valid_model_profile
+from .failure_codes import AGENT_FAILURE_CODES, REQUEST_FAILURE_CODES
 
 
 class TraceValidationError(ValueError):
@@ -166,6 +167,9 @@ def _validate(trace, state, result, budgets, bindings, evidence, safety):
         elif kind in {"AGENT_COMPLETED", "AGENT_FAILED"}:
             key = d["request_id"], d["attempt_number"]
             _require(key in agents and key not in agent_done, "TRACE_SPECIALIST_OUTCOME_UNCORRELATED")
+            # Optional for traces written before M1.7-B; when present, closed vocabulary only.
+            _require(kind == "AGENT_FAILED" or "error_code" not in d, "TRACE_SPECIALIST_ERROR_CODE_INVALID")
+            _require("error_code" not in d or d["error_code"] in AGENT_FAILURE_CODES, "TRACE_SPECIALIST_ERROR_CODE_INVALID")
             _require(event.actor == d["agent_type"] == agents[key]["agent_type"], "TRACE_SPECIALIST_ROLE_MISMATCH")
             agent_done.add(key)
         elif kind == "TOOL_CALLED":
@@ -259,6 +263,10 @@ def _validate(trace, state, result, budgets, bindings, evidence, safety):
             investigation_scope = set(d["investigation_candidate_ids"])
             _require(investigation_scope <= assessment_scope
                      and set(d["planning_order"]) == investigation_scope, "TRACE_SELECTION_SCOPE_INVALID")
+        elif kind == "CONTRACT_VALIDATED" and d.get("contract") == "request_interpretation":
+            # Optional for traces written before M1.7-B; only on rejection, closed vocabulary.
+            _require("error_code" not in d or (d.get("valid") is False and d["error_code"] in REQUEST_FAILURE_CODES),
+                     "TRACE_REQUEST_ERROR_CODE_INVALID")
         elif kind == "CONTRACT_VALIDATED" and d.get("contract") == "specialist_response":
             response_contracts.add((d["request_id"], d["attempt_number"]))
         elif kind == "CONTRACT_VALIDATED" and d.get("contract") == "synthetic_model_dispatch":
