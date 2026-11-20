@@ -55,6 +55,7 @@ class LLMSettings(ConfigurationModel):
     enabled: StrictBool = False
     provider: Text | None = None
     model_identifier: Text | None = None
+    profile_id: Literal["m1-agent-runtime-0.1"] | None = None
 
     @model_validator(mode="after")
     def activation_boundary(self) -> Self:
@@ -62,6 +63,8 @@ class LLMSettings(ConfigurationModel):
             if self.provider is None or self.model_identifier is None:
                 raise ValueError("model execution requires explicit provider and model_identifier (CFG-T14)")
             raise ValueError("real-model execution is unavailable pending provider activation review and integration")
+        if self.profile_id is not None and (self.provider, self.model_identifier) != ("openai", "gpt-6-luna"):
+            raise ValueError("the offline model profile requires its explicit provider and model identifier")
         return self
 
 

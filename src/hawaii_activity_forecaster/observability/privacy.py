@@ -43,6 +43,8 @@ budget_kind configured_limit synthetic_adapter operation call_id phase
 normalized_request_summary target_date preferred_area_specified experience_level
 hard_constraint_count soft_preference_count location_restrictions kind scope value
 raw_request_retained raw_payloads_retained
+provider execution_mode profile_id model_profile template_version template_digest schema_digest
+returned_model_identifier provider_request_digest input_token_count output_token_count usage_known reserved_cost_microusd
 """.split())
 _SENSITIVE = re.compile(r"(?i)(chain.?of.?thought|reasoning|credential|password|secret|authorization|api.?key|access.?token|prompt|raw.?response|headers)")
 _TOKEN = re.compile(r"(?i)\b(?:bearer\s+\S+|(?:api[_ -]?key|password|token|secret)\s*[:=]\s*\S+|sk-[a-z0-9_-]{8,})")

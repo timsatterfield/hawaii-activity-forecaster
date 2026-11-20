@@ -20,6 +20,7 @@ _ENVIRONMENT_FIELDS = {
     "HAF_LLM_ENABLED": ("llm", "enabled"),
     "HAF_LLM_PROVIDER": ("llm", "provider"),
     "HAF_LLM_MODEL_IDENTIFIER": ("llm", "model_identifier"),
+    "HAF_LLM_PROFILE_ID": ("llm", "profile_id"),
     "HAF_TRACE_DIRECTORY": ("trace", "directory"),
     "HAF_LANGSMITH_ENABLED": ("langsmith", "enabled"),
 }

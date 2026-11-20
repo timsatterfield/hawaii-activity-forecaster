@@ -15,6 +15,7 @@ from hawaii_activity_forecaster.models.permissions import OCEAN_SOURCES, WEATHER
 from hawaii_activity_forecaster.harness.policy import CATEGORY_SOURCES
 from .privacy import sanitize_event
 from .storage import TERMINAL
+from .model_validation import ModelTraceLedger, MODEL, PROFILE_METADATA, TRACE_MODES
 
 
 class TraceValidationError(ValueError):
@@ -120,12 +121,20 @@ def _validate(trace, state, result, budgets, bindings, evidence, safety):
              configuration_version=trace.configuration_version, policy_version=trace.policy_version,
              model_identifier=trace.model_identifier), "TRACE_METADATA_MISMATCH")
     _require(trace.schema_version == trace.configuration_version == "0.1"
-             and trace.policy_version in {"0.2", "not-applied"} and trace.model_identifier is None,
+             and trace.policy_version in {"0.2", "not-applied"} and trace.model_identifier in {None, MODEL},
              "TRACE_VERSION_UNSUPPORTED")
+    model_profile = first.details["configuration"].get("model_profile")
+    if trace.model_identifier is not None:
+        _require(isinstance(model_profile, dict)
+                 and set(model_profile) == set(PROFILE_METADATA)
+                 and model_profile["execution_mode"] in TRACE_MODES
+                 and model_profile == {**PROFILE_METADATA, "execution_mode": model_profile["execution_mode"]},
+                 "TRACE_MODEL_CONFIGURATION_INVALID")
     _require(first.details["configuration"]["limits"] == InvestigationLimits().model_dump(), "TRACE_CONFIGURATION_INVALID")
     assessment_scope = set(first.details["candidate_beach_ids"])
     investigation_scope = assessment_scope.copy()
     agents, agent_done, tools, tool_done, models, model_done = {}, set(), {}, {}, {}, set()
+    provider_models = ModelTraceLedger(_require)
     observed_findings, merged_findings, finding_sources = set(), set(), {}
     evidence_decisions, policies, assessments, validations = {}, {}, {}, {}
     retries, fallbacks, limits_seen = set(), set(), set()
@@ -260,16 +269,21 @@ def _validate(trace, state, result, budgets, bindings, evidence, safety):
             call = d["call_id"]
             _require(d["synthetic_adapter"] is True, "TRACE_MODEL_ADAPTER_UNIDENTIFIED")
             if d["phase"] == "AUTHORIZED":
-                _require(call not in models, "TRACE_MODEL_CALL_DUPLICATED")
+                _require(call not in models and call not in provider_models.authorized, "TRACE_MODEL_CALL_DUPLICATED")
                 models[call] = d
             else:
                 _require(call in models and call not in model_done and d["phase"] in {"RETURNED", "FAILED"},
                          "TRACE_MODEL_OUTCOME_UNCORRELATED")
                 model_done.add(call)
+        elif kind == "CONTRACT_VALIDATED" and d.get("contract") == "model_dispatch":
+            provider_models.observe(d, metadata=trace.model_identifier, profile=model_profile, received=received,
+                                    normalized=normalized, legacy_calls=models)
         elif kind in TERMINAL:
             terminal = event
     complete = terminal is not None
+    model_count = len(models) + len(provider_models.dispatched)
     if complete:
+        provider_models.finish()
         d = terminal.details
         expected_outcome = {"COMPLETED": "RECOMMENDATIONS", "ABSTAINED": "NO_RECOMMENDATION", "FAILED": "ERROR"}[trace.final_status]
         _require(d["final_status"] == trace.final_status and d["outcome"] == expected_outcome
@@ -279,10 +293,10 @@ def _validate(trace, state, result, budgets, bindings, evidence, safety):
         _require(set(agents) <= response_contracts, "TRACE_SPECIALIST_CONTRACT_MISSING")
         _require(retries | fallbacks <= set(tools), "TRACE_RECOVERY_CALL_MISSING")
         _require((d["total_tool_calls"], d["total_model_calls"], d["total_retries"], d["total_fallbacks"]) ==
-                 (len(tools), len(models), len(retries), len(fallbacks)), "TRACE_FINAL_COUNTERS_INVALID")
+                 (len(tools), model_count, len(retries), len(fallbacks)), "TRACE_FINAL_COUNTERS_INVALID")
         limits = InvestigationLimits()
         _require(0 <= d["total_iterations"] <= limits.max_coordinator_iterations
-                 and len(tools) <= limits.max_environmental_tool_invocations and len(models) <= limits.max_llm_invocations,
+                 and len(tools) <= limits.max_environmental_tool_invocations and model_count <= limits.max_llm_invocations,
                  "TRACE_BUDGET_EXCEEDED")
         if trace.final_status != "FAILED":
             _require(normalized and d["result_id"] in validations, "TRACE_FINAL_RESULT_NOT_VALIDATED")
@@ -336,7 +350,7 @@ def _validate(trace, state, result, budgets, bindings, evidence, safety):
         _require(budgets.closed and not budgets.active_specialists and not budgets.reserved_tool_calls
                  and not budgets.reserved_model_calls, "TRACE_BUDGET_NOT_CLOSED")
         _require((budgets.tool_calls, budgets.model_calls, budgets.retries, budgets.fallbacks) ==
-                 (len(tools), len(models), len(retries), len(fallbacks)), "TRACE_RUNTIME_COUNTERS_MISMATCH")
+                 (len(tools), model_count, len(retries), len(fallbacks)), "TRACE_RUNTIME_COUNTERS_MISMATCH")
     if bindings:
         _require({b.runtime_tool_call_id for b in bindings} == set(tools), "TRACE_TOOL_BINDING_MISMATCH")
         for binding in bindings:
@@ -361,7 +375,7 @@ def _validate(trace, state, result, budgets, bindings, evidence, safety):
     duration = int(((trace.completed_at or last.timestamp) - trace.started_at).total_seconds() * 1000)
     iterations = last.details["total_iterations"] if complete else max(e.details["iteration_count"] for e in events)
     investigated = {key for call in tools.values() for key in call["candidate_beach_ids"]}
-    return TraceMetrics(duration, iterations, len(agents), len(tools), len(models), len(retries), len(fallbacks),
+    return TraceMetrics(duration, iterations, len(agents), len(tools), model_count, len(retries), len(fallbacks),
                         statuses.count("ACCEPTED"), statuses.count("LIMITED"), statuses.count("REJECTED"),
                         len(assessment_scope), len(investigated), eligible, excluded, unresolved,
                         last.details.get("outcome") if complete else None)
