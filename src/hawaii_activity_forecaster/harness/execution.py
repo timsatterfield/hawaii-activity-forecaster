@@ -1,7 +1,9 @@
 """Preflight → isolated runtime → verified capture → independent reporting.
 
-The runtime is explicitly an authored component, never an agentic acceptance run.
-It receives no LoadedScenario, expected file, evaluator object or artifact digest.
+The runtime is either an authored component or the model-driven agent runtime.
+Neither receives a LoadedScenario, expected file, evaluator object or artifact
+digest. The evaluator, not the caller, decides from each verified trace whether a
+capture came from a genuine model target; only those can yield scenario PASS.
 """
 
 from __future__ import annotations
@@ -41,13 +43,18 @@ class ComponentExecutionInput:
         return PolicyConfiguration.model_validate_json(self._policy)
 
 
+Mode = Literal["AUTHORED_COMPONENT", "AGENT_RUNTIME"]
+
+
 @dataclass(frozen=True)
 class ExecutionEvaluation:
     outcome: Outcome
-    mode: Literal["AUTHORED_COMPONENT"]
+    mode: Mode
     attempted_steps: tuple[int, ...]
     component: EvaluationReport | None
     scenario: EvaluationReport
+    execution_modes: tuple[str, ...] = ()
+    tool_allowlist_digest: str | None = None
 
 
 ComponentRunner = Callable[[ComponentExecutionInput], Awaitable["SkeletonReport"]]
@@ -59,8 +66,9 @@ def _failure(scenario_id, category):
 
 
 async def execute_scenario(root, scenario_id, *, runtime: ComponentRunner | None = None,
-                           trace_settings: TraceSettings | None = None) -> ExecutionEvaluation:
-    """Execute an explicitly supplied component runtime after complete preflight.
+                           trace_settings: TraceSettings | None = None,
+                           mode: Mode = "AUTHORED_COMPONENT") -> ExecutionEvaluation:
+    """Execute an explicitly supplied runtime after complete preflight.
 
     Missing runtime is BLOCKED; failures after admission are FAIL. Oracle snapshots
     are loaded once and remain solely on this evaluator/harness side of the seam.
@@ -70,13 +78,13 @@ async def execute_scenario(root, scenario_id, *, runtime: ComponentRunner | None
         loaded = load_scenario(root, scenario_id)
     except FixtureLoadError:
         result = _failure(scenario_id, "FIXTURE_INVALID")
-        return ExecutionEvaluation(result.outcome, "AUTHORED_COMPONENT", (), None, result)
+        return ExecutionEvaluation(result.outcome, mode, (), None, result)
     except Exception:
         result = _failure(scenario_id, "EVALUATOR_ERROR")
-        return ExecutionEvaluation(result.outcome, "AUTHORED_COMPONENT", (), None, result)
+        return ExecutionEvaluation(result.outcome, mode, (), None, result)
     if loaded.definition.test_status != "ACTIVE" or runtime is None:
         result = evaluate_loaded(loaded)
-        return ExecutionEvaluation(result.outcome, "AUTHORED_COMPONENT", (), None, result)
+        return ExecutionEvaluation(result.outcome, mode, (), None, result)
 
     captures, attempted = [], []
     failure = None
@@ -110,9 +118,13 @@ async def execute_scenario(root, scenario_id, *, runtime: ComponentRunner | None
     try:
         component = evaluate_assertions(loaded.evaluator.expected_results, tuple(captures))
         result = evaluate_loaded(loaded, captures=tuple(captures))
+        modes = tuple(c.execution_mode for c in captures)
+        # A declared mode must agree with what the verified traces recorded.
+        if not failure and any((m == "AUTHORED_COMPONENT") != (mode == "AUTHORED_COMPONENT") for m in modes):
+            failure = "CAPTURE_CONTEXT_MISMATCH"
         if failure:
             component = replace(component, outcome="FAIL", category=failure)
             result = replace(result, outcome="FAIL", category=failure)
     except Exception:
-        component, result = None, _failure(scenario_id, "EVALUATOR_ERROR")
-    return ExecutionEvaluation(result.outcome, "AUTHORED_COMPONENT", tuple(attempted), component, result)
+        component, result, modes = None, _failure(scenario_id, "EVALUATOR_ERROR"), ()
+    return ExecutionEvaluation(result.outcome, mode, tuple(attempted), component, result, modes)

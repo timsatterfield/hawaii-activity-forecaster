@@ -1,7 +1,9 @@
 """Evaluator-only captured observations and deterministic assertion reporting.
 
 Nothing here dispatches application/model/tool work. Expected values never enter
-application inputs. Component assertion success is not full agentic acceptance.
+application inputs. Component assertion success is not full agentic acceptance:
+scenario PASS also requires every capture's verified trace to record a genuine
+live or local model target with actual model calls.
 """
 
 from copy import deepcopy
@@ -15,6 +17,7 @@ from .loading import load_scenario
 from hawaii_activity_forecaster.fixtures import FixtureLoadError
 
 Outcome = Literal["PASS", "FAIL", "BLOCKED", "NOT_RUN"]
+GENUINE_MODEL_MODES = frozenset({"LIVE_PROVIDER", "LOCAL_PROVIDER"})
 
 
 class CaptureError(ValueError):
@@ -31,6 +34,9 @@ class CapturedStep:
     driver_digest: str
     request_digest: str
     _records: bytes = field(repr=False)
+    # Derived from the verified trace; the safe default is never a genuine model run.
+    execution_mode: str = "AUTHORED_COMPONENT"
+    model_invocation_count: int = 0
 
     @property
     def records(self):
@@ -64,6 +70,16 @@ def capture_report(request_step, report, *, catalog, policy, driver_inputs) -> C
             if report.result_validation.request_step != request_step:
                 raise ValueError()
         trace = read_trace(report.trace_path)
+        started = trace.events[0]
+        if started.event_type != "INVESTIGATION_STARTED":
+            raise ValueError()
+        profile = started.details["configuration"].get("model_profile")
+        execution_mode = profile["execution_mode"] if profile else "AUTHORED_COMPONENT"
+        genuine = execution_mode in GENUINE_MODEL_MODES
+        if (execution_mode not in GENUINE_MODEL_MODES | {"AUTHORED_COMPONENT", "OFFLINE_TRANSPORT"}
+                or started.details.get("component_probe") is not (not genuine)
+                or (profile is not None and report.budgets.model_calls < 1)):
+            raise ValueError()
         active, maximum = set(), 0
         for event in trace.events:
             if event.event_type in {"AGENT_STARTED", "AGENT_COMPLETED", "AGENT_FAILED"}:
@@ -98,7 +114,7 @@ def capture_report(request_step, report, *, catalog, policy, driver_inputs) -> C
         return CapturedStep(request_step, checked.digest, tuple(report.tool_bindings), state.status == "FAILED",
                             _digest([catalog.model_dump(mode="json"), policy.model_dump(mode="json")]),
                             _digest(driver_inputs.model_dump(mode="json", exclude_unset=True)), _digest(state.original_request),
-                            json.dumps(records, allow_nan=False).encode())
+                            json.dumps(records, allow_nan=False).encode(), execution_mode, report.budgets.model_calls)
     except Exception:
         raise CaptureError("CAPTURE_INVALID") from None
 
@@ -295,12 +311,19 @@ def evaluate_loaded(loaded, *, captures=None) -> EvaluationReport:
             if (any(c.input_digest != inputs or c.driver_digest != drivers or c.request_step > len(driver.script.requests)
                     or c.request_digest != _digest(driver.script.requests[c.request_step - 1].user_request) for c in captures)
                     or len({s["session_id"] for s in states}) != 1
+                    or len({c.execution_mode for c in captures}) != 1
                     or len({s["investigation_id"] for s in states}) != len(states)
                     or any(s["request_revision"] != c.request_step for s, c in zip(states, captures))):
                 report = replace(report, outcome="FAIL", category="CAPTURE_CONTEXT_MISMATCH")
         if report.outcome != "FAIL":
-            report = replace(report, outcome="BLOCKED" if report.outcome != "NOT_RUN" else "NOT_RUN",
-                             category="SCENARIO_ADAPTER_UNAVAILABLE")
+            modes = {c.execution_mode for c in captures} if captures else set()
+            if modes and modes <= GENUINE_MODEL_MODES:
+                pass  # Genuine model-driven captures: assertion aggregation stands.
+            else:
+                category = ("AGENT_EXECUTION_NOT_RUN" if not modes else
+                            "AUTHORED_COMPONENT_SCOPE" if "AUTHORED_COMPONENT" in modes else "OFFLINE_MODEL_TRANSPORT")
+                report = replace(report, outcome="BLOCKED" if report.outcome != "NOT_RUN" else "NOT_RUN",
+                                 category=category)
     return replace(report, artifact_digests=tuple(sorted(loaded.evaluator.artifact_digests.items())))
 
 

@@ -422,8 +422,8 @@ Successful results use stdout; errors use stderr.
 
 Current demos retain their component scope and now record authoritative JSONL.
 They refuse BLOCKED or DISABLED definitions; `evaluate --component` separately
-runs independent assertions. Full registered scenario acceptance remains BLOCKED
-until its agent-execution/capture adapter is connected. See the
+runs independent assertions. Full registered scenario acceptance requires
+`evaluate --agent` with a genuine model target ([M1.7-A](docs/development/m1-7a-agentic-scenario-adapter.md)). See the
 [M1.5-B notes](docs/development/m1-5b-cli-presentation.md) for the original
 presentation boundary and remaining request/session work.
 
@@ -608,10 +608,27 @@ uv run --locked pytest tests/test_scenario_execution.py
 `--component` explicitly executes the existing authored synthetic plan. JSON output
 separates `component` assertion results from the overall `scenario` result. SC-004
 passes 84 component assertions and SC-010 passes 61; overall readiness remains
-BLOCKED (exit 2), with `SCENARIO_ADAPTER_UNAVAILABLE`: the registered-scenario
-harness is not connected to agent execution and verified agentic capture. The
-working model-driven runtime is available through `hafi run`. Without the flag,
-`evaluate` remains preflight/readiness-only and dispatches no work.
+BLOCKED (exit 2), with `AUTHORED_COMPONENT_SCOPE`. Without a runner flag,
+`evaluate` remains preflight/readiness-only (`AGENT_EXECUTION_NOT_RUN`) and
+dispatches no work.
+
+### Registered scenarios through the agent runtime — M1.7-A
+
+```bash
+uv run --locked --env-file keys/apsi.env hafi evaluate SC-004 --fixtures fixtures/scenario-pack-v1 \
+  --agent --config haf.release.example.toml --live --trace-directory traces/acceptance
+uv run --locked pytest tests/test_agent_scenarios.py
+```
+
+`--agent` runs the registered scenario through the model-driven Coordinator,
+Weather and Ocean roles. It uses the explicit, preflighted tool allowlist in
+`fixtures/scenario-pack-v1/agent_tools/`. `--live` makes paid OpenAI calls;
+`--local` uses the configured Ollama target. Scenario PASS is reported only when
+each verified trace records a live or local model target. The offline tests run
+the same path over mock HTTP, pass all 84/61 assertions, and report
+`OFFLINE_MODEL_TRANSPORT` (BLOCKED). See the
+[M1.7-A notes](docs/development/m1-7a-agentic-scenario-adapter.md) for the reporting
+categories, allowlist rules and remaining gaps.
 
 Default demos now use raw admission and independently validated interpretation
 proposals. SC-004 retains the requested Kihei preference. SC-010 records actual

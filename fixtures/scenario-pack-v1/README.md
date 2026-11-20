@@ -18,6 +18,12 @@ independent_expected_results = case.evaluator
 assert case.execution_readiness.outcome == "BLOCKED"
 ```
 
+`agent_tools/<scenario_id>.json` holds each scenario's explicit tool allowlist for
+model-driven execution (`hafi evaluate --agent`). It is an application input outside
+the manifest. Preflight checks that every option is answerable by the scenario's
+script; options are never derived from scripts or outcomes. See
+[M1.7-A](../../docs/development/m1-7a-agentic-scenario-adapter.md).
+
 Keep the evaluator and the full `case.definition` out of application/model/adapter
 inputs. Expected JSON files were authored independently of the policy inputs and
 application outputs. They contain no recorded or fabricated execution results.
