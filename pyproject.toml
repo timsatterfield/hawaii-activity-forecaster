@@ -7,6 +7,10 @@ requires-python = ">=3.12"
 dependencies = [
     "pydantic>=2.0,<3.0",
     "langgraph>=1.0,<2.0",
+    "langchain-openai>=1.0,<2.0",
+    "httpx>=0.28,<1.0",
+    "openai>=3.56,<4.0",
+    "langsmith>=0.8,<1.0",
 ]
 
 [dependency-groups]

@@ -21,6 +21,12 @@ information, and user preferences.
 
 ## Current Status
 
+M1.6-E — Provider Gateway and Structured Model Contracts is implemented as an
+offline foundation. Versioned prompts and strict proposals exercise the OpenAI
+Responses adapter through an explicit mock HTTP transport, sharing investigation
+budgets and authoritative trace checks. No live client factory or CLI model mode
+is enabled. See the [M1.6-E notes](docs/development/m1-6e-provider-gateway-and-model-contracts.md).
+
 M1.6-D — Model Provider and Agent Runtime Design is available as a
 [draft proposal](docs/implementation/m1-model-provider-and-agent-runtime-design.md)
 for review. It recommends an initial model profile, structured proposal boundaries,
@@ -61,8 +67,8 @@ uv run --locked hafi demo session --fixtures fixtures/scenario-pack-v1
 uv run --locked pytest
 ```
 
-`uv sync --locked` installs the package, runtime dependencies (Pydantic v2 and
-LangGraph), and the pytest development group into `.venv`. If Python is not
+`uv sync --locked` installs the package, runtime dependencies (including Pydantic,
+LangGraph and the OpenAI adapter), and the pytest development group into `.venv`. If Python is not
 available locally, uv can install it with `uv python install 3.12`; select it with
 `uv sync --locked --python 3.12`.
 
@@ -71,16 +77,18 @@ command runs a fixed synthetic component example and requires an explicit fixtur
 directory. It performs no natural-language request interpretation or full scenario
 acceptance. All locations, conditions and results are fictional. No credentials,
 model provider, live environmental data or tracing service are needed.
-Local JSONL is reserved for future authoritative investigation tracing.
-LangSmith is a transitive dependency of the orchestration stack; this bootstrap
-does not enable tracing, and its optional pytest plugin is disabled.
+Local JSONL provides authoritative investigation tracing. LangSmith is installed
+for explicit tracing-context control; provider tests suppress remote tracing, and
+its optional pytest plugin is disabled.
 
 Package areas under `src/hawaii_activity_forecaster/` are `config`, `models`,
-`fixtures`, `harness`, `agents`, `orchestration`, `validation`, `tools`, and `recommendations`. The `models`
+`fixtures`, `harness`, `agents`, `orchestration`, `interpretation`, `model_runtime`,
+`observability`, `validation`, `tools`, and `recommendations`. The `models`
 package contains the Pydantic contracts, `config` contains settings and loading,
 `fixtures` loads local synthetic inputs, and `harness` validates v2 scenario contracts;
 `orchestration` contains the synthetic graph, trusted budgets, session admission and specialist merge components;
 `interpretation` checks authored request proposals and selects catalog candidates;
+`model_runtime` contains the offline provider gateway, wire proposals and versioned prompts;
 `catalog.py` shares catalog provenance/location checks. `tools` executes scoped synthetic calls, and `validation` evaluates evidence,
 synthetic safety policies and Candidate Assessments. `recommendations` compares
 eligible candidates and validates controlled synthetic results. The agent area remains a placeholder.
@@ -511,6 +519,27 @@ The proposal preserves the three roles, deterministic safety, local JSONL and
 approved invocation limits. New provider, token/spending and runtime-profile
 choices are explicitly proposed, not approved defaults. Existing setup, demo,
 evaluation and test commands remain unchanged; no API credentials are needed.
+
+### Provider gateway and model contracts — M1.6-E
+
+```bash
+uv sync --locked
+uv run --locked pytest tests/test_model_runtime_contracts.py tests/test_model_gateway.py tests/test_model_trace_validation.py
+uv run --locked pytest
+```
+
+All tests use synthetic inputs and in-process mock HTTP responses. They verify the
+installed SDK path, strict schemas, no retries, shared call limits, stale-response
+rejection and local trace accounting without credentials or paid calls. The graph,
+authored demos and scenario acceptance gates retain their existing behavior.
+
+The optional `HAF_LLM_PROFILE_ID=m1-agent-runtime-0.1` setting requires explicit
+`HAF_LLM_PROVIDER=openai` and `HAF_LLM_MODEL_IDENTIFIER=gpt-6-luna`; it records
+offline profile metadata only. `HAF_LLM_ENABLED=true` is still rejected. A provider
+API key or installed SDK cannot enable calls. Do not add credentials to TOML.
+
+See the [M1.6-E notes](docs/development/m1-6e-provider-gateway-and-model-contracts.md)
+for API boundaries, trace-detail fields, verification and remaining activation work.
 
 ## Specification notes
 
