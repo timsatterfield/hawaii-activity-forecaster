@@ -43,6 +43,11 @@ Sources: [GitHub workflow location and structure](https://docs.github.com/en/act
 [setup-uv inputs](https://github.com/astral-sh/setup-uv),
 [required status checks](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
 
+> Current close-out: see the [M1 completion report](m1-completion-report.md) for
+> consolidated criterion coverage, all twelve live passes, optional assertion
+> outcomes, the passing live clarification check and the subsequent 0.7 scenario rerun (10/12 PASS, with SC-006 and SC-008 failures). Earlier validation below is
+> historical and retains its original versions.
+
 ## M1 completion-criterion review
 
 The following maps the fifteen criteria in the approved
@@ -53,7 +58,7 @@ mock HTTP or authored components, not paid inference.
 
 | # | Criterion | Evidence | Review status |
 |---|---|---|---|
-| 1 | CLI accepts supported activity requests | `test_request_validation.py`, `test_release_cli.py`, `test_agent_release.py`; pilot all three activities | Verified; live clarification was not included in the pilot |
+| 1 | CLI accepts supported activity requests | `test_request_validation.py`, `test_release_cli.py`, `test_agent_release.py`; pilot all three activities | Verified; separately authorized live clarification passed on profile 0.7 ([close-out evidence](m1-completion-report.md#authorized-live-clarification-check-2026-11-20)) |
 | 2 | LangGraph executes Coordinator workflow | `test_orchestration_skeleton.py`, `test_raw_request_graph.py`, `test_agent_release.py`; real pilot role/cycle traces | Verified |
 | 3 | Specialists use approved contracts | `test_specialist_exchange.py`, `test_specialist_graph.py`, `test_model_runtime_contracts.py`; pilot Weather/Ocean calls | Verified |
 | 4 | Specialist concurrency is bounded | `test_orchestration_budgets.py`, `test_specialist_graph.py`; trace reconstruction | Verified |

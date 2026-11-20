@@ -37,7 +37,10 @@ early normalization failures; all seven later checks passed on the
 `m1-saturday-runtime-0.2` profile. The release configuration now uses `0.7`: `0.3` raised the input bound
 ([M1.8](docs/development/m1-8-sc-009-sc-012.md)), `0.4` adds request-interpretation
 guidance ([M1.9](docs/development/m1-9-sc-001-sc-003.md)), `0.5` adds Ocean
-recovery-condition guidance, and `0.6` adds no-retry guidance ([M1.9-B](docs/development/m1-9b-profile-0.4-rebaseline.md)). This is a synthetic M1
+recovery-condition guidance, `0.6` adds no-retry guidance
+([M1.9-B](docs/development/m1-9b-profile-0.4-rebaseline.md)), and `0.7` adds the
+"prefer somewhere near" request guidance ([M1.12](docs/development/m1-12-sc-002-wind-chop.md)).
+This is a synthetic M1
 release with fictional beaches and fixed evidence dates, not a real-world forecaster.
 See the [integration notes](docs/development/m1-integration-release.md) for coverage,
 remaining acceptance work and approved deferments.
@@ -46,7 +49,9 @@ The [M1.6-D runtime proposal](docs/implementation/m1-model-provider-and-agent-ru
 and [M1.6-F capability-profile proposal](docs/implementation/m1-synthetic-source-capability-profile-design.md)
 remain drafts. The general profile framework is deferred in favor of explicit
 configured tool allowlists. Existing SC-004/SC-010 authored component checks remain
-available; their full registered scenario gate remains BLOCKED. Increment sections
+available with authored scope. All twelve registered scenarios have live scenario-level
+passes across profiles 0.6/0.7, with optional failures and blockers retained in the
+[M1 completion report](docs/development/m1-completion-report.md). Increment sections
 below retain their original scope; the release section describes current execution.
 
 ## Documentation
@@ -54,6 +59,7 @@ below retain their original scope; the release section describes current executi
 See [requirements](docs/requirements/) and [implementation plans](docs/implementation/)
 for the approved specifications.
 
+- [M1 completion report](docs/development/m1-completion-report.md): criterion coverage, live evidence and close-out limitations.
 - [Demo runbook](docs/demo-runbook.md): offline rehearsal, expected results, trace inspection and reference live commands.
 - [Release checklist and GitHub test gate](docs/development/m1-release-readiness-and-demo.md): M1 evidence, required-check setup and remaining acceptance gaps.
 
