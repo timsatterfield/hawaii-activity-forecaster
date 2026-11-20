@@ -136,8 +136,8 @@ instead of proceeding, and neither produced a recommendation.
   and #2 passed with the same inputs, so this is model variance, not a fixed
   fixture fault. The rejected rule in #1 is unknown:
   `AGENT_FAILED` records no reason code, and payloads are deliberately not traced.
-  A bounded, static reason code on that event would make this diagnosable. That is
-  an observability change for owner review. One suspect is the allowlist name
+  Since [M1.7-B](m1-7b-agent-failure-reason-codes.md), `AGENT_FAILED` and rejected
+  interpretations record a closed, sanitized `error_code`. One suspect is the allowlist name
   `WATER_ABCD`: the Ocean prompt describes `WATER_` options as "the named beach",
   while release fixtures use per-beach water options. SC-004's batch `WATER_CD`
   worked live, though.

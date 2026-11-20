@@ -29,6 +29,7 @@ from hawaii_activity_forecaster.models import (
 from hawaii_activity_forecaster.models.enums import (
     AgentType, InvestigationStatus, Outcome, TraceActor, TraceEventType,
 )
+from hawaii_activity_forecaster.observability.failure_codes import agent_failure_code, request_failure_code
 from .budgets import BudgetManager, BudgetSnapshot
 from .specialists import SpecialistContractError, SpecialistDelivery, SpecialistExchange
 from .session import RawSessionRequest, SessionRequest
@@ -393,10 +394,10 @@ async def _run_graph(
                 proposal = (await models.invoke("normalize_request", inputs) if model_adapter is not None
                             else interpreter(inputs))
             receipt = verify_request(validate_request(proposal, request_context), request_context)
-        except Exception:
+        except Exception as error:
             if not trace_failed:
                 emit(TraceEventType.CONTRACT_VALIDATED, contract="request_interpretation", valid=False,
-                     reason="REQUEST_NORMALIZATION_FAILED")
+                     reason="REQUEST_NORMALIZATION_FAILED", error_code=request_failure_code(error))
             raise
         proposed = _updated(state["investigation"], **receipt.request.model_dump())
         emit(TraceEventType.CONTRACT_VALIDATED, contract="request_interpretation", valid=True,
@@ -546,8 +547,9 @@ async def _run_graph(
                         response = await wait_for(specialist_callback(detached), timeout=seconds)
                     # Capture now; callbacks may retain and later mutate their own payload.
                     response = deepcopy(response)
-                except Exception:
+                except Exception as error:
                     emit(TraceEventType.AGENT_FAILED, **correlation, execution_status="ERROR",
+                         error_code=agent_failure_code(error),
                          duration_ms=max(0, int((datetime.now(timezone.utc) - started).total_seconds() * 1000)))
                     # Let the native parallel join collect both outcomes before
                     # terminating. Raising here can strand a sibling's completed
