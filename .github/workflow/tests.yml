@@ -1,2 +1,0 @@
-uv sync --locked
-uv run --locked pytest

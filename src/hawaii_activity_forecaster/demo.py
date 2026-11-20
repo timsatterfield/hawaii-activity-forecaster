@@ -2,8 +2,8 @@
 
 Plans are authored here and never inferred from scripts, source payloads or the
 independent evaluator. Only application and trusted-driver projections enter the
-graph. Authored proposals are checked inside raw admission; general conversational
-execution and real model planning remain deferred.
+graph. Authored proposals are checked inside raw admission. Model-driven CLI
+sessions use the separate agents package and the same trusted graph/validators.
 """
 
 from collections.abc import Callable

@@ -1,5 +1,11 @@
 # M1.6-C — Scenario execution adapter and demo alignment
 
+This records the original increment. The subsequent
+[release-readiness batch](m1-release-readiness-and-demo.md) replaces the old
+`AGENTIC_RUNTIME_UNAVAILABLE` diagnostic with `SCENARIO_ADAPTER_UNAVAILABLE`:
+the model-driven runtime now works, while registered-scenario agent execution and
+capture remain unconnected. Authored component scope and the BLOCKED gate persist.
+
 Connects the [M1.6-B evaluator](m1-6b-scenario-evaluation-and-reporting.md) to actual
 authored component execution under the approved
 [harness design](../implementation/m1-scenario-harness-contract-design.md),

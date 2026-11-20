@@ -60,7 +60,8 @@ def test_definition_is_active_but_execution_remains_explicitly_blocked(scenario)
     assert bundle.definition.scenario_id == sid
     assert bundle.definition.test_status == 'ACTIVE'
     assert bundle.execution_readiness.outcome == 'BLOCKED'
-    assert 'not implemented' in bundle.execution_readiness.reason
+    assert 'not connected' in bundle.execution_readiness.reason
+    assert 'hafi run' in bundle.execution_readiness.reason
     assert bundle.driver.script.requests[0].user_request == bundle.application.user_request
     assert bundle.driver.script.requests[0].reference_time == bundle.application.reference_time
     assert bundle.application.reference_time.isoformat() == '2026-11-16T09:00:00-10:00'
