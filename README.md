@@ -64,6 +64,7 @@ for the approved specifications.
 
 - [Submission summary](docs/submission-summary.md): offline reviewer setup, evidence scope and current limitations.
 - [M1 completion report](docs/development/m1-completion-report.md): criterion coverage, live evidence and close-out limitations.
+- [Reliability baseline](docs/development/m1-reliability-baseline.md): read-only trace metrics, failure categories and separate saved scenario outcomes.
 - [Demo runbook](docs/demo-runbook.md): offline rehearsal, expected results, trace inspection and reference live commands.
 - [Release checklist and GitHub test gate](docs/development/m1-release-readiness-and-demo.md): M1 evidence, required-check setup and remaining acceptance gaps.
 
@@ -707,6 +708,22 @@ The general profile implementation is deferred under the approved Saturday scope
 The release uses explicit tool allowlists; full registered scenario acceptance
 is evaluated separately from its focused integration tests. Completed live runs
 and the subsequent two-scenario deferment are recorded in the completion report.
+
+### Read-only reliability reporting
+
+```bash
+uv run --locked hafi reliability traces/acceptance
+uv run --locked hafi reliability traces/acceptance --reports traces/acceptance --format json
+```
+
+These commands summarize existing local evidence without model calls. Profiles
+and recorded execution modes stay separate. Recommendations and abstentions are
+operational successes; saved scenario PASS/FAIL is reported separately. Invalid
+inputs are surfaced, duplicate copies are deduplicated, and clarification is not
+counted as a terminal failure. Historical traces are absent from a fresh clone;
+the [reporting notes](docs/development/m1-reliability-baseline.md) include an offline
+demo example and explain denominators, privacy and exit status. SC-006 and SC-008
+remain deferred from the selected live gate.
 
 ## Specification notes
 

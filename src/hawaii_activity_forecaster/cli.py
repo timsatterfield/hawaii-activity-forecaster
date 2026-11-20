@@ -30,6 +30,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     demo.add_argument("--trace-directory", type=Path, metavar="PATH", help="override the local JSONL trace directory")
     trace = commands.add_parser("trace", help="validate an existing local JSONL trace and show metrics")
     trace.add_argument("path", type=Path, metavar="PATH")
+    reliability = commands.add_parser("reliability", help="summarize existing validated traces without model calls")
+    reliability.add_argument("paths", type=Path, nargs="+", help="JSONL files or directories (recursive)")
+    reliability.add_argument("--reports", type=Path, nargs="+", default=[], help="optional saved scenario JSON files or directories")
+    reliability.add_argument("--format", choices=("markdown", "json"), default="markdown")
     run = commands.add_parser("run", help="model-driven natural-language investigation of synthetic fixture data")
     run.add_argument("request", nargs="?", help="natural-language request, or prompt interactively")
     run.add_argument("--fixtures", type=Path, required=True, metavar="PATH", help="explicit saturday-release fixture root")
@@ -53,6 +57,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     agent_target.add_argument("--local", action="store_true", help="with --agent: the configured local Ollama target")
     evaluation.add_argument("--trace-directory", type=Path, metavar="PATH")
     arguments = parser.parse_args(argv)
+    if arguments.command == "reliability":
+        from .observability.reliability import build_reliability_report, render_markdown
+        report = build_reliability_report(arguments.paths, report_inputs=arguments.reports)
+        print(json.dumps(report, indent=2) if arguments.format == "json" else render_markdown(report), end="\n" if arguments.format == "json" else "")
+        return 1 if report["issues"] else 0
     if arguments.command == "run":
         from .agents.cli import run_command
         from .config import ConfigurationError
