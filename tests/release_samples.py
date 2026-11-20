@@ -24,7 +24,7 @@ def adapter(calls, *, failure=None, profile=SATURDAY_PROFILE):
         if operation=='normalize_request':
             text=data['original_request']
             inherited=data['inherited_request']
-            activity=next(((word,value) for word,value in [('snorkel','SNORKELING'),('swim','SWIMMING'),('SUP','SUP')] if word in text),None)
+            activity=next(((word,value) for word,value in [('snorkel','SNORKELING'),('swim','SWIMMING'),('SUP','SUP'),('paddleboard','SUP')] if word in text),None)
             values={}; spans=[]
             def add(field,value,fragment):
                 values[field]=value
@@ -38,8 +38,9 @@ def adapter(calls, *, failure=None, profile=SATURDAY_PROFILE):
                     add('target_time_window',dict(start='2026-11-17T'+start+':00-10:00',end='2026-11-17T'+end+':00-10:00'),part)
             for area in ('Kihei','Napili','Wailea'):
                 if area in text: add('preferred_area',area,('near '+area) if 'near '+area in text else area)
-            if 'only South Maui' in text:
-                add('hard_constraints',[dict(kind='LOCATION_RESTRICTION',scope='REGION',value='SOUTH_MAUI')],'only South Maui')
+            for phrase in ('only South Maui','in South Maui'):
+                if phrase in text:
+                    add('hard_constraints',[dict(kind='LOCATION_RESTRICTION',scope='REGION',value='SOUTH_MAUI')],phrase)
             if 'intermediate' in text: add('experience_level','INTERMEDIATE','intermediate')
             if 'prefer calm water' in text:
                 add('soft_preferences',[dict(kind='CALM_WATER')],'prefer calm water')

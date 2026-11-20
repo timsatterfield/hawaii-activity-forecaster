@@ -4,7 +4,7 @@
 enabled = true
 provider = "openai"
 model_identifier = "gpt-6-luna"
-profile_id = "m1-saturday-runtime-0.3"
+profile_id = "m1-saturday-runtime-0.4"
 activation = "synthetic-release"
 
 [trace]

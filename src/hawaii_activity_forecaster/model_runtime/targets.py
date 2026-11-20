@@ -7,7 +7,9 @@ PROFILE = "m1-agent-runtime-0.1"
 SATURDAY_PROFILE_V1 = "m1-saturday-runtime-0.1"
 SATURDAY_PROFILE_V2 = "m1-saturday-runtime-0.2"
 # 0.3: identical prompts/schemas to 0.2; larger input bound for revised follow-ups.
-SATURDAY_PROFILE = "m1-saturday-runtime-0.3"
+SATURDAY_PROFILE_V3 = "m1-saturday-runtime-0.3"
+# 0.4: 0.3 bounds/reserve; normalize_request adds location-prefix and whole-clause span guidance.
+SATURDAY_PROFILE = "m1-saturday-runtime-0.4"
 OLLAMA_PROFILE_V1 = "m1-ollama-qwen3.5-9b-0.1"
 OLLAMA_PROFILE_V2 = "m1-ollama-qwen3.5-9b-0.2"
 OLLAMA_PROFILE_V3 = "m1-ollama-qwen3.5-9b-0.3"
@@ -36,6 +38,7 @@ TARGETS = MappingProxyType({
     PROFILE: ModelTarget("openai", MODEL, "LIVE_PROVIDER", CALL_RESERVE_MICROUSD),
     SATURDAY_PROFILE_V1: ModelTarget("openai", MODEL, "LIVE_PROVIDER", CALL_RESERVE_MICROUSD),
     SATURDAY_PROFILE_V2: ModelTarget("openai", MODEL, "LIVE_PROVIDER", CALL_RESERVE_MICROUSD),
+    SATURDAY_PROFILE_V3: ModelTarget("openai", MODEL, "LIVE_PROVIDER", SATURDAY_RESERVE_MICROUSD, SATURDAY_INPUT_LIMIT),
     SATURDAY_PROFILE: ModelTarget("openai", MODEL, "LIVE_PROVIDER", SATURDAY_RESERVE_MICROUSD, SATURDAY_INPUT_LIMIT),
     OLLAMA_PROFILE_V1: ModelTarget("ollama", OLLAMA_MODEL, "LOCAL_PROVIDER", 0),
     OLLAMA_PROFILE_V2: ModelTarget("ollama", OLLAMA_MODEL, "LOCAL_PROVIDER", 0),

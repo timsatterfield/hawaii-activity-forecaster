@@ -21,7 +21,7 @@ END = '2026-11-17T11:00:00-10:00'
 SUPPORTED = {'TEST_BEACH_A', 'TEST_BEACH_B', 'TEST_BEACH_C', 'TEST_BEACH_D'}
 
 
-@pytest.fixture(scope='module', params=['SC-004', 'SC-009', 'SC-010'])
+@pytest.fixture(scope='module', params=['SC-001', 'SC-003', 'SC-004', 'SC-009', 'SC-010'])
 def scenario(request):
     return request.param, load_scenario(PACKAGE, request.param)
 
@@ -40,9 +40,9 @@ def finding_map(bundle):
 
 def test_v2_package_registers_only_the_authored_cases():
     manifest = json.loads((PACKAGE / 'manifest.json').read_text())
-    assert {item['scenario_id'] for item in manifest['scenarios']} == {'SC-004', 'SC-009', 'SC-010', 'SC-012'}
+    assert {item['scenario_id'] for item in manifest['scenarios']} == {'SC-001', 'SC-003', 'SC-004', 'SC-009', 'SC-010', 'SC-012'}
     assert manifest['fixture_format_version'] == '2.0.0'
-    assert manifest['fixture_package_version'] == '1.2.0'
+    assert manifest['fixture_package_version'] == '1.3.0'
     assert manifest['synthetic'] is True
     assert manifest['reference_time'] == '2026-11-16T09:00:00-10:00'
 

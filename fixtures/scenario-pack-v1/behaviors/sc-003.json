@@ -1,0 +1,148 @@
+{
+  "harness_contract_version": "1.0.0",
+  "requests": [
+    {
+      "request_step": 1,
+      "user_request": "Where should I paddleboard tomorrow morning in South Maui?",
+      "reference_time": "2026-11-16T09:00:00-10:00"
+    }
+  ],
+  "operations": [
+    {
+      "operation_id": "sc-003-alerts",
+      "request_step": 1,
+      "agent_type": "WEATHER",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "target_time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "geographic_scope": {
+        "zone": "SYNTHETIC_SC-003_REGION"
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "behavior": "SUCCESS",
+          "simulated_duration_ms": 1,
+          "response_fixture_id": "sc-003-alerts"
+        }
+      ]
+    },
+    {
+      "operation_id": "sc-003-wind",
+      "request_step": 1,
+      "agent_type": "WEATHER",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "target_time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "geographic_scope": {
+        "zone": "SYNTHETIC_SC-003_REGION"
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "behavior": "SUCCESS",
+          "simulated_duration_ms": 1,
+          "response_fixture_id": "sc-003-wind"
+        }
+      ]
+    },
+    {
+      "operation_id": "sc-003-marine",
+      "request_step": 1,
+      "agent_type": "OCEAN",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "target_time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "geographic_scope": {
+        "zone": "SYNTHETIC_SC-003_REGION"
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "behavior": "SUCCESS",
+          "simulated_duration_ms": 1,
+          "response_fixture_id": "sc-003-marine"
+        }
+      ]
+    },
+    {
+      "operation_id": "sc-003-visibility",
+      "request_step": 1,
+      "agent_type": "OCEAN",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "target_time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "geographic_scope": {
+        "zone": "SYNTHETIC_SC-003_REGION"
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "behavior": "SUCCESS",
+          "simulated_duration_ms": 1,
+          "response_fixture_id": "sc-003-visibility"
+        }
+      ]
+    },
+    {
+      "operation_id": "sc-003-water-b",
+      "request_step": 1,
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "WATER_QUALITY_ADVISORY_CHECK"
+      ],
+      "target_time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "geographic_scope": {
+        "zone": "SYNTHETIC_SC-003_REGION"
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "behavior": "SUCCESS",
+          "simulated_duration_ms": 1,
+          "response_fixture_id": "sc-003-water-b"
+        }
+      ]
+    }
+  ]
+}

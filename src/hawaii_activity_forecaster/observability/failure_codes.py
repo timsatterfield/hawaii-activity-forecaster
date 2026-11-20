@@ -93,6 +93,13 @@ def agent_failure_code(error: BaseException) -> str:
     return _model_code(error) or _budget(error) or "UNCLASSIFIED"
 
 
+def request_failure_field(error: BaseException) -> str | None:
+    """The closed request field a rejection concerns, when the validator names one."""
+    from hawaii_activity_forecaster.interpretation.contracts import VALUE_FIELDS, RequestValidationError
+    field = getattr(error, "field", None) if isinstance(error, RequestValidationError) else None
+    return field if field in VALUE_FIELDS else None
+
+
 def request_failure_code(error: BaseException) -> str:
     """Category for a rejected request interpretation; never includes error text."""
     from pydantic import ValidationError

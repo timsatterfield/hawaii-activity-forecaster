@@ -29,7 +29,8 @@ from hawaii_activity_forecaster.models import (
 from hawaii_activity_forecaster.models.enums import (
     AgentType, InvestigationStatus, Outcome, TraceActor, TraceEventType,
 )
-from hawaii_activity_forecaster.observability.failure_codes import agent_failure_code, request_failure_code
+from hawaii_activity_forecaster.observability.failure_codes import (
+    agent_failure_code, request_failure_code, request_failure_field)
 from .budgets import BudgetManager, BudgetSnapshot
 from .specialists import SpecialistContractError, SpecialistDelivery, SpecialistExchange
 from .session import RawSessionRequest, SessionRequest
@@ -396,8 +397,10 @@ async def _run_graph(
             receipt = verify_request(validate_request(proposal, request_context), request_context)
         except Exception as error:
             if not trace_failed:
+                field = request_failure_field(error)
                 emit(TraceEventType.CONTRACT_VALIDATED, contract="request_interpretation", valid=False,
-                     reason="REQUEST_NORMALIZATION_FAILED", error_code=request_failure_code(error))
+                     reason="REQUEST_NORMALIZATION_FAILED", error_code=request_failure_code(error),
+                     **({"field": field} if field else {}))
             raise
         proposed = _updated(state["investigation"], **receipt.request.model_dump())
         emit(TraceEventType.CONTRACT_VALIDATED, contract="request_interpretation", valid=True,

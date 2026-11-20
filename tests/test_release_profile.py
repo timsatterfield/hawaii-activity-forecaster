@@ -72,14 +72,26 @@ def test_production_factory_dispatches_once_to_exact_endpoint_and_keeps_secrets_
 
 def test_profile_0_3_changes_only_the_input_bound_and_its_cost_reserve():
     from hawaii_activity_forecaster.model_runtime.prompts import input_limit, template_text, template_version
-    from hawaii_activity_forecaster.model_runtime.targets import TARGETS, SATURDAY_PROFILE_V2
-    old, new = TARGETS[SATURDAY_PROFILE_V2], TARGETS[SATURDAY_PROFILE]
+    from hawaii_activity_forecaster.model_runtime.targets import TARGETS, SATURDAY_PROFILE_V2, SATURDAY_PROFILE_V3
+    old, new = TARGETS[SATURDAY_PROFILE_V2], TARGETS[SATURDAY_PROFILE_V3]
     assert (old.input_limit, old.reserved_cost_microusd) == (8000, 2500)
     assert (new.input_limit, new.reserved_cost_microusd) == (12000, 2600)
     assert (old.provider, old.model_identifier, old.execution_mode) == (new.provider, new.model_identifier, new.execution_mode)
     # The reserve covers the bound at the conservative cache-write rate: 12,000 x 0.125 + 2,048 x 0.50.
     assert new.reserved_cost_microusd * 1_000_000 >= new.input_limit * 125_000 + 2048 * 500_000
-    assert input_limit(SATURDAY_PROFILE) == 12000 and input_limit(SATURDAY_PROFILE_V2) == 8000
+    assert input_limit(SATURDAY_PROFILE_V3) == 12000 and input_limit(SATURDAY_PROFILE_V2) == 8000
     for operation in ('normalize_request', 'coordinator_plan', 'weather_investigation', 'ocean_investigation'):
-        assert template_text(operation, SATURDAY_PROFILE) == template_text(operation, SATURDAY_PROFILE_V2)
-        assert template_version(operation, SATURDAY_PROFILE) == template_version(operation, SATURDAY_PROFILE_V2)
+        assert template_text(operation, SATURDAY_PROFILE_V3) == template_text(operation, SATURDAY_PROFILE_V2)
+        assert template_version(operation, SATURDAY_PROFILE_V3) == template_version(operation, SATURDAY_PROFILE_V2)
+
+
+def test_profile_0_4_changes_only_normalize_guidance():
+    from hawaii_activity_forecaster.model_runtime.prompts import template_text, template_version
+    from hawaii_activity_forecaster.model_runtime.targets import TARGETS, SATURDAY_PROFILE_V3
+    assert TARGETS[SATURDAY_PROFILE] == TARGETS[SATURDAY_PROFILE_V3]  # Same bound, reserve and target.
+    for operation in ('coordinator_plan', 'weather_investigation', 'ocean_investigation'):
+        assert template_text(operation, SATURDAY_PROFILE) == template_text(operation, SATURDAY_PROFILE_V3)
+        assert template_version(operation, SATURDAY_PROFILE) == template_version(operation, SATURDAY_PROFILE_V3)
+    old, new = template_text('normalize_request', SATURDAY_PROFILE_V3), template_text('normalize_request', SATURDAY_PROFILE)
+    assert new.startswith(old) and "'in South Maui'" in new and "never also\npreferred_area" in new
+    assert template_version('normalize_request', SATURDAY_PROFILE) == 'normalize_request-release-0.3'

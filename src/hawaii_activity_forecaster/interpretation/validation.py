@@ -112,6 +112,8 @@ def validate_request(proposal, context: RequestContext) -> ValidatedRequest:
     """Validate authored interpretation output; perform no calls, events or state writes."""
     try:
         return _validate(proposal, checked_context(context))
+    except RequestValidationError:
+        raise  # Keep the validator's fixed message so its sanitized category is traceable.
     except (ValueError, TypeError, AttributeError, KeyError, IndexError):
         raise RequestValidationError("Request proposal or its supporting context could not be validated.") from None
 
@@ -140,24 +142,24 @@ def _validate(proposal, context):
         if name in meaning.uncertain:
             continue  # Preserve uncertainty; never let a model select one disputed interpretation.
         if name not in meaning.changes or value != meaning.changes[name]:
-            raise RequestValidationError("Proposed change is not supported by its clause.")
+            raise RequestValidationError("Proposed change is not supported by its clause.", field=name)
     for name in meaning.changes:
         dependent = meaning.origins.get((name, None))
         if name not in proposed and name not in auto and not (dependent and dependent.source == "INHERITED"):
-            raise RequestValidationError("Proposal omitted a supported change.")
+            raise RequestValidationError("Proposal omitted a supported change.", field=name)
     for (name, index), origin in meaning.origins.items():
         if origin.span is None:
             continue
         matching = [s for s in proposal.source_spans if s.field == name and s.entry_index in (None, index) and _covers(s, origin.span)]
         unresolved = (name in auto and any(n == name and i == index for n, i, _ in meaning.unresolved))
         if not matching and not unresolved:
-            raise RequestValidationError("A changed value lacks its relevant source span.")
+            raise RequestValidationError("A changed value lacks its relevant source span.", field=name)
     for span in proposal.source_spans:
         if span.field not in proposed or not any(name == span.field and span.entry_index in (None, index)
                 and origin.span is not None and _covers(span, origin.span) for (name, index), origin in meaning.origins.items()):
             # List removals are supported by the exact removed_entries references.
             if not any(name == span.field and _covers(span, area) for name, _, area in meaning.removals):
-                raise RequestValidationError("Source span does not support this field.")
+                raise RequestValidationError("Source span does not support this field.", field=span.field)
     data = base | meaning.changes
     for name in meaning.uncertain:
         data[name] = base[name]

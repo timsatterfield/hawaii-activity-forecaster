@@ -17,6 +17,7 @@ from .privacy import sanitize_event
 from .storage import TERMINAL
 from .model_validation import ModelTraceLedger, MODEL_IDENTIFIERS, valid_model_profile
 from .failure_codes import AGENT_FAILURE_CODES, REQUEST_FAILURE_CODES
+from hawaii_activity_forecaster.interpretation.contracts import VALUE_FIELDS as REQUEST_VALUE_FIELDS
 
 
 class TraceValidationError(ValueError):
@@ -266,6 +267,8 @@ def _validate(trace, state, result, budgets, bindings, evidence, safety):
         elif kind == "CONTRACT_VALIDATED" and d.get("contract") == "request_interpretation":
             # Optional for traces written before M1.7-B; only on rejection, closed vocabulary.
             _require("error_code" not in d or (d.get("valid") is False and d["error_code"] in REQUEST_FAILURE_CODES),
+                     "TRACE_REQUEST_ERROR_CODE_INVALID")
+            _require("field" not in d or ("error_code" in d and d["field"] in REQUEST_VALUE_FIELDS),
                      "TRACE_REQUEST_ERROR_CODE_INVALID")
         elif kind == "CONTRACT_VALIDATED" and d.get("contract") == "specialist_response":
             response_contracts.add((d["request_id"], d["attempt_number"]))
