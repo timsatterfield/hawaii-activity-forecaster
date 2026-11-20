@@ -1,1 +1,1 @@
-"""Offline provider foundation; no agent execution or paid activation path."""
+"""Structured model proposals and investigation-owned, opt-in provider dispatch."""

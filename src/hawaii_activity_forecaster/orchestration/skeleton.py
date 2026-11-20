@@ -111,6 +111,7 @@ class RawPlanningInput:
     investigation_candidate_ids: tuple[str, ...]
     planning_order: tuple[str, ...]
     models: ComponentModelCalls
+    budgets: BudgetSnapshot | None = None
 
 
 class _TraceFailure(RuntimeError):
@@ -184,6 +185,7 @@ async def _run_graph(
     evidence_policy=None, safety_evaluation=False, result_generation=False,
     session_request=None, raw_admission=None, interpreter=None, model_adapter=None,
     trace_settings=None,
+    provider_adapter=None, agent_runtime=False,
 ) -> SkeletonReport:
     if record_event is not None and trace_settings is not None:
         raise ValueError("Choose authoritative local tracing or an explicit component recorder")
@@ -283,7 +285,21 @@ async def _run_graph(
             investigation_candidate_ids=scope,
         )
 
-    models = ComponentModelCalls(model_adapter, budget, emit)
+    if provider_adapter is not None:
+        from hawaii_activity_forecaster.model_runtime.gateway import ModelGateway
+        from hawaii_activity_forecaster.model_runtime.contracts import InvocationIdentity
+        model_metadata = dict(provider=provider_adapter.provider_name, model_identifier=provider_adapter.model_identifier,
+                              profile_id=provider_adapter.profile_id,
+                              execution_mode=provider_adapter.execution_mode)
+        identity = InvocationIdentity(session_id=initial.session_id, investigation_id=initial.investigation_id,
+                                      request_revision=initial.request_revision)
+        models = ModelGateway(identity=identity, budget=budget, adapter=provider_adapter, emit=emit,
+            is_current=lambda value: (value.investigation_id == current.investigation_id
+                and value.request_revision == current.request_revision
+                and current.status not in {"COMPLETED", "ABSTAINED", "FAILED"}))
+    else:
+        model_metadata = None
+        models = ComponentModelCalls(model_adapter, budget, emit)
     if driver is not None and raw_admission is None:
         dispatcher = tool_dispatcher()
         specialist_callback = dispatcher.run
@@ -299,15 +315,17 @@ async def _run_graph(
                 trace_failed = True
                 budget.close()
                 raise _TraceFailure("mandatory trace startup failed") from None
-        emit(TraceEventType.INVESTIGATION_STARTED, component_probe=True, status=initial.status,
+        emit(TraceEventType.INVESTIGATION_STARTED,
+             component_probe=not agent_runtime or provider_adapter.execution_mode == "OFFLINE_TRANSPORT", status=initial.status,
              iteration_count=initial.iteration_count, tool_call_count=initial.tool_call_count,
              retry_count=initial.retry_count, model_call_count=0, fallback_attempted=False,
              trace_metadata=dict(schema_version=initial.schema_version, configuration_version="0.1",
                                  policy_version=evidence_policy.policy_version if evidence_policy else "not-applied",
-                                 model_identifier=None),
+                                 model_identifier=model_metadata["model_identifier"] if model_metadata else None),
              configuration=dict(limits=InvestigationLimits().model_dump(), timeouts=ExecutionTimeouts().model_dump(),
                                 environment_mode="synthetic", remote_tracing_enabled=False,
-                                policy_configuration_version=evidence_policy.policy_configuration_version if evidence_policy else None),
+                                policy_configuration_version=evidence_policy.policy_configuration_version if evidence_policy else None,
+                                **({"model_profile": model_metadata} if model_metadata else {})),
              candidate_beach_ids=list(initial.candidate_beach_ids), raw_payloads_retained=False)
         if raw_admission is not None:
             emit(TraceEventType.REQUEST_RECEIVED, original_request=request.original_request,
@@ -369,8 +387,11 @@ async def _run_graph(
         visit("normalize_request")
         inputs = interpreter_input(request_context)
         try:
-            proposal = (await models.invoke("normalize_request", inputs) if model_adapter is not None
-                        else interpreter(inputs))
+            if provider_adapter is not None:
+                proposal = (await models.invoke("normalize_request", inputs)).to_interpretation()
+            else:
+                proposal = (await models.invoke("normalize_request", inputs) if model_adapter is not None
+                            else interpreter(inputs))
             receipt = verify_request(validate_request(proposal, request_context), request_context)
         except Exception:
             if not trace_failed:
@@ -423,7 +444,7 @@ async def _run_graph(
 
     def authorize(state: _GraphState):
         nonlocal current
-        iteration = budget.begin_iteration()
+        iteration = budget.snapshot().iterations if agent_runtime else budget.begin_iteration()
         current = _updated(state["investigation"], status=InvestigationStatus.INVESTIGATING,
                            iteration_count=iteration)
         return {**visit("authorize_dispatch"), "investigation": current}
@@ -437,9 +458,13 @@ async def _run_graph(
             # or committed category/issue decisions.
             validate_evidence(snapshot, catalog=catalog, policy=evidence_policy, bindings=(),
                               reference_time=evidence_reference(), request_step=request_step)
+        if agent_runtime:
+            snapshot = _updated(snapshot, iteration_count=budget.begin_iteration())
+            current = snapshot
+            state = {**state, "investigation": snapshot}
         try:
             planned = plan(RawPlanningInput(snapshot, selection.investigation_candidate_ids,
-                                           selection.planning_order, models)) if raw_admission else plan(snapshot)
+                                           selection.planning_order, models, budget.snapshot())) if raw_admission else plan(snapshot)
             if isawaitable(planned):
                 planned = await planned
             requests = tuple(SpecialistInvestigationRequest.model_validate(
@@ -462,10 +487,11 @@ async def _run_graph(
                              reason="FALLBACK_ALLOWANCE_EXHAUSTED_WITH_UNRESOLVED_EVIDENCE")
             reason = ("NO_FURTHER_ACTION" if result_generation else
                       "RESULT_VALIDATION_NOT_IMPLEMENTED" if safety_evaluation else "VALIDATORS_NOT_IMPLEMENTED")
-            return {**visit("plan_evidence"), "route": "assess_stop" if raw_admission else "stop", "reason": reason}
+            return {**visit("plan_evidence"), "investigation": current,
+                    "route": "assess_stop" if raw_admission else "stop", "reason": reason}
         try:
             proposed = exchange.authorize(state["investigation"], requests, now=datetime.now(timezone.utc))
-            if dispatcher is not None:
+            if dispatcher is not None and not agent_runtime:
                 for scoped in requests:
                     detached = SpecialistInvestigationRequest.model_validate(scoped.model_dump())
                     dispatcher.register(scoped, tuple(tool_plan(detached)))
@@ -508,6 +534,9 @@ async def _run_graph(
             if exchange is not None:
                 detached = SpecialistInvestigationRequest.model_validate(scoped_request.model_dump())
                 try:
+                    if agent_runtime:
+                        actions = await tool_plan(detached, models, budget.snapshot())
+                        dispatcher.register(detached, actions)
                     if scoped_request.deadline_at is None:
                         response = await specialist_callback(detached)
                     else:
@@ -520,6 +549,9 @@ async def _run_graph(
                 except Exception:
                     emit(TraceEventType.AGENT_FAILED, **correlation, execution_status="ERROR",
                          duration_ms=max(0, int((datetime.now(timezone.utc) - started).total_seconds() * 1000)))
+                    # Let the native parallel join collect both outcomes before
+                    # terminating. Raising here can strand a sibling's completed
+                    # response without its required contract-validation event.
                     delivery = SpecialistDelivery(scoped_request.request_id, scoped_request.attempt_number,
                                                   execution_failed=True)
                 else:
@@ -578,6 +610,8 @@ async def _run_graph(
         stats = budget.snapshot()
         current = _updated(report.state, tool_call_count=stats.tool_calls, retry_count=stats.retries,
                            fallback_attempted=bool(stats.fallbacks))
+        if agent_runtime and latest_contract_failure:
+            raise SpecialistContractError("AGENT_EXECUTION_FAILED")
         return {**visit("validate_and_merge_specialist_responses"), "investigation": current}
 
     def decide(state: _GraphState):
@@ -591,10 +625,17 @@ async def _run_graph(
         if safety_report is not None:
             more = any(a.eligibility == "NEEDS_INVESTIGATION" for a in safety_report.assessments)
         repeat = more and current.iteration_count < current.max_iterations
+        if agent_runtime:
+            stats = budget.snapshot()
+            repeat = current.iteration_count < current.max_iterations and stats.model_calls < 12 and not stats.closed
+            if stats.model_calls >= 12:
+                emit(TraceEventType.INVESTIGATION_LIMIT_REACHED, budget_kind="model", configured_limit=12)
         boundary = ("ASSESSMENT_COMPLETE" if result_generation else
                     "RESULT_VALIDATION_NOT_IMPLEMENTED" if safety_evaluation else "VALIDATORS_NOT_IMPLEMENTED")
-        reason = "ITERATION_LIMIT_REACHED" if more else boundary
-        if more and not repeat:
+        at_iteration_limit = current.iteration_count >= current.max_iterations
+        reason = ("ITERATION_LIMIT_REACHED" if more and at_iteration_limit else
+                  "NO_FURTHER_ACTION" if agent_runtime and more and not repeat else boundary)
+        if more and not repeat and at_iteration_limit:
             emit(TraceEventType.INVESTIGATION_LIMIT_REACHED, iteration=current.iteration_count,
                  budget_kind="coordinator_iterations", configured_limit=current.max_iterations)
         return {**visit("decide_next_action"), "investigation": current,

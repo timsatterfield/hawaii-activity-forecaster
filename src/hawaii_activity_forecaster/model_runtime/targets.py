@@ -1,0 +1,37 @@
+"""Closed model targets; no discovery, implicit selection or automatic failover."""
+
+from dataclasses import dataclass
+from types import MappingProxyType
+
+PROFILE = "m1-agent-runtime-0.1"
+SATURDAY_PROFILE_V1 = "m1-saturday-runtime-0.1"
+SATURDAY_PROFILE = "m1-saturday-runtime-0.2"
+OLLAMA_PROFILE_V1 = "m1-ollama-qwen3.5-9b-0.1"
+OLLAMA_PROFILE_V2 = "m1-ollama-qwen3.5-9b-0.2"
+OLLAMA_PROFILE_V3 = "m1-ollama-qwen3.5-9b-0.3"
+OLLAMA_PROFILE_V4 = "m1-ollama-qwen3.5-9b-0.4"
+OLLAMA_PROFILE = "m1-ollama-qwen3.5-9b-0.5"
+MODEL = "gpt-6-luna"
+OLLAMA_MODEL = "qwen3.5:9b"
+CALL_RESERVE_MICROUSD = 2500
+
+
+@dataclass(frozen=True)
+class ModelTarget:
+    provider: str
+    model_identifier: str
+    execution_mode: str
+    reserved_cost_microusd: int
+
+
+TARGETS = MappingProxyType({
+    PROFILE: ModelTarget("openai", MODEL, "LIVE_PROVIDER", CALL_RESERVE_MICROUSD),
+    SATURDAY_PROFILE_V1: ModelTarget("openai", MODEL, "LIVE_PROVIDER", CALL_RESERVE_MICROUSD),
+    SATURDAY_PROFILE: ModelTarget("openai", MODEL, "LIVE_PROVIDER", CALL_RESERVE_MICROUSD),
+    OLLAMA_PROFILE_V1: ModelTarget("ollama", OLLAMA_MODEL, "LOCAL_PROVIDER", 0),
+    OLLAMA_PROFILE_V2: ModelTarget("ollama", OLLAMA_MODEL, "LOCAL_PROVIDER", 0),
+    OLLAMA_PROFILE_V3: ModelTarget("ollama", OLLAMA_MODEL, "LOCAL_PROVIDER", 0),
+    OLLAMA_PROFILE_V4: ModelTarget("ollama", OLLAMA_MODEL, "LOCAL_PROVIDER", 0),
+    OLLAMA_PROFILE: ModelTarget("ollama", OLLAMA_MODEL, "LOCAL_PROVIDER", 0),
+})
+SUPPORTED_PROFILES = frozenset(TARGETS)

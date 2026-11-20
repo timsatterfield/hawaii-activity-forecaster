@@ -1,0 +1,16 @@
+# Explicit opt-in for model-driven investigation of fictional fixture data.
+# Credentials belong in the local environment, never in this configuration file.
+[llm]
+enabled = true
+provider = "openai"
+model_identifier = "gpt-6-luna"
+profile_id = "m1-saturday-runtime-0.2"
+activation = "synthetic-release"
+
+[trace]
+directory = "traces"
+format = "jsonl"
+write_failure_policy = "fail_closed"
+
+[langsmith]
+enabled = false

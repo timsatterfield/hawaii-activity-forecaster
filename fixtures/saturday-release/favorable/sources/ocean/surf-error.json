@@ -1,0 +1,21 @@
+{
+  "tool_call_id": "SURF-ERROR_TEMPLATE_CALL",
+  "source_id": "HWT_SURF",
+  "retrieval_status": "ERROR",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/release/surf-error",
+  "findings": [],
+  "missing_evidence": [
+    "Declared synthetic retrieval failed"
+  ],
+  "errors": [
+    {
+      "error_id": "surf-error_ERROR",
+      "error_code": "SOURCE_UNAVAILABLE",
+      "message": "Synthetic unavailable source",
+      "source_id": "HWT_SURF",
+      "retryable": false
+    }
+  ],
+  "duration_ms": 1
+}

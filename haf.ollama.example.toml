@@ -1,0 +1,16 @@
+# Explicit local development target. Uses the already-installed model only.
+# No API key is needed; no model download or OpenAI fallback is performed.
+[llm]
+enabled = true
+provider = "ollama"
+model_identifier = "qwen3.5:9b"
+profile_id = "m1-ollama-qwen3.5-9b-0.5"
+activation = "synthetic-release"
+
+[trace]
+directory = "traces"
+format = "jsonl"
+write_failure_policy = "fail_closed"
+
+[langsmith]
+enabled = false

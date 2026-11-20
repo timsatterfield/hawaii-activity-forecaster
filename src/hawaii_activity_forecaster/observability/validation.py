@@ -15,7 +15,7 @@ from hawaii_activity_forecaster.models.permissions import OCEAN_SOURCES, WEATHER
 from hawaii_activity_forecaster.harness.policy import CATEGORY_SOURCES
 from .privacy import sanitize_event
 from .storage import TERMINAL
-from .model_validation import ModelTraceLedger, MODEL, PROFILE_METADATA, TRACE_MODES
+from .model_validation import ModelTraceLedger, MODEL_IDENTIFIERS, valid_model_profile
 
 
 class TraceValidationError(ValueError):
@@ -121,15 +121,11 @@ def _validate(trace, state, result, budgets, bindings, evidence, safety):
              configuration_version=trace.configuration_version, policy_version=trace.policy_version,
              model_identifier=trace.model_identifier), "TRACE_METADATA_MISMATCH")
     _require(trace.schema_version == trace.configuration_version == "0.1"
-             and trace.policy_version in {"0.2", "not-applied"} and trace.model_identifier in {None, MODEL},
+             and trace.policy_version in {"0.2", "not-applied"} and trace.model_identifier in MODEL_IDENTIFIERS | {None},
              "TRACE_VERSION_UNSUPPORTED")
     model_profile = first.details["configuration"].get("model_profile")
     if trace.model_identifier is not None:
-        _require(isinstance(model_profile, dict)
-                 and set(model_profile) == set(PROFILE_METADATA)
-                 and model_profile["execution_mode"] in TRACE_MODES
-                 and model_profile == {**PROFILE_METADATA, "execution_mode": model_profile["execution_mode"]},
-                 "TRACE_MODEL_CONFIGURATION_INVALID")
+        _require(valid_model_profile(model_profile, trace.model_identifier), "TRACE_MODEL_CONFIGURATION_INVALID")
     _require(first.details["configuration"]["limits"] == InvestigationLimits().model_dump(), "TRACE_CONFIGURATION_INVALID")
     assessment_scope = set(first.details["candidate_beach_ids"])
     investigation_scope = assessment_scope.copy()

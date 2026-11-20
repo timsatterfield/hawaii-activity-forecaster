@@ -17,7 +17,7 @@ from model_runtime_samples import Probe, normalization, coordinator, specialist,
 
 def test_profile_configuration_is_explicit_default_disabled_and_has_no_credential_field(monkeypatch):
     monkeypatch.setenv('OPENAI_API_KEY', 'private-provider-key')
-    assert AppConfig().llm.model_dump() == dict(enabled=False, provider=None, model_identifier=None, profile_id=None)
+    assert AppConfig().llm.model_dump() == dict(enabled=False, provider=None, model_identifier=None, profile_id=None, activation="disabled")
     settings = load_config(environ=dict(HAF_LLM_PROVIDER='openai', HAF_LLM_MODEL_IDENTIFIER=MODEL,
                                        HAF_LLM_PROFILE_ID=PROFILE)).llm
     assert not settings.enabled and 'private-provider-key' not in repr(settings)
@@ -53,6 +53,7 @@ def test_locked_sdk_payload_suppresses_storage_hosted_tools_remote_tracing_and_e
         assert request.headers['authorization'] == 'Bearer offline-not-a-credential'
         assert body['model'] == MODEL and body['store'] is False and body['stream'] is False
         assert body['max_output_tokens'] == OUTPUT_LIMIT and body['reasoning'] == {'effort':'low'}
+        assert body['service_tier'] == 'default'
         assert body['text']['format']['strict'] is True
         assert body['text']['format']['type'] == 'json_schema'
         assert not set(body) & {'tools','previous_response_id','background','temperature','conversation'}

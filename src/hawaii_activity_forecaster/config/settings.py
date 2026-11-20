@@ -10,6 +10,9 @@ from typing import Literal, Self
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt, field_validator, model_validator
 
 from hawaii_activity_forecaster.models.common import Text
+from hawaii_activity_forecaster.model_runtime.targets import (
+    PROFILE, OLLAMA_PROFILE_V1, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4, TARGETS,
+)
 
 
 class ConfigurationModel(BaseModel):
@@ -55,16 +58,30 @@ class LLMSettings(ConfigurationModel):
     enabled: StrictBool = False
     provider: Text | None = None
     model_identifier: Text | None = None
-    profile_id: Literal["m1-agent-runtime-0.1"] | None = None
+    profile_id: Literal["m1-agent-runtime-0.1", "m1-saturday-runtime-0.1",
+                        "m1-saturday-runtime-0.2",
+                        "m1-ollama-qwen3.5-9b-0.1", "m1-ollama-qwen3.5-9b-0.2",
+                        "m1-ollama-qwen3.5-9b-0.3", "m1-ollama-qwen3.5-9b-0.4",
+                        "m1-ollama-qwen3.5-9b-0.5"] | None = None
+    activation: Literal["disabled", "synthetic-release"] = "disabled"
 
     @model_validator(mode="after")
     def activation_boundary(self) -> Self:
         if self.enabled:
             if self.provider is None or self.model_identifier is None:
                 raise ValueError("model execution requires explicit provider and model_identifier (CFG-T14)")
-            raise ValueError("real-model execution is unavailable pending provider activation review and integration")
-        if self.profile_id is not None and (self.provider, self.model_identifier) != ("openai", "gpt-6-luna"):
-            raise ValueError("the offline model profile requires its explicit provider and model identifier")
+            if self.activation != "synthetic-release":
+                raise ValueError("real-model execution is unavailable pending provider activation review and integration")
+            if self.profile_id is None or self.profile_id in {
+                PROFILE, OLLAMA_PROFILE_V1, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4,
+            }:
+                raise ValueError("synthetic release requires an explicit reviewed model target")
+        elif self.activation != "disabled":
+            raise ValueError("activation requires explicit enabled model execution")
+        if self.profile_id is not None:
+            target = TARGETS[self.profile_id]
+            if (self.provider, self.model_identifier) != (target.provider, target.model_identifier):
+                raise ValueError("the model profile requires its explicit provider and model identifier")
         return self
 
 

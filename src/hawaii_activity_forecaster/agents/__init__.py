@@ -1,1 +1,1 @@
-"""Future Coordinator, Weather, and Ocean agent implementations."""
+"""Coordinator, Weather and Ocean planning with trusted synthetic execution."""
