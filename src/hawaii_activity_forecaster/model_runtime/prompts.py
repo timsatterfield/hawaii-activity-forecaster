@@ -9,12 +9,22 @@ from hawaii_activity_forecaster.interpretation.contracts import InterpreterInput
 from .contracts import (CoordinatorInput, InvocationIdentity, Operation, OUTPUTS,
                         ProposalError, SpecialistInput)
 from .targets import (
-    PROFILE, SATURDAY_PROFILE, SATURDAY_PROFILE_V1,
+    PROFILE, SATURDAY_PROFILE, SATURDAY_PROFILE_V1, SATURDAY_PROFILE_V2,
     OLLAMA_PROFILE, OLLAMA_PROFILE_V1, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4,
-    MODEL, CALL_RESERVE_MICROUSD, SUPPORTED_PROFILES,
+    MODEL, CALL_RESERVE_MICROUSD, DEFAULT_INPUT_LIMIT, SUPPORTED_PROFILES, TARGETS,
 )
 
-INPUT_LIMIT = 8000
+# Profiles 0.2 and 0.3 share every prompt and schema; only the input bound differs.
+_SATURDAY_RELEASE = frozenset({SATURDAY_PROFILE, SATURDAY_PROFILE_V2})
+
+
+def input_limit(profile: str) -> int:
+    """Per-profile serialized input bound; unknown profiles keep the default."""
+    target = TARGETS.get(profile)
+    return target.input_limit if target is not None else DEFAULT_INPUT_LIMIT
+
+
+INPUT_LIMIT = DEFAULT_INPUT_LIMIT  # Default bound; see input_limit(profile).
 OUTPUT_LIMIT = 2048
 
 _COMMON = """Perform only the named Coordinator, Weather or Ocean operation. Return only
@@ -54,7 +64,7 @@ def template_version(operation: Operation, profile: str = PROFILE) -> str:
         return f"{operation}-ollama-0.2"
     if profile == OLLAMA_PROFILE_V1:
         return f"{operation}-ollama-0.1"
-    if profile == SATURDAY_PROFILE:
+    if profile in _SATURDAY_RELEASE:
         return f"{operation}-release-0.2"
     return f"{operation}-release-0.1" if profile == SATURDAY_PROFILE_V1 else f"{operation}-0.1"
 
@@ -65,7 +75,7 @@ def template_text(operation: Operation, profile: str = PROFILE) -> str:
     instruction = (_NORMALIZE if operation == "normalize_request" else _COORDINATE
                    if operation == "coordinator_plan" else _SPECIALIST.format(role=_ROLE[operation]))
     text = _COMMON + "\n\n" + instruction
-    if profile in {SATURDAY_PROFILE, SATURDAY_PROFILE_V1, OLLAMA_PROFILE, OLLAMA_PROFILE_V1, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4}:
+    if profile in {SATURDAY_PROFILE, SATURDAY_PROFILE_V2, SATURDAY_PROFILE_V1, OLLAMA_PROFILE, OLLAMA_PROFILE_V1, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4}:
         if operation == "normalize_request":
             text += """\nUse existing logical values: activity SWIMMING/SNORKELING/SUP; target_date
 YYYY-MM-DD; target_time_window {start: ISO-aware datetime, end: ISO-aware datetime};
@@ -97,7 +107,7 @@ for its required gaps, using FALLBACK_IF_REQUIRED_GAP_UNRESOLVED and its origin
 index. These conditions predict no failure: only trusted observed outcomes activate
 them. Never use ALWAYS for a retry/fallback option. Put the original before recovery.
 Skip optional visibility if worst-case plan length would exceed remaining tools."""
-    if profile == SATURDAY_PROFILE and operation == "normalize_request":
+    if profile in _SATURDAY_RELEASE and operation == "normalize_request":
         text += """\nUse request_tokens offsets and cite whole supporting phrases, including 'only'
 or 'prefer'. Omit absent optional fields. A hard area restriction does not also
 create preferred_area. value_json contains valid JSON: strings include inner JSON
@@ -180,7 +190,7 @@ def prepare(operation: Operation, inputs: object, identity: InvocationIdentity, 
             **actual.model_dump(), rule_profile=inputs.rule_profile, catalog_summary=inputs.catalog_summary,
             inherited_origins=[asdict(o) for o in inputs.inherited_origins],
             inherited_request=inputs.inherited_request.model_dump(mode="json") if inputs.inherited_request else None)
-        if profile in {SATURDAY_PROFILE, OLLAMA_PROFILE, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4}:
+        if profile in {SATURDAY_PROFILE, SATURDAY_PROFILE_V2, OLLAMA_PROFILE, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4}:
             # Mechanical Unicode offsets only. The model still selects meaning;
             # the existing verifier checks every proposed value and cited span.
             context["request_tokens"] = [dict(text=m.group(), start=m.start(), end=m.end())
@@ -216,7 +226,7 @@ def prepare(operation: Operation, inputs: object, identity: InvocationIdentity, 
     # Conservative serialized-byte bound, including schema and framing. No
     # tokenizer downloads or hidden token-count API call. Reported usage is checked
     # independently at the provider boundary; live calibration remains a pilot gate.
-    if len((system + payload + schema).encode("utf-8")) + 512 > INPUT_LIMIT:
+    if len((system + payload + schema).encode("utf-8")) + 512 > input_limit(profile):
         raise ProposalError("MODEL_INPUT_LIMIT")
     return PreparedCall(operation, identity, _ROLE[operation], template_version(operation, profile),
                         sha256(system.encode()).hexdigest(), sha256(schema.encode()).hexdigest(),

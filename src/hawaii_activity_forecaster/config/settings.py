@@ -59,7 +59,7 @@ class LLMSettings(ConfigurationModel):
     provider: Text | None = None
     model_identifier: Text | None = None
     profile_id: Literal["m1-agent-runtime-0.1", "m1-saturday-runtime-0.1",
-                        "m1-saturday-runtime-0.2",
+                        "m1-saturday-runtime-0.2", "m1-saturday-runtime-0.3",
                         "m1-ollama-qwen3.5-9b-0.1", "m1-ollama-qwen3.5-9b-0.2",
                         "m1-ollama-qwen3.5-9b-0.3", "m1-ollama-qwen3.5-9b-0.4",
                         "m1-ollama-qwen3.5-9b-0.5"] | None = None

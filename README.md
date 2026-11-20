@@ -33,8 +33,9 @@ Offline integration tests exercise the installed SDK with mock HTTP responses.
 The [bounded OpenAI pilot](docs/development/m1-openai-pilot.md) additionally verified
 genuine three-role execution for the listed recommendation, recovery, abstention
 and follow-up checks. It used all ten authorized investigations, retaining two
-early normalization failures; all seven later checks passed on the current
-`m1-saturday-runtime-0.2` profile. This is a synthetic M1
+early normalization failures; all seven later checks passed on the
+`m1-saturday-runtime-0.2` profile. The release configuration now uses `0.3`, which has
+identical prompts and a larger input bound (see [M1.8](docs/development/m1-8-sc-009-sc-012.md)). This is a synthetic M1
 release with fictional beaches and fixed evidence dates, not a real-world forecaster.
 See the [integration notes](docs/development/m1-integration-release.md) for coverage,
 remaining acceptance work and approved deferments.
@@ -629,6 +630,11 @@ the same path over mock HTTP, pass all 84/61 assertions, and report
 `OFFLINE_MODEL_TRANSPORT` (BLOCKED). See the
 [M1.7-A notes](docs/development/m1-7a-agentic-scenario-adapter.md) for the reporting
 categories, allowlist rules and remaining gaps.
+
+[M1.8](docs/development/m1-8-sc-009-sc-012.md) registers SC-009 (fallback recovery,
+ACTIVE, 73 assertions) and SC-012 (preference revision, ACTIVE, 84 assertions), with
+dataset `1.2.0`. It also adds model profile `m1-saturday-runtime-0.3`, which raises the
+input bound to 12,000 bytes so revised follow-ups fit.
 
 Default demos now use raw admission and independently validated interpretation
 proposals. SC-004 retains the requested Kihei preference. SC-010 records actual
