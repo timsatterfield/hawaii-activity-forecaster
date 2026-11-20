@@ -12,7 +12,9 @@ These fixed dates make results repeatable; they are not today's Maui conditions.
 
 These commands need no API key, model server or paid calls. They demonstrate
 authored component plans and independently checked outputs. Real model planning
-was separately demonstrated by the [OpenAI pilot](development/m1-openai-pilot.md).
+was demonstrated by the original pilot and subsequent registered-scenario runs.
+The [M1 completion report](development/m1-completion-report.md) indexes all twelve
+live scenario passes and their remaining optional assertions.
 
 ### 1. Check installation and CLI
 
@@ -117,11 +119,92 @@ successful fallback recovery, abstention, advisory exclusion, clarification and
 follow-ups through the installed SDK with explicit mock HTTP. No additional
 offline `demo favorable` or `demo recovery` command is implied.
 
+## Current acceptance baseline
+
+The release configuration selects **`m1-saturday-runtime-0.7`** with `gpt-6-luna`.
+The registered pack is dataset **`1.6.0`**, format `2.0.0`. All twelve scenarios have
+recorded live scenario-level PASS results: eleven on profile 0.6 and SC-002 on 0.7.
+This is historical evidence across versions. The subsequent authorized all-twelve
+0.7 rerun passed **10/12**; SC-006 and SC-008 failed. See the
+[completion report](development/m1-completion-report.md#profile-07-rerun-and-sc-006-investigation-2026-11-20)
+for the current regression result and SC-006 diagnosis.
+Profile 0.7 changes only request-normalization guidance; older profiles remain
+available for validating their traces.
+
+Scenario PASS means the mandatory executable assertions pass. Optional blocked
+assertions remain for real wind-hazard classification (SC-005), clear-water
+preference interpretation (SC-006), production freshness cutoffs (SC-007), material
+conflict classification (SC-008) and historical evidence reuse (SC-012). SC-007's
+recorded passing run also has six optional FAIL assertions for a skipped redundant
+Snorkel Store report. See the completion report for exact evidence and decisions.
+
+### Optional all-twelve live confirmation
+
+**Paid reference commands; not part of the offline rehearsal.** Run only after
+new authorization. A normal pass uses about **65 model calls across thirteen
+investigations** (SC-012 has two). Actual plans may differ; the existing bound is
+12 model calls per investigation, up to 156 for this batch. No batch-wide dollar
+ledger is provided. Each command below runs once, with no automatic rerun.
+
+Run in Bash or zsh from the repository root. The timestamped directory keeps this
+batch separate from earlier reports and traces. Reports are saved even on failure;
+the final summary returns a failure if any scenario did not pass.
+
+```bash
+acceptance_run="traces/acceptance-0.7-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$acceptance_run"
+for scenario in SC-001 SC-002 SC-003 SC-004 SC-005 SC-006 SC-007 SC-008 SC-009 SC-010 SC-011 SC-012; do
+  if uv run --locked --env-file keys/apsi.env hafi evaluate "$scenario" \
+    --fixtures fixtures/scenario-pack-v1 --agent --config haf.release.example.toml \
+    --live --trace-directory "$acceptance_run" > "$acceptance_run/$scenario.json"; then
+    echo "$scenario: PASS"
+  else
+    echo "$scenario: non-PASS; inspect its report and trace"
+  fi
+done
+python3 - "$acceptance_run" <<'SUMMARY'
+import json
+from pathlib import Path
+import sys
+root = Path(sys.argv[1])
+passed = 0
+for number in range(1, 13):
+    scenario = f"SC-{number:03d}"
+    try:
+        report = json.loads((root / f"{scenario}.json").read_text())["scenario"]
+        print(scenario, report["outcome"], report["counts"])
+        passed += report["outcome"] == "PASS"
+    except (OSError, ValueError, KeyError, TypeError):
+        print(scenario, "missing or invalid report")
+print(f"{passed}/12 scenario-level passes; inspect optional FAIL/BLOCKED rows too.")
+sys.exit(0 if passed == 12 else 1)
+SUMMARY
+```
+
+### Optional live clarification check
+
+This separate reference command should print clarification questions and exit
+**`2`**, with **one normalization model call, zero specialist requests and zero
+environmental tool calls**. Inspect the new trace using `hafi trace`. It does not
+resume clarification in the same investigation; a complete request starts a new run.
+The owner-authorized close-out check passed live on profile 0.7 with these counts
+and exit code. Its validated trace ends at `CLARIFICATION_REQUESTED`, so
+`complete: false` is expected while awaiting input. See the
+[completion report](development/m1-completion-report.md#authorized-live-clarification-check-2026-11-20)
+for the trace digest. A new invocation still requires its own authorization.
+
+```bash
+uv run --locked --env-file keys/apsi.env hafi run "Where tomorrow morning?" \
+  --fixtures fixtures/saturday-release --config haf.release.example.toml \
+  --live --max-investigations 1 --trace-directory traces/clarification-0.7
+```
+
 ## Real-model command cards
 
 These are reference commands for a separately authorized future demo. They make
-paid OpenAI calls. **The prior ten-investigation pilot allowance is exhausted;
-no new paid run is part of this release-readiness batch.** Keep the key local in
+paid OpenAI calls. The original ten-investigation pilot is historical; subsequent
+owner-run acceptance evidence is indexed in the completion report. New live commands
+require a separately agreed spending/call allowance. Keep the key local in
 the ignored `keys/apsi.env`; do not print the file or add it to GitHub CI secrets.
 
 ```bash
@@ -139,7 +222,7 @@ uv run --locked --env-file keys/apsi.env hafi run \
 | Recovery | Add `--case recovery`; ask for swimming | Primary timeout, one retry, two alternate-source fallbacks, then supported results | OpenAI pilot; offline SDK checks |
 | Outage | Add `--case outage` to the base request | Explained abstention after bounded unsuccessful recovery; exit `0` | OpenAI pilot; offline SDK checks |
 | Follow-up | Add `--interactive --max-investigations 2`; after the base request enter "Actually near Napili instead." | Same session, revision 2, new investigation/evidence/budgets, retained prior result | OpenAI pilot; offline SDK checks |
-| Clarification | "Where tomorrow morning?" | Questions without environmental retrieval/recommendations; exit `2`; submit a complete clarified request in a new run | Offline SDK/CLI checks; not exercised in the paid pilot |
+| Clarification | "Where tomorrow morning?" | Questions without environmental retrieval/recommendations; exit `2`; submit a complete clarified request in a new run | Offline SDK/CLI checks and live profile 0.7 close-out check |
 
 ## Presenter checklist
 
