@@ -1,4 +1,4 @@
-# Temporary live acceptance deferments
+# Temporary live acceptance deferments (resolved in M1.13)
 
 **Owner authorization:** 2026-11-20, temporarily defer the failing live checks to
 continue development. This changes the selected live rerun gate, preserving the
@@ -18,6 +18,28 @@ failure was `APPLICATION_FAILURE`: request normalization rejected a missing
 `soft_preferences` change (`REQUEST_CHANGE_OMITTED`) before environmental work.
 The phrase "prefer clear water" must be retained as UNINTERPRETED or covered by
 an unresolved phrase span. This is independent of MIXED safety evaluation.
+
+## Fixes applied, pending live verification (M1.13)
+
+Both causes are now diagnosed and fixed offline. The scenarios stay in `DEFERRED`
+until each has a reviewed live pass.
+
+| Scenario | Diagnosed cause (profile 0.7 batch) | Fix |
+|---|---|---|
+| SC-006 | Request interpretation rejected with `REQUEST_CHANGE_OMITTED`, field `soft_preferences`. The model dropped the unapproved "prefer clear water" preference | **Profile `m1-saturday-runtime-0.8`**, template `normalize_request-release-0.5`. Adds guidance to never drop a preference clause: any unapproved `prefer …` clause is returned as `UNINTERPRETED` with its exact phrase. Other prompts and limits are identical to 0.7 |
+| SC-008 | The model called **neither** `REGIONAL_SURF_ABCD` nor `LOCAL_CURRENTS_A`, so surf and currents went uncovered: A was INSUFFICIENT and no conflict formed. Both names contain `SURF_`/`CURRENTS_`, which the 0.5+ Ocean prompt reserves for fallbacks ("never run … as ALWAYS"). The M1.11 rename introduced this | Renamed to **`REGIONAL_WAVES_ABCD`** and **`LOCAL_CURRENT_REPORT_A`**. A new guard test checks every allowlist, including the release `tools.json`: a name containing a reserved token (`RETRY_`, `SURF_`, `CURRENTS_`, `MARINE_`) must actually have that role. The test fails on the old SC-008 names |
+
+**Live verification (profile 0.8) and re-enablement.**
+
+| Scenario | Result | Trace |
+|---|---|---|
+| SC-006 | **PASS** 62/62 mandatory, 1 optional BLOCKED. `normalize_request-release-0.5`; A MIXED with disclosure, B FAVORABLE. 5 model calls, 8 tool calls | `5bd29260…` (`0e6facea…`) |
+| SC-008 | **PASS** 45/45 mandatory, 1 optional BLOCKED. Called NWS_MARINE and SNORKEL_STORE; `EVIDENCE_CONFLICT_DETECTED`; both findings LIMITED; abstained. 5 model calls, 9 tool calls | `32a1052a…` (`8b748ad0…`) |
+
+Both are removed from `DEFERRED`, so the selected live gate is again all twelve
+scenarios. Offline suite: 1530 passed, 1 xfailed. A full twelve-scenario live run
+on 0.8 has not yet been made; the other ten last passed on 0.7, whose Coordinator,
+Weather and Ocean prompts are identical to 0.8.
 
 ## Selected live rerun
 

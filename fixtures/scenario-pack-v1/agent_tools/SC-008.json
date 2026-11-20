@@ -41,7 +41,7 @@
       }
     },
     {
-      "action_id": "REGIONAL_SURF_ABCD",
+      "action_id": "REGIONAL_WAVES_ABCD",
       "source_id": "NWS_MARINE",
       "candidate_beach_ids": [
         "TEST_BEACH_A",
@@ -125,7 +125,7 @@
       }
     },
     {
-      "action_id": "LOCAL_CURRENTS_A",
+      "action_id": "LOCAL_CURRENT_REPORT_A",
       "source_id": "SNORKEL_STORE",
       "candidate_beach_ids": [
         "TEST_BEACH_A"

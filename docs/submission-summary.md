@@ -42,7 +42,7 @@ acceptance runs. See the [demo runbook](demo-runbook.md) for trace paths and com
 
 The separate `hafi run` and `hafi evaluate --agent` commands connect the three
 roles to the explicitly enabled model target. The current release configuration
-selects `gpt-6-luna`, profile `m1-saturday-runtime-0.7`, with LangSmith disabled.
+selects `gpt-6-luna`, profile `m1-saturday-runtime-0.8`, with LangSmith disabled.
 Defaults are disabled; live execution requires an explicit configuration, local
 credential and `--live` opt-in. It makes paid calls and is not needed for the
 offline review above. Local Qwen is experimental and deferred.
@@ -50,9 +50,11 @@ offline review above. Local Qwen is experimental and deferred.
 The [completion report](development/m1-completion-report.md) maps the fifteen
 approved M1 criteria to tests and recorded live evidence. All twelve scenarios
 have historical live passes across profiles 0.6/0.7. The latest all-twelve profile
-0.7 batch passed **10/12**. SC-006 and SC-008 are temporarily deferred from the
-selected live rerun and are reported NOT_RUN by its runner; their failures remain
-documented. No offline tests or safety assertions were disabled.
+0.7 batch passed **10/12**. SC-006 and SC-008 were then diagnosed and fixed (profile
+0.8 normalize guidance, and SC-008 option names that avoid reserved prompt tokens).
+Both passed live on profile 0.8 and are re-enabled in the live runner, which again
+selects all twelve. Their earlier failures remain documented. No offline tests or
+safety assertions were disabled.
 
 SC-007's passing live report also contains six optional failures for a skipped
 redundant source. Optional blocked checks cover unresolved production rules and
