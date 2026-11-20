@@ -1,0 +1,24 @@
+{
+  "scenario_id": "SC-009",
+  "description": "Synthetic primary marine timeout recovered through approved alternate surf/current sources",
+  "user_request": "Where should I swim tomorrow morning?",
+  "reference_time": "2026-11-16T09:00:00-10:00",
+  "catalog_fixture": "catalogs/synthetic-maui-v1.json",
+  "weather_fixture": "source_sets/sc-009-weather.json",
+  "ocean_fixture": "source_sets/sc-009-ocean.json",
+  "tool_behavior": {
+    "script": "behaviors/sc-009.json"
+  },
+  "policy_configuration": "policies/sc-009.json",
+  "expected_results": {
+    "path": "scenarios/SC-009/expected.json"
+  },
+  "test_status": "ACTIVE",
+  "requirement_ids": [
+    "TW-004",
+    "TW-013",
+    "IT-008",
+    "RR-005",
+    "EF-011"
+  ]
+}

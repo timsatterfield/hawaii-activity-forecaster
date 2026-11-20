@@ -1,0 +1,8 @@
+{
+  "harness_contract_version": "1.0.0",
+  "agent_type": "WEATHER",
+  "source_fixture_ids": [
+    "sc-012-alerts",
+    "sc-012-wind"
+  ]
+}

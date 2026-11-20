@@ -18,7 +18,7 @@ from pydantic import SecretStr
 
 from hawaii_activity_forecaster.config import LLMSettings, ExecutionTimeouts
 from .contracts import ProposalError
-from .prompts import INPUT_LIMIT, OUTPUT_LIMIT, PreparedCall
+from .prompts import OUTPUT_LIMIT, PreparedCall
 from .targets import TARGETS
 
 
@@ -69,6 +69,7 @@ class _ChatTransportAdapter:
         self.profile_id = settings.profile_id
         self.model_identifier = target.model_identifier
         self.reserved_cost_microusd = target.reserved_cost_microusd
+        self.input_limit = target.input_limit
 
     @property
     def _responses(self):
@@ -105,7 +106,7 @@ class _ChatTransportAdapter:
                     raise ProviderError("MODEL_DUPLICATE_HTTP_REQUEST")
                 endpoint = "/responses" if self._responses else "/chat/completions"
                 if (request.method != "POST" or str(request.url) != self._base_url + endpoint
-                        or len(request.content) + 512 > INPUT_LIMIT):
+                        or len(request.content) + 512 > self.input_limit):
                     raise ProviderError("MODEL_HTTP_INPUT_INVALID")
                 payload = json.loads(request.content)
                 self._validate_payload(payload, call)
@@ -161,7 +162,7 @@ class _ChatTransportAdapter:
             usage = message.usage_metadata
             counts = (usage.get("input_tokens"), usage.get("output_tokens")) if usage else (None, None)
             if any(n is not None and (type(n) is not int or n < 0 or n > cap)
-                   for n, cap in zip(counts, (INPUT_LIMIT, OUTPUT_LIMIT))):
+                   for n, cap in zip(counts, (self.input_limit, OUTPUT_LIMIT))):
                 raise ProviderError("MODEL_USAGE_INVALID")
             if None in counts:
                 counts = None, None

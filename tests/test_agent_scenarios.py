@@ -23,12 +23,13 @@ from hawaii_activity_forecaster.fixtures import FixtureLoadError
 from hawaii_activity_forecaster.harness.evaluation import evaluate_scenario
 from hawaii_activity_forecaster.harness.execution import execute_scenario
 from hawaii_activity_forecaster.model_runtime.prompts import SATURDAY_PROFILE
-from hawaii_activity_forecaster.model_runtime.targets import OLLAMA_PROFILE
+from hawaii_activity_forecaster.model_runtime.targets import OLLAMA_PROFILE, SATURDAY_PROFILE_V2
 from hawaii_activity_forecaster.observability import inspect_trace
 from release_samples import adapter
 
 ROOT = Path(__file__).resolve().parents[1] / "fixtures" / "scenario-pack-v1"
-COUNTS = {"SC-004": 84, "SC-010": 61}
+COUNTS = {"SC-004": 84, "SC-009": 73, "SC-010": 61}
+MANDATORY_PASSES = {**COUNTS, "SC-012": 83}  # SC-012 also has one optional BLOCKED assertion.
 
 
 def run(root, scenario_id, tmp_path, model):
@@ -64,6 +65,10 @@ def test_offline_agent_run_passes_component_assertions_but_not_full_acceptance(s
     assert metrics.model_calls == 5 and metrics.tool_calls <= 12
     if scenario_id == "SC-010":
         assert (metrics.retries, metrics.fallbacks, metrics.outcome) == (1, 2, "NO_RECOMMENDATION")
+    elif scenario_id == "SC-009":
+        assert (metrics.retries, metrics.fallbacks, metrics.eligible_candidates, metrics.outcome) == (
+            0, 2, 5, "RECOMMENDATIONS")
+        assert metrics.tool_calls < 12  # The spec requires remaining tool-call capacity.
     else:
         assert (metrics.excluded_candidates, metrics.outcome) == (1, "RECOMMENDATIONS")
 
@@ -75,7 +80,8 @@ OLLAMA_AREA_LIMIT = pytest.mark.xfail(strict=True, reason=(
 
 
 @pytest.mark.parametrize("scenario_id,profile,mode", [
-    ("SC-004", SATURDAY_PROFILE, "LIVE_PROVIDER"), ("SC-010", SATURDAY_PROFILE, "LIVE_PROVIDER"),
+    ("SC-004", SATURDAY_PROFILE, "LIVE_PROVIDER"), ("SC-009", SATURDAY_PROFILE, "LIVE_PROVIDER"),
+    ("SC-010", SATURDAY_PROFILE, "LIVE_PROVIDER"), ("SC-012", SATURDAY_PROFILE, "LIVE_PROVIDER"),
     pytest.param("SC-004", OLLAMA_PROFILE, "LOCAL_PROVIDER", marks=OLLAMA_AREA_LIMIT),
     ("SC-010", OLLAMA_PROFILE, "LOCAL_PROVIDER"),
 ])
@@ -83,10 +89,10 @@ def test_verified_genuine_model_captures_can_pass_the_registered_scenario(scenar
     model = adapter([], profile=profile)
     model.execution_mode = mode  # Reporting-logic seam only; see module docstring.
     result = run(ROOT, scenario_id, tmp_path, model)
-    assert result.execution_modes == (mode,)
+    assert result.execution_modes == (mode,) * len(result.attempted_steps)
     assert result.outcome == result.scenario.outcome == "PASS"
     assert result.scenario.category == "ASSERTIONS_EVALUATED"
-    assert result.scenario.counts["PASS"] == COUNTS[scenario_id]
+    assert result.scenario.counts["PASS"] == MANDATORY_PASSES[scenario_id]
 
 
 def test_model_context_contains_no_scripts_outcomes_or_oracle_values(tmp_path):
@@ -215,3 +221,22 @@ def test_cli_agent_evaluation_reports_json_and_blocked_exit_offline(tmp_path, mo
     assert report["mode"] == "AGENT_RUNTIME" and report["execution_modes"] == ["OFFLINE_TRANSPORT"]
     assert report["component"]["outcome"] == "PASS" and report["scenario"]["category"] == "OFFLINE_MODEL_TRANSPORT"
     assert "SYNTHETIC" in captured.err and len(calls) == 5
+
+
+def test_sc012_runs_both_steps_offline_with_profile_0_3(tmp_path):
+    calls = []
+    result = run(ROOT, "SC-012", tmp_path, adapter(calls))
+    assert result.attempted_steps == (1, 2) and result.execution_modes == ("OFFLINE_TRANSPORT",) * 2
+    assert result.component.outcome == "PASS" and result.component.counts == {
+        "PASS": 83, "FAIL": 0, "BLOCKED": 1, "NOT_RUN": 0}
+    assert result.outcome == "BLOCKED" and result.scenario.category == "OFFLINE_MODEL_TRANSPORT"
+    assert [op for op, _ in calls].count("normalize_request") == 2
+
+
+def test_sc012_follow_up_still_exceeds_the_profile_0_2_bound(tmp_path):
+    """The reviewed 0.2 profile is unchanged: its 8,000-byte bound rejects the follow-up."""
+    result = run(ROOT, "SC-012", tmp_path, adapter([], profile=SATURDAY_PROFILE_V2))
+    assert result.attempted_steps == (1, 2) and result.outcome == "FAIL"
+    path = sorted((tmp_path / "traces").glob("*.jsonl"), key=lambda p: p.stat().st_mtime)[-1]
+    events = [json.loads(line) for line in path.read_text().splitlines()]
+    assert any(e["details"].get("error_code") == "MODEL_HTTP_INPUT_INVALID" for e in events)

@@ -1,0 +1,1424 @@
+{
+  "harness_contract_version": "1.0.0",
+  "scenario_id": "SC-012",
+  "assertions": [
+    {
+      "assertion_id": "SC-012-A001",
+      "requirement_ids": [
+        "PR-002"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/activity",
+      "expected": "SNORKELING"
+    },
+    {
+      "assertion_id": "SC-012-A002",
+      "requirement_ids": [
+        "PR-002"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/target_time_window/start",
+      "expected": "2026-11-17T08:00:00-10:00"
+    },
+    {
+      "assertion_id": "SC-012-A003",
+      "requirement_ids": [
+        "PR-002"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/target_time_window/end",
+      "expected": "2026-11-17T11:00:00-10:00"
+    },
+    {
+      "assertion_id": "SC-012-A004",
+      "requirement_ids": [
+        "PR-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/preferred_area",
+      "expected": "Kihei"
+    },
+    {
+      "assertion_id": "SC-012-A005",
+      "requirement_ids": [
+        "PR-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/experience_level",
+      "expected": "INTERMEDIATE"
+    },
+    {
+      "assertion_id": "SC-012-A006",
+      "requirement_ids": [
+        "PR-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/soft_preferences",
+      "expected": [
+        {
+          "kind": "CALM_WATER"
+        }
+      ]
+    },
+    {
+      "assertion_id": "SC-012-A007",
+      "requirement_ids": [
+        "PR-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/hard_constraints",
+      "expected": []
+    },
+    {
+      "assertion_id": "SC-012-A008",
+      "requirement_ids": [
+        "RR-001",
+        "SL-T01"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/request_revision",
+      "expected": 1
+    },
+    {
+      "assertion_id": "SC-012-A009",
+      "requirement_ids": [
+        "IS-007"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/status",
+      "expected": "COMPLETED"
+    },
+    {
+      "assertion_id": "SC-012-A010",
+      "requirement_ids": [
+        "DS-009"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/outcome",
+      "expected": "RECOMMENDATIONS"
+    },
+    {
+      "assertion_id": "SC-012-A011",
+      "requirement_ids": [
+        "RR-002"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation_result",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "EQUALS",
+      "field": "/outcome",
+      "expected": "RECOMMENDATIONS"
+    },
+    {
+      "assertion_id": "SC-012-A012",
+      "requirement_ids": [
+        "RR-001"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation_result",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "SAME_AS",
+      "field": "/request_revision",
+      "expected_ref": {
+        "target": "investigation_state",
+        "selector": {
+          "request_step": 1
+        },
+        "field": "/request_revision"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A013",
+      "requirement_ids": [
+        "RR-001"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation_result",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "SAME_AS",
+      "field": "/investigation_id",
+      "expected_ref": {
+        "target": "investigation_state",
+        "selector": {
+          "request_step": 1
+        },
+        "field": "/investigation_id"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A014",
+      "requirement_ids": [
+        "IT-001"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "harness_execution",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "SAME_AS",
+      "field": "/investigation_id",
+      "expected_ref": {
+        "target": "investigation_state",
+        "selector": {
+          "request_step": 1
+        },
+        "field": "/investigation_id"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A015",
+      "requirement_ids": [
+        "IT-008"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "harness_execution",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "SAME_AS",
+      "field": "/tool_invocation_count",
+      "expected_ref": {
+        "target": "investigation_state",
+        "selector": {
+          "request_step": 1
+        },
+        "field": "/tool_call_count"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A016",
+      "requirement_ids": [
+        "IT-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "TOOL_CALLED"
+      },
+      "operator": "COUNT_AT_MOST",
+      "expected": 12
+    },
+    {
+      "assertion_id": "SC-012-A017",
+      "requirement_ids": [
+        "IT-009"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "INVESTIGATION_COMPLETED"
+      },
+      "operator": "SAME_AS",
+      "field": "/details/result_id",
+      "expected_ref": {
+        "target": "recommendation_result",
+        "selector": {
+          "request_step": 1
+        },
+        "field": "/result_id"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A018",
+      "requirement_ids": [
+        "TW-013"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "INVESTIGATION_FAILED"
+      },
+      "operator": "ABSENT"
+    },
+    {
+      "assertion_id": "SC-012-A019",
+      "requirement_ids": [
+        "HM-006"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "POLICY_EVALUATED"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-012-A020",
+      "requirement_ids": [
+        "EL-009"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 1,
+        "event_type": "CANDIDATE_ELIGIBLE"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-012-A021",
+      "requirement_ids": [
+        "RR-005"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_A",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/eligibility",
+      "expected": "ELIGIBLE"
+    },
+    {
+      "assertion_id": "SC-012-A022",
+      "requirement_ids": [
+        "RR-006"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_A",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/evidence_quality",
+      "expected": "SUFFICIENT"
+    },
+    {
+      "assertion_id": "SC-012-A023",
+      "requirement_ids": [
+        "RR-007"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_A",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/environmental_suitability",
+      "expected": "FAVORABLE"
+    },
+    {
+      "assertion_id": "SC-012-A024",
+      "requirement_ids": [
+        "PR-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_A",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/geographic_preference_match",
+      "expected": "PREFERRED_AREA"
+    },
+    {
+      "assertion_id": "SC-012-A025",
+      "requirement_ids": [
+        "RR-005"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_A"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-012-A026",
+      "requirement_ids": [
+        "RR-005"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_A"
+      },
+      "operator": "SAME_AS",
+      "field": "/assessment_id",
+      "expected_ref": {
+        "target": "candidate_assessment",
+        "selector": {
+          "request_step": 1,
+          "beach_id": "TEST_BEACH_A"
+        },
+        "field": "/assessment_id"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A027",
+      "requirement_ids": [
+        "RR-005"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_C",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/eligibility",
+      "expected": "ELIGIBLE"
+    },
+    {
+      "assertion_id": "SC-012-A028",
+      "requirement_ids": [
+        "RR-006"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_C",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/evidence_quality",
+      "expected": "SUFFICIENT"
+    },
+    {
+      "assertion_id": "SC-012-A029",
+      "requirement_ids": [
+        "RR-007"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_C",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/environmental_suitability",
+      "expected": "FAVORABLE"
+    },
+    {
+      "assertion_id": "SC-012-A030",
+      "requirement_ids": [
+        "PR-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_C",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/geographic_preference_match",
+      "expected": "OUTSIDE_PREFERRED_AREA"
+    },
+    {
+      "assertion_id": "SC-012-A031",
+      "requirement_ids": [
+        "RR-005"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_C"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-012-A032",
+      "requirement_ids": [
+        "RR-005"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_C"
+      },
+      "operator": "SAME_AS",
+      "field": "/assessment_id",
+      "expected_ref": {
+        "target": "candidate_assessment",
+        "selector": {
+          "request_step": 1,
+          "beach_id": "TEST_BEACH_C"
+        },
+        "field": "/assessment_id"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A033",
+      "requirement_ids": [
+        "RR-005",
+        "RR-014"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_B"
+      },
+      "operator": "ABSENT"
+    },
+    {
+      "assertion_id": "SC-012-A034",
+      "requirement_ids": [
+        "RR-005",
+        "RR-014"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_D"
+      },
+      "operator": "ABSENT"
+    },
+    {
+      "assertion_id": "SC-012-A035",
+      "requirement_ids": [
+        "RR-005",
+        "RR-014"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1,
+        "beach_id": "TEST_BEACH_E"
+      },
+      "operator": "ABSENT"
+    },
+    {
+      "assertion_id": "SC-012-A036",
+      "requirement_ids": [
+        "RR-003"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 1
+      },
+      "operator": "COUNT_EQUALS",
+      "expected": 2
+    },
+    {
+      "assertion_id": "SC-012-A037",
+      "requirement_ids": [
+        "EF-011"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-012-marine",
+        "template_finding_id": "SC-012_MARINE_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/validation_status",
+      "expected": "ACCEPTED"
+    },
+    {
+      "assertion_id": "SC-012-A038",
+      "requirement_ids": [
+        "EF-011"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-012-water-c",
+        "template_finding_id": "SC-012_WATER-TEST_BEACH_C_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/validation_status",
+      "expected": "ACCEPTED"
+    },
+    {
+      "assertion_id": "SC-012-A039",
+      "requirement_ids": [
+        "EF-011"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 1,
+        "source_fixture_id": "sc-012-water-a",
+        "template_finding_id": "SC-012_WATER-TEST_BEACH_A_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/validation_status",
+      "expected": "ACCEPTED"
+    },
+    {
+      "assertion_id": "SC-012-A040",
+      "requirement_ids": [
+        "PR-002"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "EQUALS",
+      "field": "/activity",
+      "expected": "SNORKELING"
+    },
+    {
+      "assertion_id": "SC-012-A041",
+      "requirement_ids": [
+        "PR-002"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "EQUALS",
+      "field": "/target_time_window/start",
+      "expected": "2026-11-17T08:00:00-10:00"
+    },
+    {
+      "assertion_id": "SC-012-A042",
+      "requirement_ids": [
+        "PR-002"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "EQUALS",
+      "field": "/target_time_window/end",
+      "expected": "2026-11-17T11:00:00-10:00"
+    },
+    {
+      "assertion_id": "SC-012-A043",
+      "requirement_ids": [
+        "PR-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "EQUALS",
+      "field": "/preferred_area",
+      "expected": "Napili"
+    },
+    {
+      "assertion_id": "SC-012-A044",
+      "requirement_ids": [
+        "PR-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "EQUALS",
+      "field": "/experience_level",
+      "expected": "INTERMEDIATE"
+    },
+    {
+      "assertion_id": "SC-012-A045",
+      "requirement_ids": [
+        "PR-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "EQUALS",
+      "field": "/soft_preferences",
+      "expected": [
+        {
+          "kind": "CALM_WATER"
+        }
+      ]
+    },
+    {
+      "assertion_id": "SC-012-A046",
+      "requirement_ids": [
+        "PR-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "EQUALS",
+      "field": "/hard_constraints",
+      "expected": []
+    },
+    {
+      "assertion_id": "SC-012-A047",
+      "requirement_ids": [
+        "RR-001",
+        "SL-T01"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "EQUALS",
+      "field": "/request_revision",
+      "expected": 2
+    },
+    {
+      "assertion_id": "SC-012-A048",
+      "requirement_ids": [
+        "IS-007"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "EQUALS",
+      "field": "/status",
+      "expected": "COMPLETED"
+    },
+    {
+      "assertion_id": "SC-012-A049",
+      "requirement_ids": [
+        "DS-009"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "EQUALS",
+      "field": "/outcome",
+      "expected": "RECOMMENDATIONS"
+    },
+    {
+      "assertion_id": "SC-012-A050",
+      "requirement_ids": [
+        "RR-002"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation_result",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "EQUALS",
+      "field": "/outcome",
+      "expected": "RECOMMENDATIONS"
+    },
+    {
+      "assertion_id": "SC-012-A051",
+      "requirement_ids": [
+        "RR-001"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation_result",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "SAME_AS",
+      "field": "/request_revision",
+      "expected_ref": {
+        "target": "investigation_state",
+        "selector": {
+          "request_step": 2
+        },
+        "field": "/request_revision"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A052",
+      "requirement_ids": [
+        "RR-001"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation_result",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "SAME_AS",
+      "field": "/investigation_id",
+      "expected_ref": {
+        "target": "investigation_state",
+        "selector": {
+          "request_step": 2
+        },
+        "field": "/investigation_id"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A053",
+      "requirement_ids": [
+        "IT-001"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "harness_execution",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "SAME_AS",
+      "field": "/investigation_id",
+      "expected_ref": {
+        "target": "investigation_state",
+        "selector": {
+          "request_step": 2
+        },
+        "field": "/investigation_id"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A054",
+      "requirement_ids": [
+        "IT-008"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "harness_execution",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "SAME_AS",
+      "field": "/tool_invocation_count",
+      "expected_ref": {
+        "target": "investigation_state",
+        "selector": {
+          "request_step": 2
+        },
+        "field": "/tool_call_count"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A055",
+      "requirement_ids": [
+        "IT-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 2,
+        "event_type": "TOOL_CALLED"
+      },
+      "operator": "COUNT_AT_MOST",
+      "expected": 12
+    },
+    {
+      "assertion_id": "SC-012-A056",
+      "requirement_ids": [
+        "IT-009"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 2,
+        "event_type": "INVESTIGATION_COMPLETED"
+      },
+      "operator": "SAME_AS",
+      "field": "/details/result_id",
+      "expected_ref": {
+        "target": "recommendation_result",
+        "selector": {
+          "request_step": 2
+        },
+        "field": "/result_id"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A057",
+      "requirement_ids": [
+        "TW-013"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 2,
+        "event_type": "INVESTIGATION_FAILED"
+      },
+      "operator": "ABSENT"
+    },
+    {
+      "assertion_id": "SC-012-A058",
+      "requirement_ids": [
+        "HM-006"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 2,
+        "event_type": "POLICY_EVALUATED"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-012-A059",
+      "requirement_ids": [
+        "EL-009"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 2,
+        "event_type": "CANDIDATE_ELIGIBLE"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-012-A060",
+      "requirement_ids": [
+        "RR-005"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 2,
+        "beach_id": "TEST_BEACH_C",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/eligibility",
+      "expected": "ELIGIBLE"
+    },
+    {
+      "assertion_id": "SC-012-A061",
+      "requirement_ids": [
+        "RR-006"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 2,
+        "beach_id": "TEST_BEACH_C",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/evidence_quality",
+      "expected": "SUFFICIENT"
+    },
+    {
+      "assertion_id": "SC-012-A062",
+      "requirement_ids": [
+        "RR-007"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 2,
+        "beach_id": "TEST_BEACH_C",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/environmental_suitability",
+      "expected": "FAVORABLE"
+    },
+    {
+      "assertion_id": "SC-012-A063",
+      "requirement_ids": [
+        "PR-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 2,
+        "beach_id": "TEST_BEACH_C",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/geographic_preference_match",
+      "expected": "PREFERRED_AREA"
+    },
+    {
+      "assertion_id": "SC-012-A064",
+      "requirement_ids": [
+        "RR-005"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 2,
+        "beach_id": "TEST_BEACH_C"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-012-A065",
+      "requirement_ids": [
+        "RR-005"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 2,
+        "beach_id": "TEST_BEACH_C"
+      },
+      "operator": "SAME_AS",
+      "field": "/assessment_id",
+      "expected_ref": {
+        "target": "candidate_assessment",
+        "selector": {
+          "request_step": 2,
+          "beach_id": "TEST_BEACH_C"
+        },
+        "field": "/assessment_id"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A066",
+      "requirement_ids": [
+        "RR-005"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 2,
+        "beach_id": "TEST_BEACH_A",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/eligibility",
+      "expected": "ELIGIBLE"
+    },
+    {
+      "assertion_id": "SC-012-A067",
+      "requirement_ids": [
+        "RR-006"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 2,
+        "beach_id": "TEST_BEACH_A",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/evidence_quality",
+      "expected": "SUFFICIENT"
+    },
+    {
+      "assertion_id": "SC-012-A068",
+      "requirement_ids": [
+        "RR-007"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 2,
+        "beach_id": "TEST_BEACH_A",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/environmental_suitability",
+      "expected": "FAVORABLE"
+    },
+    {
+      "assertion_id": "SC-012-A069",
+      "requirement_ids": [
+        "PR-004"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "candidate_assessment",
+      "selector": {
+        "request_step": 2,
+        "beach_id": "TEST_BEACH_A",
+        "activity": "SNORKELING"
+      },
+      "operator": "EQUALS",
+      "field": "/geographic_preference_match",
+      "expected": "OUTSIDE_PREFERRED_AREA"
+    },
+    {
+      "assertion_id": "SC-012-A070",
+      "requirement_ids": [
+        "RR-005"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 2,
+        "beach_id": "TEST_BEACH_A"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-012-A071",
+      "requirement_ids": [
+        "RR-005"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 2,
+        "beach_id": "TEST_BEACH_A"
+      },
+      "operator": "SAME_AS",
+      "field": "/assessment_id",
+      "expected_ref": {
+        "target": "candidate_assessment",
+        "selector": {
+          "request_step": 2,
+          "beach_id": "TEST_BEACH_A"
+        },
+        "field": "/assessment_id"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A072",
+      "requirement_ids": [
+        "RR-005",
+        "RR-014"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 2,
+        "beach_id": "TEST_BEACH_B"
+      },
+      "operator": "ABSENT"
+    },
+    {
+      "assertion_id": "SC-012-A073",
+      "requirement_ids": [
+        "RR-005",
+        "RR-014"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 2,
+        "beach_id": "TEST_BEACH_D"
+      },
+      "operator": "ABSENT"
+    },
+    {
+      "assertion_id": "SC-012-A074",
+      "requirement_ids": [
+        "RR-005",
+        "RR-014"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 2,
+        "beach_id": "TEST_BEACH_E"
+      },
+      "operator": "ABSENT"
+    },
+    {
+      "assertion_id": "SC-012-A075",
+      "requirement_ids": [
+        "RR-003"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "COUNT_EQUALS",
+      "expected": 2
+    },
+    {
+      "assertion_id": "SC-012-A076",
+      "requirement_ids": [
+        "EF-011"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 2,
+        "source_fixture_id": "sc-012-marine",
+        "template_finding_id": "SC-012_MARINE_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/validation_status",
+      "expected": "ACCEPTED"
+    },
+    {
+      "assertion_id": "SC-012-A077",
+      "requirement_ids": [
+        "EF-011"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 2,
+        "source_fixture_id": "sc-012-water-c",
+        "template_finding_id": "SC-012_WATER-TEST_BEACH_C_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/validation_status",
+      "expected": "ACCEPTED"
+    },
+    {
+      "assertion_id": "SC-012-A078",
+      "requirement_ids": [
+        "EF-011"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 2,
+        "source_fixture_id": "sc-012-water-a",
+        "template_finding_id": "SC-012_WATER-TEST_BEACH_A_FINDING"
+      },
+      "operator": "EQUALS",
+      "field": "/validation_status",
+      "expected": "ACCEPTED"
+    },
+    {
+      "assertion_id": "SC-012-A079",
+      "requirement_ids": [
+        "SL-T01"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "SAME_AS",
+      "field": "/session_id",
+      "expected_ref": {
+        "target": "investigation_state",
+        "selector": {
+          "request_step": 1
+        },
+        "field": "/session_id"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A080",
+      "requirement_ids": [
+        "SL-T01"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "DIFFERENT_FROM",
+      "field": "/investigation_id",
+      "expected_ref": {
+        "target": "investigation_state",
+        "selector": {
+          "request_step": 1
+        },
+        "field": "/investigation_id"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A081",
+      "requirement_ids": [
+        "SL-T01"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "trace_event",
+      "selector": {
+        "request_step": 2,
+        "event_type": "REQUEST_REVISED"
+      },
+      "operator": "EXISTS"
+    },
+    {
+      "assertion_id": "SC-012-A082",
+      "requirement_ids": [
+        "SL-T01"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "recommendation_result",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "DIFFERENT_FROM",
+      "field": "/result_id",
+      "expected_ref": {
+        "target": "recommendation_result",
+        "selector": {
+          "request_step": 1
+        },
+        "field": "/result_id"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A083",
+      "requirement_ids": [
+        "EF-011"
+      ],
+      "mandatory": true,
+      "test_status": "ACTIVE",
+      "target": "investigation_state",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "SAME_AS",
+      "field": "/target_time_window/start",
+      "expected_ref": {
+        "target": "investigation_state",
+        "selector": {
+          "request_step": 1
+        },
+        "field": "/target_time_window/start"
+      }
+    },
+    {
+      "assertion_id": "SC-012-A084",
+      "requirement_ids": [
+        "EF-011"
+      ],
+      "mandatory": false,
+      "test_status": "BLOCKED",
+      "target": "environmental_finding",
+      "selector": {
+        "request_step": 2
+      },
+      "operator": "EXISTS",
+      "blocking_reason": "SH-OD-006: historical evidence reuse representation is deferred; each investigation retrieves its own evidence."
+    }
+  ]
+}
