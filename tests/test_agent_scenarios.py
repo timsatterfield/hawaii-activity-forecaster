@@ -305,3 +305,24 @@ def test_sc002_without_the_chop_permission_fails(tmp_path):
     assert result.outcome == "FAIL"
     failed = {a.assertion_id for a in result.scenario.assertions if a.outcome == "FAIL"}
     assert any(a.assertion_id in failed for a in result.scenario.assertions if a.requirement_ids == ("HM-T05", "RR-005"))
+
+
+ALLOWLISTS = sorted((ROOT / "agent_tools").glob("*.json")) + [ROOT.parent / "saturday-release" / "tools.json"]
+
+
+@pytest.mark.parametrize("path", ALLOWLISTS, ids=lambda p: p.parent.name + "/" + p.name)
+def test_option_names_never_borrow_reserved_prompt_tokens(path):
+    """The Ocean prompt assigns roles by name; a name may only carry tokens for its own role.
+
+    Regression for SC-008 on profile 0.7: REGIONAL_SURF_/LOCAL_CURRENTS_ read as fallbacks
+    ("never run SURF_ or CURRENTS_ as ALWAYS"), so the model skipped both originals.
+    """
+    for action in json.loads(path.read_text())["actions"]:
+        name = action["action_id"]
+        if "RETRY_" in name:
+            assert action.get("retry_of"), name
+        elif "SURF_" in name or "CURRENTS_" in name:
+            assert action.get("fallback_of"), name
+        if "MARINE_" in name:
+            assert action["source_id"] == "NWS_MARINE" and set(action["requested_evidence"]) == {
+                "SURF_WAVE_CONDITIONS", "CURRENTS_PERSISTENT_HAZARDS"}, name

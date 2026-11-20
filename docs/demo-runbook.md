@@ -136,7 +136,7 @@ offline `demo favorable` or `demo recovery` command is implied.
 
 ## Current acceptance baseline
 
-The release configuration selects **`m1-saturday-runtime-0.7`** with `gpt-6-luna`.
+The release configuration selects **`m1-saturday-runtime-0.8`** with `gpt-6-luna`.
 The registered pack is dataset **`1.6.0`**, format `2.0.0`. All twelve scenarios have
 recorded live scenario-level PASS results: eleven on profile 0.6 and SC-002 on 0.7.
 This is historical evidence across versions. The subsequent authorized all-twelve

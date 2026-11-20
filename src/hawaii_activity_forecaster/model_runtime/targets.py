@@ -15,7 +15,9 @@ SATURDAY_PROFILE_V5 = "m1-saturday-runtime-0.5"
 # 0.6: 0.5 plus ocean_investigation guidance for allowlists that offer no retry option.
 SATURDAY_PROFILE_V6 = "m1-saturday-runtime-0.6"
 # 0.7: 0.6 plus normalize_request guidance for the 'prefer somewhere near' area clause.
-SATURDAY_PROFILE = "m1-saturday-runtime-0.7"
+SATURDAY_PROFILE_V7 = "m1-saturday-runtime-0.7"
+# 0.8: 0.7 plus normalize_request guidance to keep unapproved preferences as UNINTERPRETED.
+SATURDAY_PROFILE = "m1-saturday-runtime-0.8"
 OLLAMA_PROFILE_V1 = "m1-ollama-qwen3.5-9b-0.1"
 OLLAMA_PROFILE_V2 = "m1-ollama-qwen3.5-9b-0.2"
 OLLAMA_PROFILE_V3 = "m1-ollama-qwen3.5-9b-0.3"
@@ -48,6 +50,7 @@ TARGETS = MappingProxyType({
     SATURDAY_PROFILE_V4: ModelTarget("openai", MODEL, "LIVE_PROVIDER", SATURDAY_RESERVE_MICROUSD, SATURDAY_INPUT_LIMIT),
     SATURDAY_PROFILE_V5: ModelTarget("openai", MODEL, "LIVE_PROVIDER", SATURDAY_RESERVE_MICROUSD, SATURDAY_INPUT_LIMIT),
     SATURDAY_PROFILE_V6: ModelTarget("openai", MODEL, "LIVE_PROVIDER", SATURDAY_RESERVE_MICROUSD, SATURDAY_INPUT_LIMIT),
+    SATURDAY_PROFILE_V7: ModelTarget("openai", MODEL, "LIVE_PROVIDER", SATURDAY_RESERVE_MICROUSD, SATURDAY_INPUT_LIMIT),
     SATURDAY_PROFILE: ModelTarget("openai", MODEL, "LIVE_PROVIDER", SATURDAY_RESERVE_MICROUSD, SATURDAY_INPUT_LIMIT),
     OLLAMA_PROFILE_V1: ModelTarget("ollama", OLLAMA_MODEL, "LOCAL_PROVIDER", 0),
     OLLAMA_PROFILE_V2: ModelTarget("ollama", OLLAMA_MODEL, "LOCAL_PROVIDER", 0),

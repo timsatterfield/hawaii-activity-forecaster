@@ -8,10 +8,8 @@ import sys
 from uuid import uuid4
 
 
-DEFERRED = {
-    "SC-006": "Request normalization omits the unsupported clear-water preference; guidance fix deferred.",
-    "SC-008": "Profile 0.7 live assertion failure; diagnosis and correction deferred.",
-}
+# SC-006 and SC-008 re-enabled after fixes and live passes on profile 0.8 (M1.13).
+DEFERRED: dict[str, str] = {}
 
 
 def main():
