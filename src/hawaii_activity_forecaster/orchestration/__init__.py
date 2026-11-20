@@ -1,4 +1,4 @@
-"""Bounded control-flow components; full investigation execution is deferred."""
+"""Bounded orchestration, budgets and session/specialist lifecycle components."""
 
 from .budgets import BudgetError, BudgetManager, BudgetSnapshot
 from .session import RawSessionRequest, SessionError, SessionManager, SessionRequest

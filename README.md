@@ -51,6 +51,8 @@ below retain their original scope; the release section describes current executi
 See [requirements](docs/requirements/) and [implementation plans](docs/implementation/)
 for the approved specifications.
 
+- [Demo runbook](docs/demo-runbook.md): offline rehearsal, expected results, trace inspection and reference live commands.
+- [Release checklist and GitHub test gate](docs/development/m1-release-readiness-and-demo.md): M1 evidence, required-check setup and remaining acceptance gaps.
 
 ## Development
 
@@ -73,10 +75,17 @@ LangGraph and the OpenAI adapter), and the pytest development group into `.venv`
 available locally, uv can install it with `uv python install 3.12`; select it with
 `uv sync --locked --python 3.12`.
 
+The [Tests workflow](.github/workflows/tests.yml) configures a single `pytest` check
+on Python 3.12 for pull requests and pushes to `main`. It runs the locked install
+and offline test suite without model credentials. After its first GitHub run,
+select that check in the protection rule/ruleset for `main` to require passing
+tests before merging; repository YAML alone does not enforce the merge gate.
+See the [setup instructions](docs/development/m1-release-readiness-and-demo.md#enable-required-status-checking-after-publication).
+
 With no arguments the CLI displays application/version information. The `demo`
 command runs a fixed synthetic component example and requires an explicit fixture
-directory. It performs no natural-language request interpretation or full scenario
-acceptance. All locations, conditions and results are fictional. No credentials,
+directory. Its interpretation and tool plans are authored, with no model call or
+full scenario acceptance. All locations, conditions and results are fictional. No credentials,
 model provider, live environmental data or tracing service are needed.
 Local JSONL provides authoritative investigation tracing. LangSmith is installed
 for explicit tracing-context control; provider tests suppress remote tracing, and
@@ -411,10 +420,11 @@ recommendations. Exit codes are `0` for recommendations or explained abstention,
 `1` for technical failures, and `2` for invalid arguments or fixture preflight errors.
 Successful results use stdout; errors use stderr.
 
-These are component demonstrations with memory event recording. They neither
-provide authoritative JSONL traces nor run independent scenario assertions, and
-they refuse BLOCKED or DISABLED definitions. Scenario acceptance readiness remains
-BLOCKED. See the [M1.5-B notes](docs/development/m1-5b-cli-presentation.md) for the
+Current demos retain their component scope and now record authoritative JSONL.
+They refuse BLOCKED or DISABLED definitions; `evaluate --component` separately
+runs independent assertions. Full registered scenario acceptance remains BLOCKED
+until its agent-execution/capture adapter is connected. See the
+[M1.5-B notes](docs/development/m1-5b-cli-presentation.md) for the original
 presentation boundary and remaining request/session work.
 
 ### Session lifecycle and post-terminal follow-ups — M1.5-C
@@ -558,8 +568,9 @@ anchored to the configuration file's directory.
 Raw messages, opaque constraints, source/model payloads and private reasoning are
 omitted from local traces. Events retain controlled summaries, identifiers,
 timestamps, source/rule/policy references and actual outcomes. Explicit in-memory
-recorders remain component-test seams. Remote tracing and live providers are not
-enabled. Existing `.gitignore` rules exclude the default trace directory.
+recorders remain component-test seams. Remote tracing is disabled; model-driven
+release execution requires explicit provider opt-in. Existing `.gitignore` rules
+exclude the default trace directory.
 
 Keep files only as long as needed for local development/evaluation; manually remove
 unneeded files after their investigations have stopped. No automatic retention
@@ -597,8 +608,10 @@ uv run --locked pytest tests/test_scenario_execution.py
 `--component` explicitly executes the existing authored synthetic plan. JSON output
 separates `component` assertion results from the overall `scenario` result. SC-004
 passes 84 component assertions and SC-010 passes 61; overall readiness remains
-BLOCKED (exit 2), because no real Coordinator/model runtime is enabled. Without
-the flag, `evaluate` remains preflight/readiness-only and dispatches no work.
+BLOCKED (exit 2), with `SCENARIO_ADAPTER_UNAVAILABLE`: the registered-scenario
+harness is not connected to agent execution and verified agentic capture. The
+working model-driven runtime is available through `hafi run`. Without the flag,
+`evaluate` remains preflight/readiness-only and dispatches no work.
 
 Default demos now use raw admission and independently validated interpretation
 proposals. SC-004 retains the requested Kihei preference. SC-010 records actual

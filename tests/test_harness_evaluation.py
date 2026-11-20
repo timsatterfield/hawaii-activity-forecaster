@@ -47,7 +47,7 @@ def test_authored_assertions_use_real_component_captures_without_claiming_scenar
     assert component.scope == "COMPONENT"
     assert component.counts["PASS"] == len(component.assertions)
     report = evaluate_scenario(FIXTURES, scenario_id, captures=(capture,))
-    assert report.outcome == "BLOCKED" and report.category == "AGENTIC_RUNTIME_UNAVAILABLE"
+    assert report.outcome == "BLOCKED" and report.category == "SCENARIO_ADAPTER_UNAVAILABLE"
     assert report.scope == "SCENARIO" and report.artifact_digests and report.trace_digests
 
 

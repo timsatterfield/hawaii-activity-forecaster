@@ -300,7 +300,7 @@ def evaluate_loaded(loaded, *, captures=None) -> EvaluationReport:
                 report = replace(report, outcome="FAIL", category="CAPTURE_CONTEXT_MISMATCH")
         if report.outcome != "FAIL":
             report = replace(report, outcome="BLOCKED" if report.outcome != "NOT_RUN" else "NOT_RUN",
-                             category="AGENTIC_RUNTIME_UNAVAILABLE")
+                             category="SCENARIO_ADAPTER_UNAVAILABLE")
     return replace(report, artifact_digests=tuple(sorted(loaded.evaluator.artifact_digests.items())))
 
 
