@@ -7,18 +7,21 @@
 
 ## Conclusion and scope
 
-**Current disposition:** the latest profile 0.7 all-twelve batch passed 10/12.
-The owner subsequently deferred SC-006 and SC-008 from the selected live gate;
-its default runner reports both NOT_RUN. Full offline tests remain enabled.
-See the [deferment record](m1-live-acceptance-deferments.md). The twelve PASS
-rows below are historical evidence, not an all-green result on the current profile.
+**Current disposition:** on the release profile `m1-saturday-runtime-0.8`, a single
+all-twelve live batch passed **12/12** (2026-11-20). All 13 investigations were
+operational successes (11 completed, 2 abstained, 0 failed), using 65 model calls
+and 106 tool calls with a 9,247 ms median. Reports are local under
+`traces/acceptance-subset-1bf7ac46-b5d5-42d5-9350-ed519a756f07/`.
+The earlier profile 0.7 batch passed 10/12. SC-006 and SC-008 were diagnosed, fixed
+and re-enabled (see the [deferment record](m1-live-acceptance-deferments.md)), and
+the live runner again selects all twelve. Full offline tests remain enabled.
 
 Evidence supports all fifteen approved [M1 completion criteria](../implementation/m1-technical-plan.md#16-m1-completion-criteria)
 within the [approved synthetic release scope](../implementation/m1-saturday-release-scope.md).
 All twelve registered scenarios have recorded live scenario-level PASS results.
-Eleven passed on profile 0.6; SC-002 passed on 0.7. This is not a single all-twelve
-confirmation on the latest profile or a measured reliability rate. A subsequent
-owner-authorized 0.7 batch passed 10/12; SC-006 and SC-008 failed, as detailed below. Earlier failed
+Eleven passed on profile 0.6; SC-002 passed on 0.7. The 0.8 batch above is a single
+all-twelve confirmation on the release profile, not a measured reliability rate. An
+earlier owner-authorized 0.7 batch passed 10/12; SC-006 and SC-008 failed, as detailed below. Earlier failed
 attempts remain in the linked development records and local traces.
 
 Scenario-level PASS does not mean every assertion passed: optional failures and
@@ -49,7 +52,7 @@ paid calls were made while investigating its failures.
 | 12 | Results pass schema and grounding checks | `test_results.py`, `test_result_graph.py`, `test_presentation.py`; independent pilot trace/result checks | Verified |
 | 13 | Local traces satisfy required assertions | `test_trace_storage.py`, `test_trace_validation.py`, `test_model_trace_validation.py`; ten independently checked pilot traces | Verified |
 | 14 | LangSmith is optional | `test_model_gateway.py`; shared disabled remote-tracing contexts; offline commands need no tracing credentials | Verified |
-| 15 | Selected M1 scenarios pass their executable scope | Historical live PASS reports and verified traces below; current 0.7 rerun and owner deferments | Historical mandatory passes; current rerun 10/12, with SC-006/SC-008 deferred and optional FAIL/BLOCKED rows retained |
+| 15 | Selected M1 scenarios pass their executable scope | Historical live PASS reports and verified traces below; current 0.7 rerun and owner deferments | All twelve PASS live in one profile 0.8 batch (12/12); optional FAIL/BLOCKED rows retained |
 
 Criterion 1's supported-activity CLI behavior is verified. The original pilot did
 not exercise live clarification; the separately authorized close-out check now

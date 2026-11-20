@@ -38,8 +38,8 @@ until each has a reviewed live pass.
 
 Both are removed from `DEFERRED`, so the selected live gate is again all twelve
 scenarios. Offline suite: 1530 passed, 1 xfailed. A full twelve-scenario live run
-on 0.8 has not yet been made; the other ten last passed on 0.7, whose Coordinator,
-Weather and Ocean prompts are identical to 0.8.
+on 0.8 then passed **12/12**, with 13/13 operational successes, 65 model calls and no
+technical failures (`traces/acceptance-subset-1bf7ac46-…`).
 
 ## Selected live rerun
 
