@@ -132,6 +132,6 @@ v7.0.1 → `3d3c42e5…`, `astral-sh/setup-uv` v10.3.3 → `68559e99…`.
 Linux-hosted CI remains pending the owner's push/PR, and no paid model check was
 authorized or executed.
 
-Presentation observations (not blockers): the advisory demo's CLI text does not
-name the excluded Beach A, so show the exclusion from the trace; the outage
-abstention repeats "Synthetic fact is not declared" for every beach.
+Presentation observations (not blockers): the outage abstention repeats "Synthetic
+fact is not declared" for every beach. Excluded candidates are now named in a
+"Not recommended (excluded)" section ([M1.8-B](m1-8b-cli-exclusion-disclosure.md)).

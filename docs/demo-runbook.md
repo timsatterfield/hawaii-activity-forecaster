@@ -35,8 +35,9 @@ Expect a synthetic warning and only fictional Beach B recommended. Beach A's
 applicable official water-contact avoidance advisory excludes it. Sources,
 coverage, timestamps and catalog attribution accompany the validated result.
 The command exits `0`; its new JSONL file is under the chosen trace directory.
-The CLI text does not name Beach A; show the exclusion in step 5 (`excluded_candidates: 1`,
-and `grep CANDIDATE_EXCLUDED` on the JSONL shows `TEST_BEACH_A`).
+A "Not recommended (excluded)" section names Beach A and its reason (an applicable
+official water-contact avoidance advisory). Step 5's trace shows the same exclusion
+(`excluded_candidates: 1`; `CANDIDATE_EXCLUDED` for `TEST_BEACH_A`, `HM-WATER-001`).
 
 ### 3. Show an explained abstention
 
