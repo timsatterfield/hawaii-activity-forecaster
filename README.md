@@ -56,6 +56,8 @@ below retain their original scope; the release section describes current executi
 
 ## Documentation
 
+- [Capstone presentation script](docs/demo-presentation.md): rehearsed offline commands, narration and recorded live evidence for a 7–8 minute walkthrough.
+
 See [requirements](docs/requirements/) and [implementation plans](docs/implementation/)
 for the approved specifications.
 
