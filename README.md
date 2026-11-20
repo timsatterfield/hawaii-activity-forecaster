@@ -639,7 +639,9 @@ dataset `1.2.0`. It also adds model profile `m1-saturday-runtime-0.3`, which rai
 input bound to 12,000 bytes so revised follow-ups fit.
 
 [M1.9](docs/development/m1-9-sc-001-sc-003.md) registers SC-001 (86 assertions) and
-SC-003 (55 assertions) with dataset `1.3.0`. SC-002 is deferred until a swimming MIXED
+SC-003 (55 assertions) with dataset `1.3.0`. [M1.10](docs/development/m1-10-sc-006-sc-007-sc-011.md) adds
+SC-006 (permitted MIXED), SC-007 (stale reports) and SC-011 (prompt injection) with
+dataset `1.4.0`. SC-002 is deferred until a swimming MIXED
 permission has an approved safety-policy basis.
 
 Default demos now use raw admission and independently validated interpretation

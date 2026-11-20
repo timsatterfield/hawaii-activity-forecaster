@@ -1,6 +1,7 @@
 """Explicit offline model stand-in; sees only actual public request projections."""
 
 import json
+import re
 import httpx
 
 from hawaii_activity_forecaster.config import LLMSettings
@@ -44,6 +45,10 @@ def adapter(calls, *, failure=None, profile=SATURDAY_PROFILE):
             if 'intermediate' in text: add('experience_level','INTERMEDIATE','intermediate')
             if 'prefer calm water' in text:
                 add('soft_preferences',[dict(kind='CALM_WATER')],'prefer calm water')
+            else:
+                other=re.search(r"\b[Pp]refer\b[^,;.!?]*",text)
+                if other and not re.match(r"[Pp]refer\s+(?:near|somewhere)\b",other[0]):
+                    add('soft_preferences',[dict(kind='UNINTERPRETED',text=other[0])],other[0])
             result=dict(changes=[dict(field=k,value_json=json.dumps(v)) for k,v in values.items()],source_spans=spans,removed_entries=[],unresolved_spans=[])
         elif operation=='coordinator_plan':
             tasks=data['legal_tasks']

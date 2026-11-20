@@ -21,7 +21,7 @@ END = '2026-11-17T11:00:00-10:00'
 SUPPORTED = {'TEST_BEACH_A', 'TEST_BEACH_B', 'TEST_BEACH_C', 'TEST_BEACH_D'}
 
 
-@pytest.fixture(scope='module', params=['SC-001', 'SC-003', 'SC-004', 'SC-009', 'SC-010'])
+@pytest.fixture(scope='module', params=['SC-001', 'SC-003', 'SC-004', 'SC-006', 'SC-007', 'SC-009', 'SC-010', 'SC-011'])
 def scenario(request):
     return request.param, load_scenario(PACKAGE, request.param)
 
@@ -40,9 +40,9 @@ def finding_map(bundle):
 
 def test_v2_package_registers_only_the_authored_cases():
     manifest = json.loads((PACKAGE / 'manifest.json').read_text())
-    assert {item['scenario_id'] for item in manifest['scenarios']} == {'SC-001', 'SC-003', 'SC-004', 'SC-009', 'SC-010', 'SC-012'}
+    assert {item['scenario_id'] for item in manifest['scenarios']} == {'SC-001', 'SC-003', 'SC-004', 'SC-006', 'SC-007', 'SC-009', 'SC-010', 'SC-011', 'SC-012'}
     assert manifest['fixture_format_version'] == '2.0.0'
-    assert manifest['fixture_package_version'] == '1.3.0'
+    assert manifest['fixture_package_version'] == '1.4.0'
     assert manifest['synthetic'] is True
     assert manifest['reference_time'] == '2026-11-16T09:00:00-10:00'
 
@@ -80,8 +80,13 @@ def test_source_inputs_are_synthetic_pending_and_explicitly_timed(scenario):
         for finding in response.findings:
             assert finding.validation_status == 'PENDING'
             assert finding.source_reference.startswith('https://example.invalid/')
-            assert finding.valid_from.isoformat() == START
-            assert finding.valid_until.isoformat() == END
+            declared_stale = {rule.finding_id for rule in bundle.application.policy_configuration.evidence_rules
+                              if rule.temporal_rule == 'DECLARED_REPORT_WINDOW'}
+            if finding.finding_id in declared_stale:  # SC-007: explicitly declared past report windows.
+                assert finding.finding_type == 'REPORT' and finding.valid_until.isoformat() < START
+            else:
+                assert finding.valid_from.isoformat() == START
+                assert finding.valid_until.isoformat() == END
             assert finding.issued_at <= finding.retrieved_at
             assert finding.coverage_type in {'REGIONAL', 'BEACH'}
 
@@ -265,7 +270,10 @@ def test_sc010_recovery_failures_are_correlated_not_just_named_events():
 def test_mandatory_plan_coverage_and_observed_counter_links_are_explicit(scenario):
     _, bundle = scenario
     plan = bundle.evaluator.expected_results.assertions
-    assert all(a.mandatory and a.test_status == 'ACTIVE' for a in plan)
+    # Mandatory coverage is ACTIVE. Optional rows are ACTIVE (reported separately) or BLOCKED with a reason.
+    assert all(a.test_status == 'ACTIVE' for a in plan if a.mandatory)
+    assert all(a.test_status == 'ACTIVE' or (a.test_status == 'BLOCKED' and a.blocking_reason)
+               for a in plan if not a.mandatory)
     assert len({a.assertion_id for a in plan}) == len(plan)
     coverage = {rid for a in plan for rid in a.requirement_ids}
     assert set(bundle.definition.requirement_ids) <= coverage
