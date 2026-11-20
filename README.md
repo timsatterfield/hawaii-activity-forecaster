@@ -21,6 +21,13 @@ information, and user preferences.
 
 ## Current Status
 
+M1.6-D — Model Provider and Agent Runtime Design is available as a
+[draft proposal](docs/implementation/m1-model-provider-and-agent-runtime-design.md)
+for review. It recommends an initial model profile, structured proposal boundaries,
+bounded planning and offline/pilot acceptance checks. Provider selection is not yet
+approved; no model calls, SDK dependencies or runtime behavior are enabled by this
+documentation increment.
+
 M1.6-C — Scenario Execution Adapter and Demo Alignment is implemented. Explicit
 authored component runs now connect preflight, raw session admission, execution,
 verified capture and independent evaluation. Both current scenario assertion sets
@@ -496,10 +503,19 @@ The normalized session demo remains available.
 See the [M1.6-C notes](docs/development/m1-6c-scenario-execution-and-demo-alignment.md)
 for runtime boundaries, snapshots, lifecycle checks and remaining gates.
 
+### Model provider and agent runtime design — M1.6-D
+
+Review the [draft design](docs/implementation/m1-model-provider-and-agent-runtime-design.md)
+and [development notes](docs/development/m1-6d-model-provider-and-agent-runtime-design.md).
+The proposal preserves the three roles, deterministic safety, local JSONL and
+approved invocation limits. New provider, token/spending and runtime-profile
+choices are explicitly proposed, not approved defaults. Existing setup, demo,
+evaluation and test commands remain unchanged; no API credentials are needed.
+
 ## Specification notes
 
 All seven core requirements and eight approved M1 implementation/design
-documents are present.
+documents are present. The additional M1.6-D model/runtime design is a draft.
 The older technical plan still marks dependency management and several safeguards
 as open; the approved configuration baseline resolves uv and its lockfile,
 invocation limits/timeouts, and trace write-failure handling. Its provider/model
