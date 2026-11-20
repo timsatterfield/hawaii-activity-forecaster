@@ -15,6 +15,14 @@ from hawaii_activity_forecaster.models import NormalizedRequest, SpecialistInves
 from hawaii_activity_forecaster.tools import ToolAction, ToolPlanError
 
 
+_ROLE_NAMES = {"ALWAYS": "Original", "RETRY_IF_RETRYABLE_FAILURE": "Retry",
+               "FALLBACK_IF_REQUIRED_GAP_UNRESOLVED": "Fallback"}
+_LABELS = {"ALWAYS": "an original", "RETRY_IF_RETRYABLE_FAILURE": "a retry",
+           "FALLBACK_IF_REQUIRED_GAP_UNRESOLVED": "a fallback"}
+_MISLABELED = {(role, proposed): f"{_ROLE_NAMES[role]} option labeled as {_LABELS[proposed]}"
+               for role in _ROLE_NAMES for proposed in _LABELS if role != proposed}
+
+
 def _identity(state):
     return InvocationIdentity(session_id=state.session_id, investigation_id=state.investigation_id,
                               request_revision=state.request_revision)
@@ -90,7 +98,8 @@ class AgentRuntime:
             expected = ("RETRY_IF_RETRYABLE_FAILURE" if option.retry_of else
                         "FALLBACK_IF_REQUIRED_GAP_UNRESOLVED" if option.fallback_of else "ALWAYS")
             if step.condition != expected:
-                raise ToolPlanError("Recovery cannot be relabeled as a new original")
+                # Fixed messages per (configured role, proposed condition) for sanitized diagnosis.
+                raise ToolPlanError(_MISLABELED[expected, step.condition])
             if step.origin_step is not None:
                 origin_option = lookup[proposal.steps[step.origin_step].option_id]
                 origin_id = origin_option.retry_of or origin_option.action_id

@@ -81,7 +81,8 @@ def test_rejected_ocean_plan_records_its_category(tmp_path):
                                                 trace_settings=TraceSettings(directory=tmp_path / "traces")))
     assert result.outcome == "FAIL"
     failed = [e for e in events(tmp_path / "traces") if e["event_type"] == "AGENT_FAILED"]
-    assert [e["details"]["error_code"] for e in failed] == ["PLAN_RECOVERY_CONDITION_INVALID"]
+    # SURF_ABCD is configured as an original; the planner proposed it as a fallback.
+    assert [e["details"]["error_code"] for e in failed] == ["PLAN_ORIGINAL_LABELED_FALLBACK"]
     assert "SURF_ABCD" not in json.dumps(failed)
     for trace in (tmp_path / "traces").glob("*.jsonl"):
         assert inspect_trace(trace)  # The independent validator accepts the coded failure.
@@ -129,3 +130,12 @@ def test_field_names_are_closed_and_never_carry_values():
     assert request_failure_field(RequestValidationError("x", field="preferred_area")) == "preferred_area"
     assert request_failure_field(RequestValidationError("x", field="near Kihei")) is None
     assert request_failure_field(ValueError("x")) is None
+
+
+def test_every_mislabeled_condition_has_its_own_closed_code():
+    from hawaii_activity_forecaster.agents.runtime import _MISLABELED
+    conditions = {"ALWAYS", "RETRY_IF_RETRYABLE_FAILURE", "FALLBACK_IF_REQUIRED_GAP_UNRESOLVED"}
+    assert set(_MISLABELED) == {(a, b) for a in conditions for b in conditions if a != b}
+    codes = [agent_failure_code(ToolPlanError(message)) for message in _MISLABELED.values()]
+    assert len(set(codes)) == 6 and set(codes) <= AGENT_FAILURE_CODES and "UNCLASSIFIED" not in codes
+    assert "PLAN_RECOVERY_CONDITION_INVALID" in AGENT_FAILURE_CODES  # Earlier traces still validate.

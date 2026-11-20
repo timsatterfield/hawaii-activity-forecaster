@@ -11,7 +11,13 @@ from hawaii_activity_forecaster.model_runtime.errors import ERROR_CODES
 # Fixed ToolPlanError messages raised by the trusted runtime and dispatcher.
 TOOL_PLAN_CODES = {
     "Duplicate configured tool option": "PLAN_OPTION_DUPLICATE",
-    "Recovery cannot be relabeled as a new original": "PLAN_RECOVERY_CONDITION_INVALID",
+    "Recovery cannot be relabeled as a new original": "PLAN_RECOVERY_CONDITION_INVALID",  # Pre-M1.9-B traces.
+    "Original option labeled as a retry": "PLAN_ORIGINAL_LABELED_RETRY",
+    "Original option labeled as a fallback": "PLAN_ORIGINAL_LABELED_FALLBACK",
+    "Retry option labeled as an original": "PLAN_RETRY_LABELED_ORIGINAL",
+    "Retry option labeled as a fallback": "PLAN_RETRY_LABELED_FALLBACK",
+    "Fallback option labeled as an original": "PLAN_FALLBACK_LABELED_ORIGINAL",
+    "Fallback option labeled as a retry": "PLAN_FALLBACK_LABELED_RETRY",
     "Recovery does not reference its configured original": "PLAN_RECOVERY_ORIGIN_MISMATCH",
     "A query cannot be a second original": "PLAN_DUPLICATE_ORIGINAL",
     "Recovery must reference an earlier action": "PLAN_RECOVERY_ORDER_INVALID",
