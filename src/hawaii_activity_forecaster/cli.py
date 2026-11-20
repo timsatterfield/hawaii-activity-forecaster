@@ -44,7 +44,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     evaluation = commands.add_parser("evaluate", help="preflight a scenario and report independent evaluation readiness")
     evaluation.add_argument("scenario_id")
     evaluation.add_argument("--fixtures", type=Path, required=True, metavar="PATH")
-    evaluation.add_argument("--component", action="store_true", help="execute an explicit authored synthetic runtime; full acceptance remains blocked")
+    runner = evaluation.add_mutually_exclusive_group()
+    runner.add_argument("--component", action="store_true", help="execute an explicit authored synthetic runtime; full acceptance remains blocked")
+    runner.add_argument("--agent", action="store_true", help="execute the model-driven agent runtime; requires --config and --live or --local")
+    evaluation.add_argument("--config", type=Path, metavar="PATH", help="enabled synthetic-release configuration for --agent")
+    agent_target = evaluation.add_mutually_exclusive_group()
+    agent_target.add_argument("--live", action="store_true", help="with --agent: the configured OpenAI target (paid calls)")
+    agent_target.add_argument("--local", action="store_true", help="with --agent: the configured local Ollama target")
     evaluation.add_argument("--trace-directory", type=Path, metavar="PATH")
     arguments = parser.parse_args(argv)
     if arguments.command == "run":
@@ -71,7 +77,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             return 1
     if arguments.command == "evaluate":
         from .harness.evaluation import evaluate_scenario
-        if arguments.component:
+        if not arguments.agent and (arguments.config or arguments.live or arguments.local):
+            parser.error("--config, --live and --local require --agent")
+        if arguments.agent:
+            from .agents.cli import TargetSelectionError, evaluate_agent_command
+            from .config import ConfigurationError
+            from .model_runtime.provider import ProviderError
+            if arguments.config is None:
+                parser.error("--agent requires --config")
+            try:
+                report = asyncio.run(evaluate_agent_command(arguments))
+            except TargetSelectionError as error:
+                print(str(error), file=sys.stderr)
+                return 2
+            except ConfigurationError:
+                print("Cannot load a valid release configuration.", file=sys.stderr)
+                return 2
+            except ProviderError as error:
+                print(f"Model access unavailable: {error}. Configure local access; no automatic retry was attempted.", file=sys.stderr)
+                return 2
+        elif arguments.component:
             from .harness.execution import execute_scenario
             from .demo import authored_component_runner
             from .config.settings import TraceSettings
@@ -81,7 +106,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 trace_settings=TraceSettings(directory=arguments.trace_directory) if arguments.trace_directory else None))
         else:
             if arguments.trace_directory is not None:
-                parser.error("--trace-directory requires --component")
+                parser.error("--trace-directory requires --component or --agent")
             report = evaluate_scenario(arguments.fixtures, arguments.scenario_id)
         print(json.dumps(asdict(report), indent=2))
         return 0 if report.outcome == "PASS" else 1 if report.outcome == "FAIL" else 2

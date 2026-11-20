@@ -87,10 +87,22 @@ uv run --locked hafi evaluate SC-010 --fixtures fixtures/scenario-pack-v1 \
 
 These commands deliberately exit **`2`**. Expect `component.outcome=PASS`, with
 **84** and **61** passing component assertions, respectively, while
-`scenario.outcome=BLOCKED` and `scenario.category=SCENARIO_ADAPTER_UNAVAILABLE`.
-The registered-scenario harness is not connected to model-driven execution and
-verified agentic capture. A working `hafi run` runtime does not make an authored
-component capture a full scenario acceptance run.
+`scenario.outcome=BLOCKED` and `scenario.category=AUTHORED_COMPONENT_SCOPE`.
+Authored plans are not model-driven, so they never count as full acceptance.
+
+The same registered scenarios run through the real Coordinator/Weather/Ocean
+runtime with `--agent`. This makes paid calls (about five model calls per scenario)
+and needs separate authorization:
+
+```bash
+uv run --locked --env-file keys/apsi.env hafi evaluate SC-004 --fixtures fixtures/scenario-pack-v1 \
+  --agent --config haf.release.example.toml --live --trace-directory traces/acceptance
+```
+
+A full PASS (exit `0`, category `ASSERTIONS_EVALUATED`) is reported only when the
+verified trace records the live or local model target. The offline test suite runs
+the same path over mock HTTP and reports `OFFLINE_MODEL_TRANSPORT` (BLOCKED). See
+[M1.7-A](development/m1-7a-agentic-scenario-adapter.md).
 
 ### 7. Run the offline workflow checks
 

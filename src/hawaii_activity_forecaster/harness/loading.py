@@ -100,9 +100,9 @@ class LoadedScenario:
         if status == "BLOCKED":
             return ExecutionReadiness(outcome="BLOCKED", reason="Scenario definition is blocked.")
         return ExecutionReadiness(outcome="BLOCKED", reason=(
-            "Registered-scenario agent execution and verified agentic capture are not connected "
-            "to this harness. The synthetic agent runtime is available through 'hafi run'; "
-            "'evaluate --component' executes authored component plans."
+            "Full acceptance requires a genuine model-driven run: 'hafi evaluate --agent' with "
+            "'--live' or '--local'. Preflight alone executes nothing; '--component' runs authored "
+            "plans, and offline model transport is a component check."
         ))
 
 

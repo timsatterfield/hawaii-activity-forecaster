@@ -30,7 +30,7 @@ def test_connected_components_pass_without_becoming_full_agentic_acceptance(tmp_
     assert result.mode=="AUTHORED_COMPONENT" and result.attempted_steps==(1,)
     assert result.component.outcome=="PASS" and result.component.counts["PASS"]==count
     assert result.outcome==result.scenario.outcome=="BLOCKED"
-    assert result.scenario.category=="SCENARIO_ADAPTER_UNAVAILABLE"
+    assert result.scenario.category=="AUTHORED_COMPONENT_SCOPE"
     assert result.scenario.artifact_digests and len(result.scenario.trace_digests)==1
     path,=(tmp_path/"traces").glob("*.jsonl")
     audit=inspect_trace(path)

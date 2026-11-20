@@ -10,19 +10,29 @@ from .data import load_release_data
 from .session import AgentSession
 
 
-async def run_command(arguments) -> int:
+class TargetSelectionError(ValueError):
+    """Explicit opt-in is missing or inconsistent; nothing was dispatched."""
+
+
+def configured_target(arguments):
+    """Return (config, adapter) only after explicit, matching opt-in."""
     if not (arguments.live or arguments.local):
-        print("Model execution requires --live (OpenAI) or --local (Ollama) and an enabled configuration.", file=sys.stderr)
-        return 2
+        raise TargetSelectionError("Model execution requires --live (OpenAI) or --local (Ollama) and an enabled configuration.")
     config = load_config(arguments.config)
     if not config.llm.enabled:
-        print("Load an explicit enabled synthetic-release configuration with --config.", file=sys.stderr)
-        return 2
+        raise TargetSelectionError("Load an explicit enabled synthetic-release configuration with --config.")
     if config.llm.provider != ("openai" if arguments.live else "ollama"):
-        print("The execution switch must match the configured provider: --live for OpenAI, --local for Ollama.", file=sys.stderr)
+        raise TargetSelectionError("The execution switch must match the configured provider: --live for OpenAI, --local for Ollama.")
+    return config, create_adapter(config.llm)
+
+
+async def run_command(arguments) -> int:
+    try:
+        config, adapter = configured_target(arguments)
+    except TargetSelectionError as error:
+        print(str(error), file=sys.stderr)
         return 2
     data = load_release_data(arguments.fixtures, arguments.case)
-    adapter = create_adapter(config.llm)
     settings = config.trace if arguments.trace_directory is None else TraceSettings(directory=arguments.trace_directory)
     limit = arguments.max_investigations
     session = AgentSession(data, adapter, trace_settings=settings, max_investigations=limit)
@@ -64,3 +74,13 @@ async def run_command(arguments) -> int:
     finally:
         session.close()
     return status
+
+
+async def evaluate_agent_command(arguments):
+    """Run one registered scenario through the model-driven runtime; JSON report."""
+    from hawaii_activity_forecaster.agents.scenario import execute_agent_scenario
+    config, adapter = configured_target(arguments)
+    settings = config.trace if arguments.trace_directory is None else TraceSettings(directory=arguments.trace_directory)
+    print(f"Model-driven registered scenario {arguments.scenario_id}: SYNTHETIC data only; "
+          f"target {config.llm.provider} / {config.llm.model_identifier}.", file=sys.stderr)
+    return await execute_agent_scenario(arguments.fixtures, arguments.scenario_id, adapter=adapter, trace_settings=settings)

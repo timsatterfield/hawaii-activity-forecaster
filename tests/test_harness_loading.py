@@ -24,8 +24,8 @@ def test_v2_loads_without_changing_v1_api(package):
     assert len(bundle.application.catalog.root) == 5
     assert len(bundle.driver.source_responses) == 8
     assert bundle.execution_readiness.outcome == "BLOCKED"
-    assert "not connected" in bundle.execution_readiness.reason
-    assert "hafi run" in bundle.execution_readiness.reason
+    assert "genuine model-driven run" in bundle.execution_readiness.reason
+    assert "--agent" in bundle.execution_readiness.reason
     assert len(load_fixture_inputs(V1).catalog.root) == 5
     with pytest.raises(FixtureLoadError):
         load_fixture_inputs(package)
