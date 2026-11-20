@@ -1,5 +1,9 @@
 # M1 synthetic demo runbook
 
+For the rehearsed 7–8 minute capstone walkthrough, use the
+[presentation script](demo-presentation.md), which includes narration, output
+stopping points, recorded live evidence and the latest rehearsal results.
+
 Run commands from the repository root. Use Python 3.12+ and
 [uv](https://docs.astral.sh/uv/getting-started/installation/).
 This demo uses fictional locations and synthetic environmental data throughout.

@@ -68,6 +68,9 @@ venv/
 *.pem
 *.key
 
+# Presentation scripts
+docs/demo-presentation.md
+
 # Local traces and temporary files
 /traces/
 *.tmp
