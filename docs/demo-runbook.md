@@ -8,6 +8,21 @@ The dataset's reference clock is **November 16, 2026, 09:00 HST**. "Tomorrow" me
 **November 17**, with morning **08:00–11:00** and afternoon **12:00–16:00 HST**.
 These fixed dates make results repeatable; they are not today's Maui conditions.
 
+## Temporary live acceptance selection
+
+The owner temporarily deferred the failing profile 0.7 live checks SC-006 and
+SC-008. Preview the current selection with no model calls:
+
+```bash
+uv run --locked python scripts/run_live_acceptance.py
+```
+
+The default live rerun selects ten scenarios and records the two deferred ones as
+NOT_RUN. The full offline pytest suite remains enabled. See the
+[deferment record](development/m1-live-acceptance-deferments.md) for the paid opt-in
+command, failure evidence and re-enable criteria. This is a selected live gate;
+success does not establish twelve passing scenarios on profile 0.7.
+
 ## Offline rehearsal
 
 These commands need no API key, model server or paid calls. They demonstrate
