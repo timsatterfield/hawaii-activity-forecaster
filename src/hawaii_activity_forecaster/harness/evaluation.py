@@ -139,7 +139,7 @@ class EvaluationReport:
     artifact_digests: tuple[tuple[str, str], ...] = ()
     trace_digests: tuple[tuple[int, str], ...] = ()
     versions: tuple[tuple[str, str], ...] = (("harness_contract_version", "1.0.0"), ("schema_version", "0.1"),
-        ("policy_version", "0.2"), ("configuration_version", "0.1"), ("fixture_format_version", "2.0.0"), ("fixture_package_version", "1.2.0"))
+        ("policy_version", "0.2"), ("configuration_version", "0.1"), ("fixture_format_version", "2.0.0"), ("fixture_package_version", "1.3.0"))
 
 
 def _binding(capture, reference, *, finding):

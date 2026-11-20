@@ -28,7 +28,7 @@ from hawaii_activity_forecaster.observability import inspect_trace
 from release_samples import adapter
 
 ROOT = Path(__file__).resolve().parents[1] / "fixtures" / "scenario-pack-v1"
-COUNTS = {"SC-004": 84, "SC-009": 73, "SC-010": 61}
+COUNTS = {"SC-001": 86, "SC-003": 55, "SC-004": 84, "SC-009": 73, "SC-010": 61}
 MANDATORY_PASSES = {**COUNTS, "SC-012": 83}  # SC-012 also has one optional BLOCKED assertion.
 
 
@@ -69,8 +69,12 @@ def test_offline_agent_run_passes_component_assertions_but_not_full_acceptance(s
         assert (metrics.retries, metrics.fallbacks, metrics.eligible_candidates, metrics.outcome) == (
             0, 2, 5, "RECOMMENDATIONS")
         assert metrics.tool_calls < 12  # The spec requires remaining tool-call capacity.
-    else:
+    elif scenario_id == "SC-004":
         assert (metrics.excluded_candidates, metrics.outcome) == (1, "RECOMMENDATIONS")
+    elif scenario_id == "SC-001":
+        assert (metrics.eligible_candidates, metrics.outcome) == (3, "RECOMMENDATIONS")
+    else:  # SC-003: one supported candidate inside the hard area; A/E assessed UNSUPPORTED.
+        assert (metrics.candidates_considered, metrics.candidates_investigated, metrics.eligible_candidates) == (3, 1, 1)
 
 
 OLLAMA_AREA_LIMIT = pytest.mark.xfail(strict=True, reason=(
@@ -80,6 +84,7 @@ OLLAMA_AREA_LIMIT = pytest.mark.xfail(strict=True, reason=(
 
 
 @pytest.mark.parametrize("scenario_id,profile,mode", [
+    ("SC-001", SATURDAY_PROFILE, "LIVE_PROVIDER"), ("SC-003", SATURDAY_PROFILE, "LIVE_PROVIDER"),
     ("SC-004", SATURDAY_PROFILE, "LIVE_PROVIDER"), ("SC-009", SATURDAY_PROFILE, "LIVE_PROVIDER"),
     ("SC-010", SATURDAY_PROFILE, "LIVE_PROVIDER"), ("SC-012", SATURDAY_PROFILE, "LIVE_PROVIDER"),
     pytest.param("SC-004", OLLAMA_PROFILE, "LOCAL_PROVIDER", marks=OLLAMA_AREA_LIMIT),

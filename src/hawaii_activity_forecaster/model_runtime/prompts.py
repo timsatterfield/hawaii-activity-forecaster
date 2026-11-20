@@ -9,13 +9,14 @@ from hawaii_activity_forecaster.interpretation.contracts import InterpreterInput
 from .contracts import (CoordinatorInput, InvocationIdentity, Operation, OUTPUTS,
                         ProposalError, SpecialistInput)
 from .targets import (
-    PROFILE, SATURDAY_PROFILE, SATURDAY_PROFILE_V1, SATURDAY_PROFILE_V2,
+    PROFILE, SATURDAY_PROFILE, SATURDAY_PROFILE_V1, SATURDAY_PROFILE_V2, SATURDAY_PROFILE_V3,
     OLLAMA_PROFILE, OLLAMA_PROFILE_V1, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4,
     MODEL, CALL_RESERVE_MICROUSD, DEFAULT_INPUT_LIMIT, SUPPORTED_PROFILES, TARGETS,
 )
 
-# Profiles 0.2 and 0.3 share every prompt and schema; only the input bound differs.
-_SATURDAY_RELEASE = frozenset({SATURDAY_PROFILE, SATURDAY_PROFILE_V2})
+# Profiles 0.2-0.4 share the release prompts and schemas. 0.3 changes only the input
+# bound; 0.4 also appends normalize_request guidance (template release-0.3).
+_SATURDAY_RELEASE = frozenset({SATURDAY_PROFILE, SATURDAY_PROFILE_V2, SATURDAY_PROFILE_V3})
 
 
 def input_limit(profile: str) -> int:
@@ -64,6 +65,8 @@ def template_version(operation: Operation, profile: str = PROFILE) -> str:
         return f"{operation}-ollama-0.2"
     if profile == OLLAMA_PROFILE_V1:
         return f"{operation}-ollama-0.1"
+    if profile == SATURDAY_PROFILE and operation == "normalize_request":
+        return f"{operation}-release-0.3"
     if profile in _SATURDAY_RELEASE:
         return f"{operation}-release-0.2"
     return f"{operation}-release-0.1" if profile == SATURDAY_PROFILE_V1 else f"{operation}-0.1"
@@ -75,7 +78,7 @@ def template_text(operation: Operation, profile: str = PROFILE) -> str:
     instruction = (_NORMALIZE if operation == "normalize_request" else _COORDINATE
                    if operation == "coordinator_plan" else _SPECIALIST.format(role=_ROLE[operation]))
     text = _COMMON + "\n\n" + instruction
-    if profile in {SATURDAY_PROFILE, SATURDAY_PROFILE_V2, SATURDAY_PROFILE_V1, OLLAMA_PROFILE, OLLAMA_PROFILE_V1, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4}:
+    if profile in {SATURDAY_PROFILE, SATURDAY_PROFILE_V3, SATURDAY_PROFILE_V2, SATURDAY_PROFILE_V1, OLLAMA_PROFILE, OLLAMA_PROFILE_V1, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4}:
         if operation == "normalize_request":
             text += """\nUse existing logical values: activity SWIMMING/SNORKELING/SUP; target_date
 YYYY-MM-DD; target_time_window {start: ISO-aware datetime, end: ISO-aware datetime};
@@ -118,6 +121,16 @@ Encoding examples only; derive actual values and offsets from current text:\n"""
             dict(field="hard_constraints", value_json=json.dumps([
                 dict(kind="LOCATION_RESTRICTION", scope="REGION", value="SOUTH_MAUI")])),
         ])
+    if profile == SATURDAY_PROFILE and operation == "normalize_request":
+        # Mirrors the trusted clause rules; the validator stays the authority.
+        text += """
+Location prefixes decide the field. 'near', 'prefer', 'prefer near' or 'ideally'
+before an area sets preferred_area only. 'in', 'only' or 'must stay in' before a
+region or locality is a hard_constraints LOCATION_RESTRICTION and never also
+preferred_area; 'at' a beach is a BEACH restriction. Give every changed field a
+source span covering its whole phrase: the activity word, 'tomorrow', the daypart
+word, the experience word, 'prefer calm water' including 'prefer', and the full
+location clause with its preposition, such as 'near Kihei' or 'in South Maui'."""
     if profile in {OLLAMA_PROFILE, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3} and operation == "normalize_request":
         text += """\nEncoding and span rules: value_json is a STRING containing valid JSON, not a
 bare unquoted logical string. Encode activity/date strings with JSON double quotes
@@ -190,7 +203,7 @@ def prepare(operation: Operation, inputs: object, identity: InvocationIdentity, 
             **actual.model_dump(), rule_profile=inputs.rule_profile, catalog_summary=inputs.catalog_summary,
             inherited_origins=[asdict(o) for o in inputs.inherited_origins],
             inherited_request=inputs.inherited_request.model_dump(mode="json") if inputs.inherited_request else None)
-        if profile in {SATURDAY_PROFILE, SATURDAY_PROFILE_V2, OLLAMA_PROFILE, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4}:
+        if profile in {SATURDAY_PROFILE, SATURDAY_PROFILE_V3, SATURDAY_PROFILE_V2, OLLAMA_PROFILE, OLLAMA_PROFILE_V2, OLLAMA_PROFILE_V3, OLLAMA_PROFILE_V4}:
             # Mechanical Unicode offsets only. The model still selects meaning;
             # the existing verifier checks every proposed value and cited span.
             context["request_tokens"] = [dict(text=m.group(), start=m.start(), end=m.end())

@@ -1,6 +1,6 @@
 {
   "fixture_format_version": "2.0.0",
-  "fixture_package_version": "1.2.0",
+  "fixture_package_version": "1.3.0",
   "schema_version": "0.1",
   "policy_version": "0.2",
   "harness_contract_version": "1.0.0",
@@ -227,20 +227,106 @@
       "path": "sources/ocean/sc-012-water-d.json",
       "agent_type": "OCEAN",
       "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "sc-001-alerts",
+      "path": "sources/weather/sc-001-alerts.json",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_ALERTS"
+    },
+    {
+      "fixture_id": "sc-001-wind",
+      "path": "sources/weather/sc-001-wind.json",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_WEATHER"
+    },
+    {
+      "fixture_id": "sc-001-marine",
+      "path": "sources/ocean/sc-001-marine.json",
+      "agent_type": "OCEAN",
+      "source_id": "NWS_MARINE"
+    },
+    {
+      "fixture_id": "sc-001-visibility",
+      "path": "sources/ocean/sc-001-visibility.json",
+      "agent_type": "OCEAN",
+      "source_id": "HWT_VISIBILITY"
+    },
+    {
+      "fixture_id": "sc-001-water-a",
+      "path": "sources/ocean/sc-001-water-a.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "sc-001-water-b",
+      "path": "sources/ocean/sc-001-water-b.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "sc-001-water-c",
+      "path": "sources/ocean/sc-001-water-c.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "sc-001-water-d",
+      "path": "sources/ocean/sc-001-water-d.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "sc-003-alerts",
+      "path": "sources/weather/sc-003-alerts.json",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_ALERTS"
+    },
+    {
+      "fixture_id": "sc-003-wind",
+      "path": "sources/weather/sc-003-wind.json",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_WEATHER"
+    },
+    {
+      "fixture_id": "sc-003-marine",
+      "path": "sources/ocean/sc-003-marine.json",
+      "agent_type": "OCEAN",
+      "source_id": "NWS_MARINE"
+    },
+    {
+      "fixture_id": "sc-003-visibility",
+      "path": "sources/ocean/sc-003-visibility.json",
+      "agent_type": "OCEAN",
+      "source_id": "HWT_VISIBILITY"
+    },
+    {
+      "fixture_id": "sc-003-water-b",
+      "path": "sources/ocean/sc-003-water-b.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
     }
   ],
   "scenarios": [
+    {
+      "scenario_id": "SC-001",
+      "path": "scenarios/SC-001/scenario.json"
+    },
+    {
+      "scenario_id": "SC-003",
+      "path": "scenarios/SC-003/scenario.json"
+    },
     {
       "scenario_id": "SC-004",
       "path": "scenarios/SC-004/scenario.json"
     },
     {
-      "scenario_id": "SC-010",
-      "path": "scenarios/SC-010/scenario.json"
-    },
-    {
       "scenario_id": "SC-009",
       "path": "scenarios/SC-009/scenario.json"
+    },
+    {
+      "scenario_id": "SC-010",
+      "path": "scenarios/SC-010/scenario.json"
     },
     {
       "scenario_id": "SC-012",

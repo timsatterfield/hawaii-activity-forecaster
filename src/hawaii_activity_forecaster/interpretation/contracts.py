@@ -17,7 +17,15 @@ VALUE_FIELDS = frozenset(NormalizedRequest.model_fields) - {"original_request", 
 
 
 class RequestValidationError(ValueError):
-    """The input/proposal/audit cannot be trusted; expose no raw private payload."""
+    """The input/proposal/audit cannot be trusted; expose no raw private payload.
+
+    ``field`` optionally names the closed request field a rejection concerns, for
+    sanitized diagnostics only; values, spans and request text are never attached.
+    """
+
+    def __init__(self, message: str, *, field: str | None = None):
+        super().__init__(message)
+        self.field = field if field in VALUE_FIELDS else None
 
 
 class TextSpan(ContractModel):

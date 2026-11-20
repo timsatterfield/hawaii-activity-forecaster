@@ -45,6 +45,11 @@ rejected interpretations. Out-of-vocabulary values fail with
 field is optional, so every earlier trace still validates, including the pilot and
 all acceptance attempts.
 
+**Follow-up fix (M1.9).** `validate_request` originally collapsed every specific
+`RequestValidationError` into its generic catch-all, recorded as
+`REQUEST_PROPOSAL_INVALID`. It now preserves the specific message, so the codes
+above are recorded for validation rejections too.
+
 ## Evidence
 
 `tests/test_failure_codes.py` (17 tests, offline):

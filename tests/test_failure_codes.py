@@ -109,3 +109,23 @@ def test_validator_rejects_codes_outside_the_vocabulary(tmp_path):
     path.write_text("\n".join(lines) + "\n")
     with pytest.raises(TraceValidationError, match="TRACE_REQUEST_ERROR_CODE_INVALID"):
         inspect_trace(path)
+
+
+def test_specific_validation_messages_survive_validate_request():
+    """A specific rejection must not collapse into the generic catch-all message."""
+    from hawaii_activity_forecaster.interpretation import validate_request
+    from interpretation_samples import morning
+    ctx, data = morning()
+    data["source_spans"] = [s for s in data["source_spans"] if s["field"] != "preferred_area"]  # Omit Kihei's span.
+    with pytest.raises(RequestValidationError) as caught:
+        validate_request(data, ctx)
+    from hawaii_activity_forecaster.observability.failure_codes import request_failure_field
+    assert request_failure_code(caught.value) == "REQUEST_SPAN_MISSING"
+    assert request_failure_field(caught.value) == "preferred_area"  # A closed field name, never the value.
+
+
+def test_field_names_are_closed_and_never_carry_values():
+    from hawaii_activity_forecaster.observability.failure_codes import request_failure_field
+    assert request_failure_field(RequestValidationError("x", field="preferred_area")) == "preferred_area"
+    assert request_failure_field(RequestValidationError("x", field="near Kihei")) is None
+    assert request_failure_field(ValueError("x")) is None
