@@ -87,11 +87,61 @@ def test_profile_0_3_changes_only_the_input_bound_and_its_cost_reserve():
 
 def test_profile_0_4_changes_only_normalize_guidance():
     from hawaii_activity_forecaster.model_runtime.prompts import template_text, template_version
-    from hawaii_activity_forecaster.model_runtime.targets import TARGETS, SATURDAY_PROFILE_V3
-    assert TARGETS[SATURDAY_PROFILE] == TARGETS[SATURDAY_PROFILE_V3]  # Same bound, reserve and target.
+    from hawaii_activity_forecaster.model_runtime.targets import TARGETS, SATURDAY_PROFILE_V3, SATURDAY_PROFILE_V4
+    assert TARGETS[SATURDAY_PROFILE_V4] == TARGETS[SATURDAY_PROFILE_V3]  # Same bound, reserve and target.
     for operation in ('coordinator_plan', 'weather_investigation', 'ocean_investigation'):
-        assert template_text(operation, SATURDAY_PROFILE) == template_text(operation, SATURDAY_PROFILE_V3)
-        assert template_version(operation, SATURDAY_PROFILE) == template_version(operation, SATURDAY_PROFILE_V3)
-    old, new = template_text('normalize_request', SATURDAY_PROFILE_V3), template_text('normalize_request', SATURDAY_PROFILE)
+        assert template_text(operation, SATURDAY_PROFILE_V4) == template_text(operation, SATURDAY_PROFILE_V3)
+        assert template_version(operation, SATURDAY_PROFILE_V4) == template_version(operation, SATURDAY_PROFILE_V3)
+    old, new = template_text('normalize_request', SATURDAY_PROFILE_V3), template_text('normalize_request', SATURDAY_PROFILE_V4)
     assert new.startswith(old) and "'in South Maui'" in new and "never also\npreferred_area" in new
-    assert template_version('normalize_request', SATURDAY_PROFILE) == 'normalize_request-release-0.3'
+    assert template_version('normalize_request', SATURDAY_PROFILE_V4) == 'normalize_request-release-0.3'
+
+
+def test_profile_0_5_changes_only_ocean_guidance():
+    from hawaii_activity_forecaster.model_runtime.prompts import template_text, template_version
+    from hawaii_activity_forecaster.model_runtime.targets import TARGETS, SATURDAY_PROFILE_V4, SATURDAY_PROFILE_V5
+    assert TARGETS[SATURDAY_PROFILE_V5] == TARGETS[SATURDAY_PROFILE_V4]
+    for operation in ('normalize_request', 'coordinator_plan', 'weather_investigation'):
+        assert template_text(operation, SATURDAY_PROFILE_V5) == template_text(operation, SATURDAY_PROFILE_V4)
+        assert template_version(operation, SATURDAY_PROFILE_V5) == template_version(operation, SATURDAY_PROFILE_V4)
+    old, new = template_text('ocean_investigation', SATURDAY_PROFILE_V4), template_text('ocean_investigation', SATURDAY_PROFILE_V5)
+    assert new.startswith(old) and "exactly one fixed condition" in new
+    assert template_version('ocean_investigation', SATURDAY_PROFILE_V5) == 'ocean_investigation-release-0.3'
+
+
+def test_profile_0_6_changes_only_ocean_no_retry_guidance():
+    from hawaii_activity_forecaster.model_runtime.prompts import template_text, template_version
+    from hawaii_activity_forecaster.model_runtime.targets import TARGETS, SATURDAY_PROFILE_V5
+    assert TARGETS[SATURDAY_PROFILE] == TARGETS[SATURDAY_PROFILE_V5]
+    for operation in ('normalize_request', 'coordinator_plan', 'weather_investigation'):
+        assert template_text(operation, SATURDAY_PROFILE) == template_text(operation, SATURDAY_PROFILE_V5)
+        assert template_version(operation, SATURDAY_PROFILE) == template_version(operation, SATURDAY_PROFILE_V5)
+    old, new = template_text('ocean_investigation', SATURDAY_PROFILE_V5), template_text('ocean_investigation', SATURDAY_PROFILE)
+    assert new.startswith(old) and "there is no retry" in new
+    assert template_version('ocean_investigation', SATURDAY_PROFILE) == 'ocean_investigation-release-0.4'
+
+
+def test_profile_0_6_no_retry_example_is_a_valid_plan():
+    """SC-009's shape: fallbacks point straight at MARINE_ when no retry is listed."""
+    from hawaii_activity_forecaster.model_runtime.contracts import SpecialistPlan
+    fallback = 'FALLBACK_IF_REQUIRED_GAP_UNRESOLVED'
+    plan = SpecialistPlan.model_validate(dict(reason_code='PLANNED_WORK', unresolved_gap_ids=[], steps=[
+        dict(option_id='MARINE_X', condition='ALWAYS', origin_step=None),
+        dict(option_id='SURF_X', condition=fallback, origin_step=0),
+        dict(option_id='CURRENTS_X', condition=fallback, origin_step=0),
+    ]))
+    assert [step.option_id for step in plan.steps] == ['MARINE_X', 'SURF_X', 'CURRENTS_X']
+
+
+def test_profile_0_5_worked_example_is_a_valid_plan():
+    """The prompt's example must satisfy the same wire rules the runtime enforces."""
+    from hawaii_activity_forecaster.model_runtime.contracts import SpecialistPlan
+    always, retry, fallback = 'ALWAYS', 'RETRY_IF_RETRYABLE_FAILURE', 'FALLBACK_IF_REQUIRED_GAP_UNRESOLVED'
+    plan = SpecialistPlan.model_validate(dict(reason_code='PLANNED_WORK', unresolved_gap_ids=[], steps=[
+        dict(option_id='MARINE_X', condition=always, origin_step=None),
+        dict(option_id='WATER_Y', condition=always, origin_step=None),
+        dict(option_id='RETRY_MARINE_X', condition=retry, origin_step=0),
+        dict(option_id='SURF_X', condition=fallback, origin_step=0),
+        dict(option_id='CURRENTS_X', condition=fallback, origin_step=0),
+    ]))
+    assert len(plan.steps) == 5

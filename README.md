@@ -34,9 +34,10 @@ The [bounded OpenAI pilot](docs/development/m1-openai-pilot.md) additionally ver
 genuine three-role execution for the listed recommendation, recovery, abstention
 and follow-up checks. It used all ten authorized investigations, retaining two
 early normalization failures; all seven later checks passed on the
-`m1-saturday-runtime-0.2` profile. The release configuration now uses `0.4`: `0.3` raised the input bound
-([M1.8](docs/development/m1-8-sc-009-sc-012.md)), and `0.4` adds request-interpretation
-guidance ([M1.9](docs/development/m1-9-sc-001-sc-003.md)). This is a synthetic M1
+`m1-saturday-runtime-0.2` profile. The release configuration now uses `0.6`: `0.3` raised the input bound
+([M1.8](docs/development/m1-8-sc-009-sc-012.md)), `0.4` adds request-interpretation
+guidance ([M1.9](docs/development/m1-9-sc-001-sc-003.md)), `0.5` adds Ocean
+recovery-condition guidance, and `0.6` adds no-retry guidance ([M1.9-B](docs/development/m1-9b-profile-0.4-rebaseline.md)). This is a synthetic M1
 release with fictional beaches and fixed evidence dates, not a real-world forecaster.
 See the [integration notes](docs/development/m1-integration-release.md) for coverage,
 remaining acceptance work and approved deferments.
