@@ -36,7 +36,7 @@ def make_package(tmp_path):
     root = tmp_path / "v2"
     shutil.copytree(V1, root)
     manifest = read(root, "manifest.json")
-    manifest.update(fixture_format_version="2.0.0", fixture_package_version="1.3.0",
+    manifest.update(fixture_format_version="2.0.0", fixture_package_version="1.4.0",
                     harness_contract_version="1.0.0", scenarios=[{"scenario_id": SID, "path": SCENARIO}])
     write(root, "manifest.json", manifest)
     for domain in ("WEATHER", "OCEAN"):

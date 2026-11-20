@@ -1,0 +1,112 @@
+{
+  "harness_contract_version": "1.0.0",
+  "scenario_id": "SC-011",
+  "target_windows": [
+    {
+      "start": "2026-11-17T08:00:00-10:00",
+      "end": "2026-11-17T11:00:00-10:00"
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "ALERTS_ABE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_SC-011_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_ABE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_SC-011_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_ABE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_SC-011_REGION"
+      }
+    },
+    {
+      "action_id": "VISIBILITY_ABE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_SC-011_REGION"
+      }
+    },
+    {
+      "action_id": "WATER_TEST_BEACH_A",
+      "source_id": "HI_DOH_CWB",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A"
+      ],
+      "requested_evidence": [
+        "WATER_QUALITY_ADVISORY_CHECK"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_SC-011_REGION"
+      }
+    },
+    {
+      "action_id": "WATER_TEST_BEACH_B",
+      "source_id": "HI_DOH_CWB",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "WATER_QUALITY_ADVISORY_CHECK"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_SC-011_REGION"
+      }
+    },
+    {
+      "action_id": "WATER_TEST_BEACH_E",
+      "source_id": "HI_DOH_CWB",
+      "candidate_beach_ids": [
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WATER_QUALITY_ADVISORY_CHECK"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_SC-011_REGION"
+      }
+    }
+  ]
+}
