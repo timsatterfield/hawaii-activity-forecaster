@@ -55,8 +55,10 @@ def test_offline_agent_run_passes_component_assertions_but_not_full_acceptance(s
     assert result.component.outcome == "PASS" and result.component.counts["PASS"] == COUNTS[scenario_id]
     assert result.outcome == result.scenario.outcome == "BLOCKED"
     assert result.scenario.category == "OFFLINE_MODEL_TRANSPORT"
-    assert [operation for operation, _ in calls] == [
-        "normalize_request", "coordinator_plan", "weather_investigation", "ocean_investigation", "coordinator_plan"]
+    operations = [operation for operation, _ in calls]
+    # Weather and Ocean specialists run concurrently; their relative order is not fixed.
+    assert operations[:2] == ["normalize_request", "coordinator_plan"] and operations[4:] == ["coordinator_plan"]
+    assert sorted(operations[2:4]) == ["ocean_investigation", "weather_investigation"]
     path, = (tmp_path / "traces").glob("*.jsonl")
     metrics = inspect_trace(path).metrics
     assert metrics.model_calls == 5 and metrics.tool_calls <= 12
