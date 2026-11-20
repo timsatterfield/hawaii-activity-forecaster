@@ -62,6 +62,7 @@ venv/
 
 # Local secrets
 /keys/
+/apsi.env
 .env
 .env.*
 !.env.example

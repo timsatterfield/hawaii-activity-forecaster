@@ -49,18 +49,20 @@ The [M1.6-D runtime proposal](docs/implementation/m1-model-provider-and-agent-ru
 and [M1.6-F capability-profile proposal](docs/implementation/m1-synthetic-source-capability-profile-design.md)
 remain drafts. The general profile framework is deferred in favor of explicit
 configured tool allowlists. Existing SC-004/SC-010 authored component checks remain
-available with authored scope. All twelve registered scenarios have live scenario-level
-passes across profiles 0.6/0.7, with optional failures and blockers retained in the
-[M1 completion report](docs/development/m1-completion-report.md). Increment sections
+available with authored scope. All twelve registered scenarios have historical
+live scenario-level passes across profiles 0.6/0.7. The latest all-twelve profile 0.7 rerun
+passed **10/12**; SC-006 and SC-008 are temporarily deferred from the selected live
+gate. The full offline pytest suite remains enabled. Optional failures and blockers
+are retained in the [M1 completion report](docs/development/m1-completion-report.md)
+and [deferment record](docs/development/m1-live-acceptance-deferments.md). Increment sections
 below retain their original scope; the release section describes current execution.
 
 ## Documentation
 
-- [Capstone presentation script](docs/demo-presentation.md): rehearsed offline commands, narration and recorded live evidence for a 7–8 minute walkthrough.
-
 See [requirements](docs/requirements/) and [implementation plans](docs/implementation/)
 for the approved specifications.
 
+- [Submission summary](docs/submission-summary.md): offline reviewer setup, evidence scope and current limitations.
 - [M1 completion report](docs/development/m1-completion-report.md): criterion coverage, live evidence and close-out limitations.
 - [Demo runbook](docs/demo-runbook.md): offline rehearsal, expected results, trace inspection and reference live commands.
 - [Release checklist and GitHub test gate](docs/development/m1-release-readiness-and-demo.md): M1 evidence, required-check setup and remaining acceptance gaps.
@@ -703,7 +705,8 @@ and expected assertions. It records current exact-query, candidate-batch and
 cross-delegation recovery limitations, with explicit proposed compatibility changes.
 The general profile implementation is deferred under the approved Saturday scope.
 The release uses explicit tool allowlists; full registered scenario acceptance
-remains separate from its focused integration tests and pending live pilot.
+is evaluated separately from its focused integration tests. Completed live runs
+and the subsequent two-scenario deferment are recorded in the completion report.
 
 ## Specification notes
 

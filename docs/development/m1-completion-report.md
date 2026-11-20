@@ -7,6 +7,12 @@
 
 ## Conclusion and scope
 
+**Current disposition:** the latest profile 0.7 all-twelve batch passed 10/12.
+The owner subsequently deferred SC-006 and SC-008 from the selected live gate;
+its default runner reports both NOT_RUN. Full offline tests remain enabled.
+See the [deferment record](m1-live-acceptance-deferments.md). The twelve PASS
+rows below are historical evidence, not an all-green result on the current profile.
+
 Evidence supports all fifteen approved [M1 completion criteria](../implementation/m1-technical-plan.md#16-m1-completion-criteria)
 within the [approved synthetic release scope](../implementation/m1-saturday-release-scope.md).
 All twelve registered scenarios have recorded live scenario-level PASS results.
@@ -43,7 +49,7 @@ paid calls were made while investigating its failures.
 | 12 | Results pass schema and grounding checks | `test_results.py`, `test_result_graph.py`, `test_presentation.py`; independent pilot trace/result checks | Verified |
 | 13 | Local traces satisfy required assertions | `test_trace_storage.py`, `test_trace_validation.py`, `test_model_trace_validation.py`; ten independently checked pilot traces | Verified |
 | 14 | LangSmith is optional | `test_model_gateway.py`; shared disabled remote-tracing contexts; offline commands need no tracing credentials | Verified |
-| 15 | Selected M1 scenarios pass their executable scope | Twelve live PASS reports and thirteen verified traces, indexed below; `test_agent_scenarios.py` | Verified for mandatory synthetic assertions; optional FAIL/BLOCKED rows retained |
+| 15 | Selected M1 scenarios pass their executable scope | Historical live PASS reports and verified traces below; current 0.7 rerun and owner deferments | Historical mandatory passes; current rerun 10/12, with SC-006/SC-008 deferred and optional FAIL/BLOCKED rows retained |
 
 Criterion 1's supported-activity CLI behavior is verified. The original pilot did
 not exercise live clarification; the separately authorized close-out check now
@@ -101,6 +107,54 @@ request, model payload, credential or trace contents are copied into this report
   recommendations carry no numeric rank. See [M1.12](m1-12-sc-002-wind-chop.md).
 
 ## Close-out verification
+
+### Isolated public-checkout verification (2026-11-20)
+
+The tracked public source plus this batch's documentation changes were copied to
+a fresh temporary tree based on `bd4339b`. It contained no existing virtualenv,
+local credential file, presenter notes, prior traces or Git metadata. The tracked
+credential template was retained. The original developer environment was preserved.
+
+| Check | Result |
+|---|---|
+| Python / environment | CPython 3.12.14, uv 0.12.19; fresh virtualenv |
+| `uv sync --locked --python .../python3.12` | 50 packages resolved; 48 installed from the unchanged lockfile |
+| `uv run --locked pytest -q` | **1499 passed, 1 xfailed in 81.81s** |
+| CLI version | 0.1.0, exit 0 |
+| Advisory / outage / session demos | Each exit 0; four independently valid complete demo traces, zero model calls |
+| SC-004 component evaluation | 84 PASS, scenario BLOCKED with AUTHORED_COMPONENT_SCOPE; expected exit 2 |
+| Selected-live preview | Ten selected, SC-006 and SC-008 deferred; no model calls |
+
+Child demo processes had model credentials removed and remote tracing disabled.
+This is current-code Python 3.12 verification, superseding the earlier limitation
+that only an older baseline had a clean 3.12 rehearsal. The expected failure is
+the deferred experimental Ollama preferred-area input bound.
+
+The tracked-file scan found no API-key-shaped strings. Known local credential
+and presenter paths were absent from the tracked tree and their path-history query
+returned no commits in available local refs. Local traces and credentials remain
+ignored; the old root-level credential filename is now ignored too. No private
+file contents were added to documentation. Public navigation links resolve, and
+the reviewer instructions require no local paid-run evidence or model access.
+
+Approved specifications, application code, tests, dependencies, lockfile and CI
+configuration were unchanged. No paid model calls, commit, push, history rewrite
+or repository-visibility change was made by this batch.
+
+### Subsequent rehearsal and CI evidence (2026-11-20)
+
+- The owner reported that the merged changes passed the GitHub offline pytest
+  workflow. Hosted branch-protection settings were not independently inspected.
+- The offline rehearsal at baseline `5edefd1` passed twelve CLI checks, including
+  advisory exclusion, outage abstention, same-session revision, trace inspection,
+  two component evaluations and the selected-live preview. The four demo traces
+  validated with zero model calls; each component run also generated its own trace.
+- Focused presentation/CLI tests: **41 passed**, 13 upstream LangSmith warnings,
+  4.01s on the existing Python 3.14 environment. No new paid calls were made.
+- Public reviewer commands and current scope are summarized in the
+  [submission summary](../submission-summary.md).
+
+### Original close-out results
 
 - `uv run --locked pytest -q`: **1499 passed, 1 xfailed, 13 warnings in 84.10s**,
   using the existing Python 3.14 environment. Warnings are upstream LangSmith
