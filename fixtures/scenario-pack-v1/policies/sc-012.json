@@ -1,0 +1,508 @@
+{
+  "harness_contract_version": "1.0.0",
+  "policy_version": "0.2",
+  "policy_configuration_version": "synthetic-policy-1.0.0",
+  "synthetic": true,
+  "evidence_profiles": [
+    {
+      "activity": "SNORKELING",
+      "mandatory": [
+        "OFFICIAL_ADVISORIES",
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS",
+        "WATER_QUALITY_ADVISORY_CHECK",
+        "VERIFIED_BEACH_CHARACTERISTICS"
+      ],
+      "relevant": [
+        "WIND_CONDITIONS"
+      ],
+      "optional": [
+        "UNDERWATER_VISIBILITY"
+      ]
+    }
+  ],
+  "evidence_rules": [
+    {
+      "rule_id": "sc-012-alerts-OFFICIAL_ADVISORIES",
+      "category": "OFFICIAL_ADVISORIES",
+      "source_fixture_id": "sc-012-alerts",
+      "finding_id": "SC-012_ALERTS_FINDING",
+      "temporal_rule": "COVERS_TARGET_WINDOW",
+      "beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ]
+    },
+    {
+      "rule_id": "sc-012-wind-WIND_CONDITIONS",
+      "category": "WIND_CONDITIONS",
+      "source_fixture_id": "sc-012-wind",
+      "finding_id": "SC-012_WIND_FINDING",
+      "temporal_rule": "COVERS_TARGET_WINDOW",
+      "beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ]
+    },
+    {
+      "rule_id": "sc-012-marine-SURF_WAVE_CONDITIONS",
+      "category": "SURF_WAVE_CONDITIONS",
+      "source_fixture_id": "sc-012-marine",
+      "finding_id": "SC-012_MARINE_FINDING",
+      "temporal_rule": "COVERS_TARGET_WINDOW",
+      "beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ]
+    },
+    {
+      "rule_id": "sc-012-marine-CURRENTS_PERSISTENT_HAZARDS",
+      "category": "CURRENTS_PERSISTENT_HAZARDS",
+      "source_fixture_id": "sc-012-marine",
+      "finding_id": "SC-012_MARINE_FINDING",
+      "temporal_rule": "COVERS_TARGET_WINDOW",
+      "beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ]
+    },
+    {
+      "rule_id": "sc-012-visibility-UNDERWATER_VISIBILITY",
+      "category": "UNDERWATER_VISIBILITY",
+      "source_fixture_id": "sc-012-visibility",
+      "finding_id": "SC-012_VISIBILITY_FINDING",
+      "temporal_rule": "COVERS_TARGET_WINDOW",
+      "beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ]
+    },
+    {
+      "rule_id": "sc-012-water-TEST_BEACH_A",
+      "category": "WATER_QUALITY_ADVISORY_CHECK",
+      "source_fixture_id": "sc-012-water-a",
+      "finding_id": "SC-012_WATER-TEST_BEACH_A_FINDING",
+      "temporal_rule": "COVERS_TARGET_WINDOW",
+      "beach_ids": [
+        "TEST_BEACH_A"
+      ]
+    },
+    {
+      "rule_id": "sc-012-water-TEST_BEACH_B",
+      "category": "WATER_QUALITY_ADVISORY_CHECK",
+      "source_fixture_id": "sc-012-water-b",
+      "finding_id": "SC-012_WATER-TEST_BEACH_B_FINDING",
+      "temporal_rule": "COVERS_TARGET_WINDOW",
+      "beach_ids": [
+        "TEST_BEACH_B"
+      ]
+    },
+    {
+      "rule_id": "sc-012-water-TEST_BEACH_C",
+      "category": "WATER_QUALITY_ADVISORY_CHECK",
+      "source_fixture_id": "sc-012-water-c",
+      "finding_id": "SC-012_WATER-TEST_BEACH_C_FINDING",
+      "temporal_rule": "COVERS_TARGET_WINDOW",
+      "beach_ids": [
+        "TEST_BEACH_C"
+      ]
+    },
+    {
+      "rule_id": "sc-012-water-TEST_BEACH_D",
+      "category": "WATER_QUALITY_ADVISORY_CHECK",
+      "source_fixture_id": "sc-012-water-d",
+      "finding_id": "SC-012_WATER-TEST_BEACH_D_FINDING",
+      "temporal_rule": "COVERS_TARGET_WINDOW",
+      "beach_ids": [
+        "TEST_BEACH_D"
+      ]
+    }
+  ],
+  "premises": [
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_A-0-OFFICIAL_ADVISORY_CHECK_COMPLETE",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "OFFICIAL_ADVISORY_CHECK_COMPLETE",
+      "value": true,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-alerts",
+          "finding_id": "SC-012_ALERTS_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_A-0-WATER_CONTACT_ADVISORY_CHECK_COMPLETE",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "WATER_CONTACT_ADVISORY_CHECK_COMPLETE",
+      "value": true,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-water-a",
+          "finding_id": "SC-012_WATER-TEST_BEACH_A_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_A-0-WATER_CONTACT_AVOIDANCE_ADVISORY_PRESENT",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "WATER_CONTACT_AVOIDANCE_ADVISORY_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-water-a",
+          "finding_id": "SC-012_WATER-TEST_BEACH_A_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_A-0-DISQUALIFYING_SURF_PRESENT",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DISQUALIFYING_SURF_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-marine",
+          "finding_id": "SC-012_MARINE_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_A-0-DANGEROUS_CURRENT_PRESENT",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DANGEROUS_CURRENT_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-marine",
+          "finding_id": "SC-012_MARINE_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_A-0-DISQUALIFYING_WEATHER_PRESENT",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DISQUALIFYING_WEATHER_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-alerts",
+          "finding_id": "SC-012_ALERTS_FINDING"
+        },
+        {
+          "source_fixture_id": "sc-012-wind",
+          "finding_id": "SC-012_WIND_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_A-0-DISQUALIFYING_BEACH_CHARACTERISTIC_PRESENT",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DISQUALIFYING_BEACH_CHARACTERISTIC_PRESENT",
+      "value": false,
+      "finding_refs": [],
+      "catalog_field_refs": [
+        {
+          "beach_id": "TEST_BEACH_A",
+          "field": "access_notes"
+        }
+      ],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_A-0-MATERIAL_SAFETY_CONFLICT_PRESENT",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "MATERIAL_SAFETY_CONFLICT_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-alerts",
+          "finding_id": "SC-012_ALERTS_FINDING"
+        },
+        {
+          "source_fixture_id": "sc-012-marine",
+          "finding_id": "SC-012_MARINE_FINDING"
+        },
+        {
+          "source_fixture_id": "sc-012-water-a",
+          "finding_id": "SC-012_WATER-TEST_BEACH_A_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_A-0-ACTIVITY_SUPPORTING_CONDITIONS_PRESENT",
+      "beach_id": "TEST_BEACH_A",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "ACTIVITY_SUPPORTING_CONDITIONS_PRESENT",
+      "value": true,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-marine",
+          "finding_id": "SC-012_MARINE_FINDING"
+        },
+        {
+          "source_fixture_id": "sc-012-wind",
+          "finding_id": "SC-012_WIND_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_C-0-OFFICIAL_ADVISORY_CHECK_COMPLETE",
+      "beach_id": "TEST_BEACH_C",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "OFFICIAL_ADVISORY_CHECK_COMPLETE",
+      "value": true,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-alerts",
+          "finding_id": "SC-012_ALERTS_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_C-0-WATER_CONTACT_ADVISORY_CHECK_COMPLETE",
+      "beach_id": "TEST_BEACH_C",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "WATER_CONTACT_ADVISORY_CHECK_COMPLETE",
+      "value": true,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-water-c",
+          "finding_id": "SC-012_WATER-TEST_BEACH_C_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_C-0-WATER_CONTACT_AVOIDANCE_ADVISORY_PRESENT",
+      "beach_id": "TEST_BEACH_C",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "WATER_CONTACT_AVOIDANCE_ADVISORY_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-water-c",
+          "finding_id": "SC-012_WATER-TEST_BEACH_C_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_C-0-DISQUALIFYING_SURF_PRESENT",
+      "beach_id": "TEST_BEACH_C",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DISQUALIFYING_SURF_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-marine",
+          "finding_id": "SC-012_MARINE_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_C-0-DANGEROUS_CURRENT_PRESENT",
+      "beach_id": "TEST_BEACH_C",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DANGEROUS_CURRENT_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-marine",
+          "finding_id": "SC-012_MARINE_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_C-0-DISQUALIFYING_WEATHER_PRESENT",
+      "beach_id": "TEST_BEACH_C",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DISQUALIFYING_WEATHER_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-alerts",
+          "finding_id": "SC-012_ALERTS_FINDING"
+        },
+        {
+          "source_fixture_id": "sc-012-wind",
+          "finding_id": "SC-012_WIND_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_C-0-DISQUALIFYING_BEACH_CHARACTERISTIC_PRESENT",
+      "beach_id": "TEST_BEACH_C",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "DISQUALIFYING_BEACH_CHARACTERISTIC_PRESENT",
+      "value": false,
+      "finding_refs": [],
+      "catalog_field_refs": [
+        {
+          "beach_id": "TEST_BEACH_C",
+          "field": "access_notes"
+        }
+      ],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_C-0-MATERIAL_SAFETY_CONFLICT_PRESENT",
+      "beach_id": "TEST_BEACH_C",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "MATERIAL_SAFETY_CONFLICT_PRESENT",
+      "value": false,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-alerts",
+          "finding_id": "SC-012_ALERTS_FINDING"
+        },
+        {
+          "source_fixture_id": "sc-012-marine",
+          "finding_id": "SC-012_MARINE_FINDING"
+        },
+        {
+          "source_fixture_id": "sc-012-water-c",
+          "finding_id": "SC-012_WATER-TEST_BEACH_C_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    },
+    {
+      "premise_id": "SC-012_SNORKELING-TEST_BEACH_C-0-ACTIVITY_SUPPORTING_CONDITIONS_PRESENT",
+      "beach_id": "TEST_BEACH_C",
+      "activity": "SNORKELING",
+      "time_window": {
+        "start": "2026-11-17T08:00:00-10:00",
+        "end": "2026-11-17T11:00:00-10:00"
+      },
+      "fact_type": "ACTIVITY_SUPPORTING_CONDITIONS_PRESENT",
+      "value": true,
+      "finding_refs": [
+        {
+          "source_fixture_id": "sc-012-marine",
+          "finding_id": "SC-012_MARINE_FINDING"
+        },
+        {
+          "source_fixture_id": "sc-012-wind",
+          "finding_id": "SC-012_WIND_FINDING"
+        }
+      ],
+      "catalog_field_refs": [],
+      "rationale": "SYNTHETIC premise. Explicit hypothetical synthetic classification with attributed support; not a real-world threshold, inferred measurement or final eligibility verdict."
+    }
+  ],
+  "mixed_permissions": []
+}

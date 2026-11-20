@@ -1,12 +1,15 @@
-# SC-004 and SC-010 synthetic scenario inputs
+# SC-004, SC-009, SC-010 and SC-012 synthetic scenario inputs
 
-**Dataset:** `1.1.0`; **fixture format:** `2.0.0`; **harness contracts:** `1.0.0`.
+**Dataset:** `1.2.0`; **fixture format:** `2.0.0`; **harness contracts:** `1.0.0`.
 The directory name identifies the first authored scenario pack, not the fixture
 format version. All geography, numeric measurements, reporting regions, advisory
 issuers and environmental statements are fictional. No live provider is queried.
 
-The package contains two ACTIVE **definitions**, both currently **BLOCKED for
-execution**. Preflight passing is not a scenario acceptance pass.
+The package contains four ACTIVE **definitions** (SC-004, SC-009, SC-010, SC-012).
+SC-012's follow-up needs model profile `m1-saturday-runtime-0.3`, whose input bound is larger. Preflight passing is not a scenario acceptance pass.
+SC-009 and SC-012 were added in dataset `1.2.0`. Their inputs derive from the release
+`recovery`/`favorable` environments, and their assertions were written by hand. See
+[M1.8](../../docs/development/m1-8-sc-009-sc-012.md).
 
 ```python
 from hawaii_activity_forecaster.harness import load_scenario

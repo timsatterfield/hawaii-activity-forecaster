@@ -67,7 +67,7 @@ mock HTTP or authored components, not paid inference.
 | 12 | Results pass schema and grounding checks | `test_results.py`, `test_result_graph.py`, `test_presentation.py`; independent pilot trace/result checks | Verified |
 | 13 | Local traces satisfy required assertions | `test_trace_storage.py`, `test_trace_validation.py`, `test_model_trace_validation.py`; ten independently checked pilot traces | Verified |
 | 14 | LangSmith is optional | `test_model_gateway.py`; shared disabled remote-tracing contexts; offline commands need no tracing credentials | Verified |
-| 15 | Selected acceptance scenarios pass executable scope | `test_scenario_execution.py`, `test_harness_evaluation.py`, `test_agent_scenarios.py`; 84 SC-004 / 61 SC-010 assertions pass for authored plans and for the agent runtime over offline transport | Adapter connected ([M1.7-A](m1-7a-agentic-scenario-adapter.md)); Full PASS observed live for SC-004 (84/84) and SC-010 (61/61), on 2 of 3 and 1 of 2 live attempts; failed attempts failed closed |
+| 15 | Selected acceptance scenarios pass executable scope | `test_scenario_execution.py`, `test_harness_evaluation.py`, `test_agent_scenarios.py`; 84 SC-004 / 61 SC-010 assertions pass for authored plans and for the agent runtime over offline transport | Adapter connected ([M1.7-A](m1-7a-agentic-scenario-adapter.md)); Full PASS observed live for SC-004 (84/84) and SC-010 (61/61), on 2 of 3 and 1 of 2 live attempts; failed attempts failed closed. SC-009 full PASS live (73/73, 1 of 1 attempt); SC-012 full PASS live on profile 0.3 (83/83 mandatory, 1 of 1 attempt) ([M1.8](m1-8-sc-009-sc-012.md)) |
 
 The broader SC-001–012 behavior mapping is retained in the
 [integration notes](m1-integration-release.md#acceptance-evidence-and-limits).
