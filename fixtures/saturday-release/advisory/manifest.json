@@ -1,0 +1,99 @@
+{
+  "fixture_format_version": "1.0.0",
+  "fixture_package_version": "1.0.0",
+  "schema_version": "0.1",
+  "policy_version": "0.2",
+  "synthetic": true,
+  "reference_time": "2026-11-16T09:00:00-10:00",
+  "target_time_window": {
+    "start": "2026-11-17T08:00:00-10:00",
+    "end": "2026-11-17T16:00:00-10:00"
+  },
+  "catalog_fixture": "catalogs/catalog.json",
+  "source_fixtures": [
+    {
+      "fixture_id": "alerts",
+      "path": "sources/weather/alerts.json",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_ALERTS"
+    },
+    {
+      "fixture_id": "wind",
+      "path": "sources/weather/wind.json",
+      "agent_type": "WEATHER",
+      "source_id": "NWS_WEATHER"
+    },
+    {
+      "fixture_id": "marine",
+      "path": "sources/ocean/marine.json",
+      "agent_type": "OCEAN",
+      "source_id": "NWS_MARINE"
+    },
+    {
+      "fixture_id": "visibility",
+      "path": "sources/ocean/visibility.json",
+      "agent_type": "OCEAN",
+      "source_id": "HWT_VISIBILITY"
+    },
+    {
+      "fixture_id": "surf",
+      "path": "sources/ocean/surf.json",
+      "agent_type": "OCEAN",
+      "source_id": "HWT_SURF"
+    },
+    {
+      "fixture_id": "currents",
+      "path": "sources/ocean/currents.json",
+      "agent_type": "OCEAN",
+      "source_id": "SNORKEL_STORE"
+    },
+    {
+      "fixture_id": "marine-error",
+      "path": "sources/ocean/marine-error.json",
+      "agent_type": "OCEAN",
+      "source_id": "NWS_MARINE"
+    },
+    {
+      "fixture_id": "surf-error",
+      "path": "sources/ocean/surf-error.json",
+      "agent_type": "OCEAN",
+      "source_id": "HWT_SURF"
+    },
+    {
+      "fixture_id": "currents-error",
+      "path": "sources/ocean/currents-error.json",
+      "agent_type": "OCEAN",
+      "source_id": "SNORKEL_STORE"
+    },
+    {
+      "fixture_id": "water-TEST_BEACH_A",
+      "path": "sources/ocean/water-TEST_BEACH_A.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "water-TEST_BEACH_B",
+      "path": "sources/ocean/water-TEST_BEACH_B.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "water-TEST_BEACH_C",
+      "path": "sources/ocean/water-TEST_BEACH_C.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "water-TEST_BEACH_D",
+      "path": "sources/ocean/water-TEST_BEACH_D.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    },
+    {
+      "fixture_id": "water-TEST_BEACH_E",
+      "path": "sources/ocean/water-TEST_BEACH_E.json",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB"
+    }
+  ]
+}

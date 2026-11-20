@@ -1,0 +1,213 @@
+[
+  {
+    "beach_id": "TEST_BEACH_A",
+    "name": "Fictional Test Beach A (SYNTHETIC)",
+    "region": "SOUTH_MAUI",
+    "locality": "Kihei",
+    "latitude": 20.0,
+    "longitude": -156.0,
+    "location_notes": "SYNTHETIC coordinates and geography; no real Maui location is represented.",
+    "access_notes": "SYNTHETIC catalog characteristic: Sheltered shoreline; sandy entry.",
+    "reef_presence": "UNKNOWN",
+    "supported_activities": [
+      "SWIMMING",
+      "SNORKELING"
+    ],
+    "lifeguard_status": "UNKNOWN",
+    "last_verified": "2026-11-16",
+    "catalog_status": "VERIFIED",
+    "verification_notes": "VERIFIED within the fictional test catalog only; no public geographic verification.",
+    "sources": [
+      {
+        "source_id": "SYNTHETIC_CATALOG_V1",
+        "publisher": "Hawaii Activity Forecaster synthetic fixture authors",
+        "url": "https://example.invalid/haf/fixtures/catalog/TEST_BEACH_A",
+        "title": "Synthetic fixture definition for fictional Beach A",
+        "accessed_at": "2026-11-16",
+        "supports_fields": [
+          "beach_id",
+          "name",
+          "region",
+          "locality",
+          "latitude",
+          "longitude",
+          "location_notes",
+          "access_notes",
+          "reef_presence",
+          "supported_activities",
+          "lifeguard_status"
+        ],
+        "notes": "Reserved invalid-domain reference identifying synthetic data, not a public verification source."
+      }
+    ]
+  },
+  {
+    "beach_id": "TEST_BEACH_B",
+    "name": "Fictional Test Beach B (SYNTHETIC)",
+    "region": "SOUTH_MAUI",
+    "locality": "Wailea",
+    "latitude": 20.01,
+    "longitude": -156.01,
+    "location_notes": "SYNTHETIC coordinates and geography; no real Maui location is represented.",
+    "access_notes": "SYNTHETIC catalog characteristic: Mixed sand and reef.",
+    "reef_presence": "PRESENT",
+    "supported_activities": [
+      "SWIMMING",
+      "SNORKELING",
+      "SUP"
+    ],
+    "lifeguard_status": "UNKNOWN",
+    "last_verified": "2026-11-16",
+    "catalog_status": "VERIFIED",
+    "verification_notes": "VERIFIED within the fictional test catalog only; no public geographic verification.",
+    "sources": [
+      {
+        "source_id": "SYNTHETIC_CATALOG_V1",
+        "publisher": "Hawaii Activity Forecaster synthetic fixture authors",
+        "url": "https://example.invalid/haf/fixtures/catalog/TEST_BEACH_B",
+        "title": "Synthetic fixture definition for fictional Beach B",
+        "accessed_at": "2026-11-16",
+        "supports_fields": [
+          "beach_id",
+          "name",
+          "region",
+          "locality",
+          "latitude",
+          "longitude",
+          "location_notes",
+          "access_notes",
+          "reef_presence",
+          "supported_activities",
+          "lifeguard_status"
+        ],
+        "notes": "Reserved invalid-domain reference identifying synthetic data, not a public verification source."
+      }
+    ]
+  },
+  {
+    "beach_id": "TEST_BEACH_C",
+    "name": "Fictional Test Beach C (SYNTHETIC)",
+    "region": "WEST_MAUI",
+    "locality": "Napili",
+    "latitude": 20.02,
+    "longitude": -156.02,
+    "location_notes": "SYNTHETIC coordinates and geography; no real Maui location is represented.",
+    "access_notes": "SYNTHETIC catalog characteristic: Sheltered shoreline; reef.",
+    "reef_presence": "PRESENT",
+    "supported_activities": [
+      "SWIMMING",
+      "SNORKELING"
+    ],
+    "lifeguard_status": "UNKNOWN",
+    "last_verified": "2026-11-16",
+    "catalog_status": "VERIFIED",
+    "verification_notes": "VERIFIED within the fictional test catalog only; no public geographic verification.",
+    "sources": [
+      {
+        "source_id": "SYNTHETIC_CATALOG_V1",
+        "publisher": "Hawaii Activity Forecaster synthetic fixture authors",
+        "url": "https://example.invalid/haf/fixtures/catalog/TEST_BEACH_C",
+        "title": "Synthetic fixture definition for fictional Beach C",
+        "accessed_at": "2026-11-16",
+        "supports_fields": [
+          "beach_id",
+          "name",
+          "region",
+          "locality",
+          "latitude",
+          "longitude",
+          "location_notes",
+          "access_notes",
+          "reef_presence",
+          "supported_activities",
+          "lifeguard_status"
+        ],
+        "notes": "Reserved invalid-domain reference identifying synthetic data, not a public verification source."
+      }
+    ]
+  },
+  {
+    "beach_id": "TEST_BEACH_D",
+    "name": "Fictional Test Beach D (SYNTHETIC)",
+    "region": "WEST_MAUI",
+    "locality": "Kaanapali",
+    "latitude": 20.03,
+    "longitude": -156.03,
+    "location_notes": "SYNTHETIC coordinates and geography; no real Maui location is represented.",
+    "access_notes": "SYNTHETIC catalog characteristic: More exposed shoreline.",
+    "reef_presence": "UNKNOWN",
+    "supported_activities": [
+      "SWIMMING",
+      "SNORKELING",
+      "SUP"
+    ],
+    "lifeguard_status": "UNKNOWN",
+    "last_verified": "2026-11-16",
+    "catalog_status": "VERIFIED",
+    "verification_notes": "VERIFIED within the fictional test catalog only; no public geographic verification.",
+    "sources": [
+      {
+        "source_id": "SYNTHETIC_CATALOG_V1",
+        "publisher": "Hawaii Activity Forecaster synthetic fixture authors",
+        "url": "https://example.invalid/haf/fixtures/catalog/TEST_BEACH_D",
+        "title": "Synthetic fixture definition for fictional Beach D",
+        "accessed_at": "2026-11-16",
+        "supports_fields": [
+          "beach_id",
+          "name",
+          "region",
+          "locality",
+          "latitude",
+          "longitude",
+          "location_notes",
+          "access_notes",
+          "reef_presence",
+          "supported_activities",
+          "lifeguard_status"
+        ],
+        "notes": "Reserved invalid-domain reference identifying synthetic data, not a public verification source."
+      }
+    ]
+  },
+  {
+    "beach_id": "TEST_BEACH_E",
+    "name": "Fictional Test Beach E (SYNTHETIC)",
+    "region": "SOUTH_MAUI",
+    "locality": "Makena",
+    "latitude": 20.04,
+    "longitude": -156.04,
+    "location_notes": "SYNTHETIC coordinates and geography; no real Maui location is represented.",
+    "access_notes": "SYNTHETIC catalog characteristic: Documented difficult entry.",
+    "reef_presence": "UNKNOWN",
+    "supported_activities": [
+      "SWIMMING"
+    ],
+    "lifeguard_status": "UNKNOWN",
+    "last_verified": "2026-11-16",
+    "catalog_status": "VERIFIED",
+    "verification_notes": "VERIFIED within the fictional test catalog only; no public geographic verification.",
+    "sources": [
+      {
+        "source_id": "SYNTHETIC_CATALOG_V1",
+        "publisher": "Hawaii Activity Forecaster synthetic fixture authors",
+        "url": "https://example.invalid/haf/fixtures/catalog/TEST_BEACH_E",
+        "title": "Synthetic fixture definition for fictional Beach E",
+        "accessed_at": "2026-11-16",
+        "supports_fields": [
+          "beach_id",
+          "name",
+          "region",
+          "locality",
+          "latitude",
+          "longitude",
+          "location_notes",
+          "access_notes",
+          "reef_presence",
+          "supported_activities",
+          "lifeguard_status"
+        ],
+        "notes": "Reserved invalid-domain reference identifying synthetic data, not a public verification source."
+      }
+    ]
+  }
+]

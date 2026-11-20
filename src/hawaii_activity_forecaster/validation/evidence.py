@@ -226,7 +226,11 @@ def validate_evidence(
         rules = [rule for rule in policy.evidence_rules
                  if bound is not None and (rule.source_fixture_id, rule.finding_id) == bound[:2]]
         applicable = [(rule, beach_id) for rule in rules for beach_id in rule.beach_ids
-                      if beach_id in state.candidate_beach_ids]
+                      if beach_id in state.candidate_beach_ids and not (
+                          beach_id in beaches and state.activity not in beaches[beach_id].supported_activities)]
+        # UNSUPPORTED candidates remain in the assessment scope, but are not
+        # intended environmental uses. Their unsupported activity must not taint
+        # a shared regional finding for the supported, actually investigated pool.
         if not applicable:
             status, reasons = _base(finding, state, reference_time)
             status = ValidationStatus.REJECTED if bound is None else _worst((status, ValidationStatus.LIMITED))

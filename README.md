@@ -21,35 +21,30 @@ information, and user preferences.
 
 ## Current Status
 
-M1.6-F — Synthetic Source Capability Profile Design is available as a
-[draft for review](docs/implementation/m1-synthetic-source-capability-profile-design.md).
-It specifies finite legal queries, private fixture-coverage checks, model-visible
-options and recovery bindings. No capability artifact, wire revision or runtime
-behavior is implemented by this design increment.
+The owner-approved [Saturday M1 release scope](docs/implementation/m1-saturday-release-scope.md)
+connects natural-language requests to Coordinator, Weather and Ocean model planning,
+the existing LangGraph workflow, synthetic tools, deterministic validation and local
+JSONL. All three activities, both default time windows and post-terminal follow-ups
+are available through the opt-in `hafi run` command below. Default execution remains
+disabled. The current release uses the explicit OpenAI `gpt-6-luna` target for all
+three roles. Local Ollama `qwen3.5:9b` remains experimental and is deferred.
 
-M1.6-E — Provider Gateway and Structured Model Contracts is implemented as an
-offline foundation. Versioned prompts and strict proposals exercise the OpenAI
-Responses adapter through an explicit mock HTTP transport, sharing investigation
-budgets and authoritative trace checks. No live client factory or CLI model mode
-is enabled. See the [M1.6-E notes](docs/development/m1-6e-provider-gateway-and-model-contracts.md).
+Offline integration tests exercise the installed SDK with mock HTTP responses.
+The [bounded OpenAI pilot](docs/development/m1-openai-pilot.md) additionally verified
+genuine three-role execution for the listed recommendation, recovery, abstention
+and follow-up checks. It used all ten authorized investigations, retaining two
+early normalization failures; all seven later checks passed on the current
+`m1-saturday-runtime-0.2` profile. This is a synthetic M1
+release with fictional beaches and fixed evidence dates, not a real-world forecaster.
+See the [integration notes](docs/development/m1-integration-release.md) for coverage,
+remaining acceptance work and approved deferments.
 
-M1.6-D — Model Provider and Agent Runtime Design is available as a
-[draft proposal](docs/implementation/m1-model-provider-and-agent-runtime-design.md)
-for review. It recommends an initial model profile, structured proposal boundaries,
-bounded planning and offline/pilot acceptance checks. Provider selection is not yet
-approved; no model calls, SDK dependencies or runtime behavior are enabled by this
-documentation increment.
-
-M1.6-C — Scenario Execution Adapter and Demo Alignment is implemented. Explicit
-authored component runs now connect preflight, raw session admission, execution,
-verified capture and independent evaluation. Both current scenario assertion sets
-pass as component checks; full agentic scenario acceptance remains BLOCKED.
-Synthetic demonstrations persist one append-only trace per investigation, with independent correlation,
-completeness, budget and terminal-result checks before publication. Session commits
-and presentation recheck the retained trace receipt. Raw request/session integration,
-catalog selection, evidence/safety validation and post-terminal follow-ups remain
-available. General conversational CLI execution and full agentic scenario acceptance
-remain deferred; scenario readiness stays BLOCKED. The LLM provider/model is undecided.
+The [M1.6-D runtime proposal](docs/implementation/m1-model-provider-and-agent-runtime-design.md)
+and [M1.6-F capability-profile proposal](docs/implementation/m1-synthetic-source-capability-profile-design.md)
+remain drafts. The general profile framework is deferred in favor of explicit
+configured tool allowlists. Existing SC-004/SC-010 authored component checks remain
+available; their full registered scenario gate remains BLOCKED. Increment sections
+below retain their original scope; the release section describes current execution.
 
 ## Documentation
 
@@ -94,10 +89,102 @@ package contains the Pydantic contracts, `config` contains settings and loading,
 `fixtures` loads local synthetic inputs, and `harness` validates v2 scenario contracts;
 `orchestration` contains the synthetic graph, trusted budgets, session admission and specialist merge components;
 `interpretation` checks authored request proposals and selects catalog candidates;
-`model_runtime` contains the offline provider gateway, wire proposals and versioned prompts;
+`model_runtime` contains the provider gateway, wire proposals and versioned prompts;
 `catalog.py` shares catalog provenance/location checks. `tools` executes scoped synthetic calls, and `validation` evaluates evidence,
 synthetic safety policies and Candidate Assessments. `recommendations` compares
-eligible candidates and validates controlled synthetic results. The agent area remains a placeholder.
+eligible candidates and validates controlled synthetic results. `agents` connects
+the three model-driven planners, explicit tool options, raw sessions and CLI.
+
+### Model-driven synthetic release
+
+Choose the target through an explicit TOML file and matching execution switch:
+
+| Target | Configuration | Switch | Access |
+|---|---|---|---|
+| Local Ollama `qwen3.5:9b` | `haf.ollama.example.toml` | `--local` | Running local Ollama with the installed model; no API key |
+| OpenAI `gpt-6-luna` | `haf.release.example.toml` | `--live` | Explicit local `OPENAI_API_KEY`; paid API calls |
+
+**Local model status: experimental.** The installed Qwen accepted requests, but
+bounded real checks did not complete request normalization: non-thinking runs
+returned invalid nested JSON, and the thinking-enabled profile exceeded the
+thirty-second deadline. Its adapter/CLI paths pass offline tests; a successful real
+end-to-end local investigation is still unverified. Safety and parsing checks
+remain enforced. Local work is deferred; the OpenAI pilot results are recorded above.
+
+For local development, with Ollama running:
+
+```bash
+uv run --locked hafi run "Where should I snorkel tomorrow morning?" \
+  --fixtures fixtures/saturday-release --config haf.ollama.example.toml \
+  --local --max-investigations 1
+```
+
+The local target uses `http://127.0.0.1:11434/v1` and the already-installed
+`qwen3.5:9b` tag. The application downloads no models and needs no env-file for local
+execution. It does not read `OPENAI_API_KEY` for this target. Unavailable Ollama,
+invalid output or timeout produces a technical failure without switching to OpenAI.
+The same thirty-second model deadline and all validation/budget limits apply.
+Local model quality and speed depend on the installed model and hardware; evaluate
+your intended demo requests on the chosen target. See the
+[local-target validation notes](docs/development/m1-local-model-targets.md).
+
+For OpenAI execution:
+
+Create `keys/apsi.env` containing `OPENAI_API_KEY=...`. The `keys/` directory is
+ignored by Git. Keep credentials out of tracked TOML files and shell command
+arguments, and pass the env-file path explicitly:
+
+```bash
+uv run --locked --env-file keys/apsi.env hafi run \
+  "Where should I snorkel tomorrow morning near Kihei?" \
+  --fixtures fixtures/saturday-release --config haf.release.example.toml \
+  --live --max-investigations 1
+```
+
+`--live` makes **paid model calls**. Environmental retrieval stays entirely
+synthetic. The bundled clock is November 16, 2026, 09:00 HST, so "tomorrow" means
+November 17. Available evidence covers **08:00–11:00** or **12:00–16:00 HST** on
+that date. Use "tomorrow afternoon" for the afternoon window. Other dates or
+intervals are not covered by this finite dataset and cannot produce recommendations.
+The CLI prints the fixture clock/windows and synthetic warnings.
+
+Use `--case advisory`, `--case recovery` or `--case outage` to select a synthetic
+environment; the default is `favorable`. These cases change source behavior/data,
+not the model's decisions. Add `--interactive --max-investigations 3` to accept
+post-terminal follow-ups such as "Actually near Napili instead." Each follow-up
+gets a new investigation, fresh evidence/budgets and a correlated trace. Enter
+`/quit` to stop. Clarification prints questions without environmental calls; submit
+the complete clarified request in a new run. Active clarification resumption is deferred.
+
+Every investigation retains the approved limits: 12 model calls, 12 environmental
+calls, five Coordinator cycles, two concurrent specialists, one retry per failed
+original, one fallback per required gap and three recommendations. Model retries,
+automatic model switching and remote LangSmith tracing are disabled. Both adapters
+reuse the installed LangChain/OpenAI-compatible client; no additional SDK is needed.
+The process allowance defaults to three investigations and cannot exceed ten.
+The authorized pilot was **ten investigations across all commands and $1 total**;
+all ten have now been used. Its count was tracked manually, not by a persistent
+dollar ledger. The conservative OpenAI
+reserve is $0.03 per investigation, not an invoice amount or a permission to exceed
+that pilot. Local calls reserve zero API dollars and still count toward the model
+invocation limit. Traces distinguish `LOCAL_PROVIDER`, `LIVE_PROVIDER` and mock
+`OFFLINE_TRANSPORT` execution and retain the selected provider/model identity.
+
+The printed `Local trace:` path can be independently checked with
+`uv run --locked hafi trace traces/INVESTIGATION_ID.jsonl`. Tests remain offline:
+
+```bash
+uv run --locked pytest tests/test_agent_release.py tests/test_release_cli.py tests/test_release_profile.py
+uv run --locked pytest tests/test_ollama_target.py
+uv run --locked pytest
+```
+
+See the [release fixture documentation](fixtures/saturday-release/README.md) and
+[integration notes](docs/development/m1-integration-release.md). No external service
+or account upgrade is needed to run the tests and authored `demo` commands. The
+[local-target addendum](docs/implementation/m1-local-model-target-addendum.md)
+records the owner's request to add Ollama alongside OpenAI; the broader provider
+framework remains deferred.
 
 See [M1.1-B model notes](docs/development/m1-1b-models.md) for schema coverage,
 serialization choices, validation boundaries, and unresolved specification details.
@@ -117,8 +204,13 @@ settings = load_config("haf.example.toml")
 Precedence is defaults, explicit TOML, then supported `HAF_` environment variables.
 The loader does not discover files or read `.env` automatically. It creates no
 trace files and contacts no services. Budget and timeout values must match the
-approved baseline; real-model execution remains disabled pending provider
-activation. Keep credentials out of configuration files.
+approved baseline. Real-model execution requires an explicit enabled release
+profile, `activation="synthetic-release"`, target access and matching CLI opt-in; a key alone
+does not activate it. `haf.example.toml` preserves disabled defaults, while
+`haf.release.example.toml` and `haf.ollama.example.toml` show the explicit target tuples. `HAF_LLM_ACTIVATION`
+is supported alongside the existing provider/model/profile settings. Keep
+credentials out of configuration files. uv's explicit `--env-file` supplies them
+to the process without adding another dotenv loader.
 
 See [M1.1-C configuration notes](docs/development/m1-1c-configuration.md) for the
 settings, environment variables, relative-path rules, and runtime checks deferred
@@ -541,8 +633,8 @@ authored demos and scenario acceptance gates retain their existing behavior.
 
 The optional `HAF_LLM_PROFILE_ID=m1-agent-runtime-0.1` setting requires explicit
 `HAF_LLM_PROVIDER=openai` and `HAF_LLM_MODEL_IDENTIFIER=gpt-6-luna`; it records
-offline profile metadata only. `HAF_LLM_ENABLED=true` is still rejected. A provider
-API key or installed SDK cannot enable calls. Do not add credentials to TOML.
+offline profile metadata only. This tuple alone cannot activate live execution.
+A provider API key or installed SDK cannot enable calls. Do not add credentials to TOML.
 
 See the [M1.6-E notes](docs/development/m1-6e-provider-gateway-and-model-contracts.md)
 for API boundaries, trace-detail fields, verification and remaining activation work.
@@ -554,8 +646,9 @@ and [M1.6-F notes](docs/development/m1-6f-synthetic-source-capability-profile-de
 The proposal keeps source interface capabilities separate from scripted outcomes
 and expected assertions. It records current exact-query, candidate-batch and
 cross-delegation recovery limitations, with explicit proposed compatibility changes.
-Existing setup, demo and test commands remain unchanged; live model execution and
-full agentic scenario acceptance remain unavailable.
+The general profile implementation is deferred under the approved Saturday scope.
+The release uses explicit tool allowlists; full registered scenario acceptance
+remains separate from its focused integration tests and pending live pilot.
 
 ## Specification notes
 
@@ -564,9 +657,11 @@ documents are present. The additional M1.6-D model/runtime and M1.6-F capability
 profile designs are drafts.
 The older technical plan still marks dependency management and several safeguards
 as open; the approved configuration baseline resolves uv and its lockfile,
-invocation limits/timeouts, and trace write-failure handling. Its provider/model
-decision remains open. The planning-only notices in AGENTS.md and specifications
-precede the separate authorization for this bootstrap increment.
+invocation limits/timeouts, and trace write-failure handling. Provider/model defaults
+remain unset; the owner's subsequent release approval authorizes the explicit
+opt-in tuple described above without rewriting the baselines. The planning-only
+notices in AGENTS.md and specifications precede the separate implementation
+authorizations recorded in development notes and the release scope supplement.
 
 Existing path irregularity: `docs/decisions/README.md` is a directory rather than
 a Markdown file. It is preserved. Existing `src/tmp.txt`, `tests/tmp.txt`, data,

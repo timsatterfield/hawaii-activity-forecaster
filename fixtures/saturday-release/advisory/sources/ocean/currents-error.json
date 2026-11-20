@@ -1,0 +1,21 @@
+{
+  "tool_call_id": "CURRENTS-ERROR_TEMPLATE_CALL",
+  "source_id": "SNORKEL_STORE",
+  "retrieval_status": "ERROR",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/release/currents-error",
+  "findings": [],
+  "missing_evidence": [
+    "Declared synthetic retrieval failed"
+  ],
+  "errors": [
+    {
+      "error_id": "currents-error_ERROR",
+      "error_code": "SOURCE_UNAVAILABLE",
+      "message": "Synthetic unavailable source",
+      "source_id": "SNORKEL_STORE",
+      "retryable": false
+    }
+  ],
+  "duration_ms": 1
+}

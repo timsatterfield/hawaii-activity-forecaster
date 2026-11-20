@@ -10,13 +10,13 @@ from hawaii_activity_forecaster.config.settings import ExecutionTimeouts
 from hawaii_activity_forecaster.models.enums import TraceEventType
 from hawaii_activity_forecaster.orchestration.budgets import BudgetError, BudgetManager
 from .contracts import InvocationIdentity, Operation, ProposalError, parse_proposal
-from .prompts import CALL_RESERVE_MICROUSD, MODEL, PROFILE, prepare
-from .provider import OpenAITransportAdapter, ProviderError
+from .prompts import prepare
+from .provider import ModelAdapter, OllamaTransportAdapter, OpenAITransportAdapter, ProviderError
 from .errors import ERROR_CODES
 
 
 class ModelGateway:
-    """Not wired into the graph/CLI; only explicit offline transport is available.
+    """One shared dispatch boundary for the graph's three model-driven roles.
 
     The trusted owner supplies the same BudgetManager used by every model operation
     and tool call, a durable emitter, and current-revision predicate. Inputs never
@@ -24,14 +24,18 @@ class ModelGateway:
     """
 
     def __init__(self, *, identity: InvocationIdentity, budget: BudgetManager,
-                 adapter: OpenAITransportAdapter, emit: Callable,
+                 adapter: ModelAdapter, emit: Callable,
                  is_current: Callable[[InvocationIdentity], bool]):
-        if type(adapter) is not OpenAITransportAdapter:
+        if type(adapter) not in {OpenAITransportAdapter, OllamaTransportAdapter}:
             raise ProviderError("OFFLINE_TRANSPORT_REQUIRED")
         self._identity = InvocationIdentity.model_validate(identity.model_dump())
         self._budget, self._adapter, self._emit = budget, adapter, emit
         self._is_current = is_current
         self._failed = False
+
+    @property
+    def identity(self):
+        return self._identity
 
     def _active(self):
         if self._failed or self._budget.snapshot().closed or not self._is_current(self._identity):
@@ -39,13 +43,14 @@ class ModelGateway:
 
     async def invoke(self, operation: Operation, inputs: object):
         self._active()
-        call = prepare(operation, inputs, self._identity)
+        call = prepare(operation, inputs, self._identity, self._adapter.profile_id)
         call_id = str(uuid4())
-        details = dict(contract="model_dispatch", synthetic_adapter=False, provider="openai",
-            execution_mode="OFFLINE_TRANSPORT", profile_id=PROFILE, model_identifier=MODEL,
+        details = dict(contract="model_dispatch", synthetic_adapter=False, provider=self._adapter.provider_name,
+            execution_mode=self._adapter.execution_mode, profile_id=self._adapter.profile_id,
+            model_identifier=self._adapter.model_identifier,
             operation=operation, call_id=call_id, agent_type=call.role,
             template_version=call.template_version, template_digest=call.template_digest,
-            schema_digest=call.schema_digest, reserved_cost_microusd=CALL_RESERVE_MICROUSD)
+            schema_digest=call.schema_digest, reserved_cost_microusd=self._adapter.reserved_cost_microusd)
         dispatched = False
         reply = None
         started = monotonic()

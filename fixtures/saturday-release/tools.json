@@ -1,0 +1,3398 @@
+{
+  "target_windows": [
+    {
+      "start": "2026-11-17T08:00:00-10:00",
+      "end": "2026-11-17T11:00:00-10:00"
+    },
+    {
+      "start": "2026-11-17T12:00:00-10:00",
+      "end": "2026-11-17T16:00:00-10:00"
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "ALERTS_A",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_A",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_A",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_A",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_A"
+    },
+    {
+      "action_id": "VISIBILITY_A",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_A",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_A"
+    },
+    {
+      "action_id": "CURRENTS_A",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_A"
+    },
+    {
+      "action_id": "ALERTS_B",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_B",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_B",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_B",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_B"
+    },
+    {
+      "action_id": "VISIBILITY_B",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_B",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_B"
+    },
+    {
+      "action_id": "CURRENTS_B",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_B"
+    },
+    {
+      "action_id": "ALERTS_C",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_C",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_C",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_C",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_C"
+    },
+    {
+      "action_id": "VISIBILITY_C",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_C",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_C"
+    },
+    {
+      "action_id": "CURRENTS_C",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_C"
+    },
+    {
+      "action_id": "ALERTS_D",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_D",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_D",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_D",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_D"
+    },
+    {
+      "action_id": "VISIBILITY_D",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_D",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_D"
+    },
+    {
+      "action_id": "CURRENTS_D",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_D"
+    },
+    {
+      "action_id": "ALERTS_E",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_E",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_E",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_E",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_E"
+    },
+    {
+      "action_id": "VISIBILITY_E",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_E",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_E"
+    },
+    {
+      "action_id": "CURRENTS_E",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_E"
+    },
+    {
+      "action_id": "ALERTS_AB",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_AB",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_AB",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_AB",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_AB"
+    },
+    {
+      "action_id": "VISIBILITY_AB",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_AB",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_AB"
+    },
+    {
+      "action_id": "CURRENTS_AB",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_AB"
+    },
+    {
+      "action_id": "ALERTS_AC",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_AC",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_AC",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_AC",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_AC"
+    },
+    {
+      "action_id": "VISIBILITY_AC",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_AC",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_AC"
+    },
+    {
+      "action_id": "CURRENTS_AC",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_AC"
+    },
+    {
+      "action_id": "ALERTS_AD",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_AD",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_AD",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_AD",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_AD"
+    },
+    {
+      "action_id": "VISIBILITY_AD",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_AD",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_AD"
+    },
+    {
+      "action_id": "CURRENTS_AD",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_AD"
+    },
+    {
+      "action_id": "ALERTS_AE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_AE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_AE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_AE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_AE"
+    },
+    {
+      "action_id": "VISIBILITY_AE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_AE",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_AE"
+    },
+    {
+      "action_id": "CURRENTS_AE",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_AE"
+    },
+    {
+      "action_id": "ALERTS_BC",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_BC",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_BC",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_BC",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_BC"
+    },
+    {
+      "action_id": "VISIBILITY_BC",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_BC",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_BC"
+    },
+    {
+      "action_id": "CURRENTS_BC",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_BC"
+    },
+    {
+      "action_id": "ALERTS_BD",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_BD",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_BD",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_BD",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_BD"
+    },
+    {
+      "action_id": "VISIBILITY_BD",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_BD",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_BD"
+    },
+    {
+      "action_id": "CURRENTS_BD",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_BD"
+    },
+    {
+      "action_id": "ALERTS_BE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_BE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_BE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_BE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_BE"
+    },
+    {
+      "action_id": "VISIBILITY_BE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_BE",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_BE"
+    },
+    {
+      "action_id": "CURRENTS_BE",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_BE"
+    },
+    {
+      "action_id": "ALERTS_CD",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_CD",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_CD",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_CD",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_CD"
+    },
+    {
+      "action_id": "VISIBILITY_CD",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_CD",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_CD"
+    },
+    {
+      "action_id": "CURRENTS_CD",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_CD"
+    },
+    {
+      "action_id": "ALERTS_CE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_CE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_CE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_CE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_CE"
+    },
+    {
+      "action_id": "VISIBILITY_CE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_CE",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_CE"
+    },
+    {
+      "action_id": "CURRENTS_CE",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_CE"
+    },
+    {
+      "action_id": "ALERTS_DE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_DE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_DE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_DE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_DE"
+    },
+    {
+      "action_id": "VISIBILITY_DE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_DE",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_DE"
+    },
+    {
+      "action_id": "CURRENTS_DE",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_DE"
+    },
+    {
+      "action_id": "ALERTS_ABC",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_ABC",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_ABC",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_ABC",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_ABC"
+    },
+    {
+      "action_id": "VISIBILITY_ABC",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_ABC",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ABC"
+    },
+    {
+      "action_id": "CURRENTS_ABC",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ABC"
+    },
+    {
+      "action_id": "ALERTS_ABD",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_ABD",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_ABD",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_ABD",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_ABD"
+    },
+    {
+      "action_id": "VISIBILITY_ABD",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_ABD",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ABD"
+    },
+    {
+      "action_id": "CURRENTS_ABD",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ABD"
+    },
+    {
+      "action_id": "ALERTS_ABE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_ABE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_ABE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_ABE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_ABE"
+    },
+    {
+      "action_id": "VISIBILITY_ABE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_ABE",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ABE"
+    },
+    {
+      "action_id": "CURRENTS_ABE",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ABE"
+    },
+    {
+      "action_id": "ALERTS_ACD",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_ACD",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_ACD",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_ACD",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_ACD"
+    },
+    {
+      "action_id": "VISIBILITY_ACD",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_ACD",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ACD"
+    },
+    {
+      "action_id": "CURRENTS_ACD",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ACD"
+    },
+    {
+      "action_id": "ALERTS_ACE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_ACE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_ACE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_ACE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_ACE"
+    },
+    {
+      "action_id": "VISIBILITY_ACE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_ACE",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ACE"
+    },
+    {
+      "action_id": "CURRENTS_ACE",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ACE"
+    },
+    {
+      "action_id": "ALERTS_ADE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_ADE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_ADE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_ADE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_ADE"
+    },
+    {
+      "action_id": "VISIBILITY_ADE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_ADE",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ADE"
+    },
+    {
+      "action_id": "CURRENTS_ADE",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ADE"
+    },
+    {
+      "action_id": "ALERTS_BCD",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_BCD",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_BCD",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_BCD",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_BCD"
+    },
+    {
+      "action_id": "VISIBILITY_BCD",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_BCD",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_BCD"
+    },
+    {
+      "action_id": "CURRENTS_BCD",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_BCD"
+    },
+    {
+      "action_id": "ALERTS_BCE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_BCE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_BCE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_BCE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_BCE"
+    },
+    {
+      "action_id": "VISIBILITY_BCE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_BCE",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_BCE"
+    },
+    {
+      "action_id": "CURRENTS_BCE",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_BCE"
+    },
+    {
+      "action_id": "ALERTS_BDE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_BDE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_BDE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_BDE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_BDE"
+    },
+    {
+      "action_id": "VISIBILITY_BDE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_BDE",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_BDE"
+    },
+    {
+      "action_id": "CURRENTS_BDE",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_BDE"
+    },
+    {
+      "action_id": "ALERTS_CDE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_CDE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_CDE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_CDE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_CDE"
+    },
+    {
+      "action_id": "VISIBILITY_CDE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_CDE",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_CDE"
+    },
+    {
+      "action_id": "CURRENTS_CDE",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_CDE"
+    },
+    {
+      "action_id": "ALERTS_ABCD",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_ABCD",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_ABCD",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_ABCD",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_ABCD"
+    },
+    {
+      "action_id": "VISIBILITY_ABCD",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_ABCD",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ABCD"
+    },
+    {
+      "action_id": "CURRENTS_ABCD",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ABCD"
+    },
+    {
+      "action_id": "ALERTS_ABCE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_ABCE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_ABCE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_ABCE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_ABCE"
+    },
+    {
+      "action_id": "VISIBILITY_ABCE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_ABCE",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ABCE"
+    },
+    {
+      "action_id": "CURRENTS_ABCE",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ABCE"
+    },
+    {
+      "action_id": "ALERTS_ABDE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_ABDE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_ABDE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_ABDE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_ABDE"
+    },
+    {
+      "action_id": "VISIBILITY_ABDE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_ABDE",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ABDE"
+    },
+    {
+      "action_id": "CURRENTS_ABDE",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ABDE"
+    },
+    {
+      "action_id": "ALERTS_ACDE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_ACDE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_ACDE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_ACDE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_ACDE"
+    },
+    {
+      "action_id": "VISIBILITY_ACDE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_ACDE",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ACDE"
+    },
+    {
+      "action_id": "CURRENTS_ACDE",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ACDE"
+    },
+    {
+      "action_id": "ALERTS_BCDE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_BCDE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_BCDE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_BCDE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_BCDE"
+    },
+    {
+      "action_id": "VISIBILITY_BCDE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_BCDE",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_BCDE"
+    },
+    {
+      "action_id": "CURRENTS_BCDE",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_BCDE"
+    },
+    {
+      "action_id": "ALERTS_ABCDE",
+      "source_id": "NWS_ALERTS",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "OFFICIAL_ADVISORIES"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WIND_ABCDE",
+      "source_id": "NWS_WEATHER",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WIND_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "MARINE_ABCDE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "RETRY_MARINE_ABCDE",
+      "source_id": "NWS_MARINE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS",
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "retry_of": "MARINE_ABCDE"
+    },
+    {
+      "action_id": "VISIBILITY_ABCDE",
+      "source_id": "HWT_VISIBILITY",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "UNDERWATER_VISIBILITY"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "SURF_ABCDE",
+      "source_id": "HWT_SURF",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "SURF_WAVE_CONDITIONS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ABCDE"
+    },
+    {
+      "action_id": "CURRENTS_ABCDE",
+      "source_id": "SNORKEL_STORE",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A",
+        "TEST_BEACH_B",
+        "TEST_BEACH_C",
+        "TEST_BEACH_D",
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "CURRENTS_PERSISTENT_HAZARDS"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      },
+      "fallback_of": "MARINE_ABCDE"
+    },
+    {
+      "action_id": "WATER_TEST_BEACH_A",
+      "source_id": "HI_DOH_CWB",
+      "candidate_beach_ids": [
+        "TEST_BEACH_A"
+      ],
+      "requested_evidence": [
+        "WATER_QUALITY_ADVISORY_CHECK"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WATER_TEST_BEACH_B",
+      "source_id": "HI_DOH_CWB",
+      "candidate_beach_ids": [
+        "TEST_BEACH_B"
+      ],
+      "requested_evidence": [
+        "WATER_QUALITY_ADVISORY_CHECK"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WATER_TEST_BEACH_C",
+      "source_id": "HI_DOH_CWB",
+      "candidate_beach_ids": [
+        "TEST_BEACH_C"
+      ],
+      "requested_evidence": [
+        "WATER_QUALITY_ADVISORY_CHECK"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WATER_TEST_BEACH_D",
+      "source_id": "HI_DOH_CWB",
+      "candidate_beach_ids": [
+        "TEST_BEACH_D"
+      ],
+      "requested_evidence": [
+        "WATER_QUALITY_ADVISORY_CHECK"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    },
+    {
+      "action_id": "WATER_TEST_BEACH_E",
+      "source_id": "HI_DOH_CWB",
+      "candidate_beach_ids": [
+        "TEST_BEACH_E"
+      ],
+      "requested_evidence": [
+        "WATER_QUALITY_ADVISORY_CHECK"
+      ],
+      "geographic_scope": {
+        "zone": "SYNTHETIC_RELEASE_REGION"
+      }
+    }
+  ]
+}

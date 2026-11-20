@@ -3,16 +3,30 @@
 import re
 from hashlib import sha256
 
-from hawaii_activity_forecaster.model_runtime.prompts import MODEL, PROFILE, CALL_RESERVE_MICROUSD, canonical, template_text
+from hawaii_activity_forecaster.model_runtime.prompts import (
+    MODEL, PROFILE,
+    canonical, template_text, template_version,
+)
+from hawaii_activity_forecaster.model_runtime.targets import TARGETS
 from hawaii_activity_forecaster.model_runtime.contracts import OUTPUTS
 from hawaii_activity_forecaster.model_runtime.errors import ERROR_CODES
 
 
 PROFILE_METADATA = dict(profile_id=PROFILE, provider="openai", model_identifier=MODEL,
                         execution_mode="OFFLINE_TRANSPORT")
-TRACE_MODES = frozenset({"OFFLINE_TRANSPORT", "LIVE_PROVIDER"})
+MODEL_IDENTIFIERS = frozenset(t.model_identifier for t in TARGETS.values())
 OPERATIONS = {"normalize_request": "COORDINATOR", "coordinator_plan": "COORDINATOR",
               "weather_investigation": "WEATHER", "ocean_investigation": "OCEAN"}
+
+
+def valid_model_profile(profile, identifier):
+    if (not isinstance(profile, dict) or set(profile) != set(PROFILE_METADATA)
+            or not isinstance(profile["profile_id"], str)):
+        return False
+    target = TARGETS.get(profile["profile_id"])
+    return (target is not None and profile["provider"] == target.provider
+            and profile["model_identifier"] == identifier == target.model_identifier
+            and profile["execution_mode"] in {"OFFLINE_TRANSPORT", target.execution_mode})
 
 
 class ModelTraceLedger:
@@ -22,17 +36,18 @@ class ModelTraceLedger:
 
     def observe(self, d, *, metadata, profile, received, normalized, legacy_calls):
         check, call = self._require, d["call_id"]
-        check(metadata == MODEL, "TRACE_MODEL_METADATA_INVALID")
+        check(metadata == profile["model_identifier"], "TRACE_MODEL_METADATA_INVALID")
         check(all(d[k] == v for k, v in profile.items())
               and d["synthetic_adapter"] is False, "TRACE_MODEL_PROFILE_INVALID")
         operation = d["operation"]
         check(operation in OPERATIONS and d["agent_type"] == OPERATIONS[operation]
-              and d["template_version"] == f"{operation}-0.1", "TRACE_MODEL_OPERATION_INVALID")
+              and d["template_version"] == template_version(operation, profile["profile_id"]), "TRACE_MODEL_OPERATION_INVALID")
         check(d["schema_digest"] == sha256(canonical(OUTPUTS[operation].model_json_schema()).encode()).hexdigest(),
               "TRACE_MODEL_SCHEMA_INVALID")
-        check(d["template_digest"] == sha256(template_text(operation).encode()).hexdigest(),
+        check(d["template_digest"] == sha256(template_text(operation, profile["profile_id"]).encode()).hexdigest(),
               "TRACE_MODEL_TEMPLATE_INVALID")
-        check(type(d["reserved_cost_microusd"]) is int and d["reserved_cost_microusd"] == CALL_RESERVE_MICROUSD,
+        check(type(d["reserved_cost_microusd"]) is int
+              and d["reserved_cost_microusd"] == TARGETS[profile["profile_id"]].reserved_cost_microusd,
               "TRACE_MODEL_RESERVATION_INVALID")
         check(received and (normalized or operation == "normalize_request"), "TRACE_MODEL_ADMISSION_MISSING")
         phase = d["phase"]
@@ -56,8 +71,8 @@ class ModelTraceLedger:
               "TRACE_MODEL_OUTCOME_INVALID")
         if phase != "RETURNED":
             check(d["error_code"] in ERROR_CODES, "TRACE_MODEL_ERROR_INVALID")
-        check(d["returned_model_identifier"] in {None, MODEL}
-              and (phase != "RETURNED" or d["returned_model_identifier"] == MODEL), "TRACE_MODEL_RETURNED_ID_INVALID")
+        check(d["returned_model_identifier"] in {None, metadata}
+              and (phase != "RETURNED" or d["returned_model_identifier"] == metadata), "TRACE_MODEL_RETURNED_ID_INVALID")
         digest = d["provider_request_digest"]
         check(digest is None or isinstance(digest, str) and bool(re.fullmatch(r"[0-9a-f]{64}", digest)),
               "TRACE_MODEL_REQUEST_ID_INVALID")

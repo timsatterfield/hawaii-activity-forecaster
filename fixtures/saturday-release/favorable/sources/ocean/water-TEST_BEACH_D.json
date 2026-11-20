@@ -1,0 +1,37 @@
+{
+  "tool_call_id": "WATER-TEST_BEACH_D_TEMPLATE_CALL",
+  "source_id": "HI_DOH_CWB",
+  "retrieval_status": "SUCCESS",
+  "retrieved_at": "2026-11-16T09:00:00-10:00",
+  "source_reference": "https://example.invalid/haf/release/water-TEST_BEACH_D",
+  "findings": [
+    {
+      "finding_id": "WATER-TEST_BEACH_D_FINDING",
+      "investigation_id": "SYNTHETIC_TEMPLATE",
+      "agent_type": "OCEAN",
+      "source_id": "HI_DOH_CWB",
+      "source_reference": "https://example.invalid/haf/release/water-TEST_BEACH_D",
+      "finding_type": "ADVISORY",
+      "coverage_type": "BEACH",
+      "coverage_id": "TEST_BEACH_D",
+      "coverage_description": "Fictional test coverage only; not a verified Maui source mapping.",
+      "retrieved_at": "2026-11-16T09:00:00-10:00",
+      "issued_at": "2026-11-16T08:30:00-10:00",
+      "valid_from": "2026-11-17T08:00:00-10:00",
+      "valid_until": "2026-11-17T16:00:00-10:00",
+      "retrieval_status": "SUCCESS",
+      "validation_status": "PENDING",
+      "descriptive_findings": [
+        "Synthetic environmental context; hazard classifications require the separately authored synthetic policy."
+      ],
+      "limitations": [
+        "SYNTHETIC evidence only; no real-world conditions or numeric hazard thresholds."
+      ],
+      "advisories": [],
+      "beach_id": "TEST_BEACH_D"
+    }
+  ],
+  "missing_evidence": [],
+  "errors": [],
+  "duration_ms": 1
+}

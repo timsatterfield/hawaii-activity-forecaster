@@ -19,7 +19,7 @@ mode = "synthetic"
 
 [llm]
 enabled = false
-# Provider and model_identifier remain unset. Real-model activation is unavailable.
+# Provider and model_identifier remain unset. See haf.release.example.toml for explicit activation.
 
 [trace]
 directory = "traces"

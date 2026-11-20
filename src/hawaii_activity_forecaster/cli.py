@@ -1,4 +1,4 @@
-"""Application information and validated synthetic component demonstrations."""
+"""Application information, component demonstrations and opt-in agent execution."""
 
 import argparse
 import asyncio
@@ -12,7 +12,7 @@ from . import __version__
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    """Display information or one explicitly requested fictional demonstration."""
+    """Run the requested command; model execution requires explicit opt-in."""
     parser = argparse.ArgumentParser(
         prog="hafi",
         description="Hawaii Activity Forecaster — CMU Agentic AI Systems capstone",
@@ -30,12 +30,45 @@ def main(argv: Sequence[str] | None = None) -> int:
     demo.add_argument("--trace-directory", type=Path, metavar="PATH", help="override the local JSONL trace directory")
     trace = commands.add_parser("trace", help="validate an existing local JSONL trace and show metrics")
     trace.add_argument("path", type=Path, metavar="PATH")
+    run = commands.add_parser("run", help="model-driven natural-language investigation of synthetic fixture data")
+    run.add_argument("request", nargs="?", help="natural-language request, or prompt interactively")
+    run.add_argument("--fixtures", type=Path, required=True, metavar="PATH", help="explicit saturday-release fixture root")
+    run.add_argument("--case", choices=("favorable", "advisory", "outage", "recovery"), default="favorable")
+    run.add_argument("--config", type=Path, required=True, metavar="PATH")
+    target = run.add_mutually_exclusive_group()
+    target.add_argument("--live", action="store_true", help="execute the configured OpenAI target using local credentials")
+    target.add_argument("--local", action="store_true", help="execute the configured local Ollama target without an API key")
+    run.add_argument("--interactive", action="store_true", help="accept post-terminal follow-ups in this process")
+    run.add_argument("--max-investigations", type=int, choices=range(1, 11), default=3, metavar="1..10")
+    run.add_argument("--trace-directory", type=Path, metavar="PATH")
     evaluation = commands.add_parser("evaluate", help="preflight a scenario and report independent evaluation readiness")
     evaluation.add_argument("scenario_id")
     evaluation.add_argument("--fixtures", type=Path, required=True, metavar="PATH")
     evaluation.add_argument("--component", action="store_true", help="execute an explicit authored synthetic runtime; full acceptance remains blocked")
     evaluation.add_argument("--trace-directory", type=Path, metavar="PATH")
     arguments = parser.parse_args(argv)
+    if arguments.command == "run":
+        from .agents.cli import run_command
+        from .config import ConfigurationError
+        from .fixtures import FixtureLoadError
+        from .model_runtime.provider import ProviderError
+        try:
+            return asyncio.run(run_command(arguments))
+        except ConfigurationError:
+            print("Cannot load a valid release configuration.", file=sys.stderr)
+            return 2
+        except ProviderError as error:
+            print(f"Model access unavailable: {error}. Configure local access; no automatic retry was attempted.", file=sys.stderr)
+            return 2
+        except FixtureLoadError:
+            print("Cannot load the synthetic release fixture data.", file=sys.stderr)
+            return 2
+        except (KeyboardInterrupt, EOFError):
+            print("Stopped. An interrupted investigation cannot be resumed.", file=sys.stderr)
+            return 130
+        except Exception:
+            print("Technical error: no validated result is available for this investigation.", file=sys.stderr)
+            return 1
     if arguments.command == "evaluate":
         from .harness.evaluation import evaluate_scenario
         if arguments.component:
