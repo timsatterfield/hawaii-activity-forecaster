@@ -34,12 +34,14 @@ The [bounded OpenAI pilot](docs/development/m1-openai-pilot.md) additionally ver
 genuine three-role execution for the listed recommendation, recovery, abstention
 and follow-up checks. It used all ten authorized investigations, retaining two
 early normalization failures; all seven later checks passed on the
-`m1-saturday-runtime-0.2` profile. The release configuration now uses `0.7`: `0.3` raised the input bound
+`m1-saturday-runtime-0.2` profile. The release configuration now uses `0.8`: `0.3` raised the input bound
 ([M1.8](docs/development/m1-8-sc-009-sc-012.md)), `0.4` adds request-interpretation
 guidance ([M1.9](docs/development/m1-9-sc-001-sc-003.md)), `0.5` adds Ocean
 recovery-condition guidance, `0.6` adds no-retry guidance
-([M1.9-B](docs/development/m1-9b-profile-0.4-rebaseline.md)), and `0.7` adds the
-"prefer somewhere near" request guidance ([M1.12](docs/development/m1-12-sc-002-wind-chop.md)).
+([M1.9-B](docs/development/m1-9b-profile-0.4-rebaseline.md)), `0.7` adds the
+"prefer somewhere near" request guidance ([M1.12](docs/development/m1-12-sc-002-wind-chop.md)),
+and `0.8` keeps unapproved preferences as UNINTERPRETED
+([deferment record](docs/development/m1-live-acceptance-deferments.md)).
 This is a synthetic M1
 release with fictional beaches and fixed evidence dates, not a real-world forecaster.
 See the [integration notes](docs/development/m1-integration-release.md) for coverage,
@@ -49,10 +51,11 @@ The [M1.6-D runtime proposal](docs/implementation/m1-model-provider-and-agent-ru
 and [M1.6-F capability-profile proposal](docs/implementation/m1-synthetic-source-capability-profile-design.md)
 remain drafts. The general profile framework is deferred in favor of explicit
 configured tool allowlists. Existing SC-004/SC-010 authored component checks remain
-available with authored scope. All twelve registered scenarios have historical
-live scenario-level passes across profiles 0.6/0.7. The latest all-twelve profile 0.7 rerun
-passed **10/12**; SC-006 and SC-008 are temporarily deferred from the selected live
-gate. The full offline pytest suite remains enabled. Optional failures and blockers
+available with authored scope. On the release profile 0.8, four full live rounds of
+all twelve registered scenarios passed **47/48** scenario runs (51/52 investigations
+operationally successful); the one failure, an SC-012 follow-up whose Ocean plan named
+an invalid option, failed closed. An earlier 0.7 batch passed 10/12; SC-006 and SC-008
+were then fixed and re-enabled. The full offline pytest suite remains enabled. Optional failures and blockers
 are retained in the [M1 completion report](docs/development/m1-completion-report.md)
 and [deferment record](docs/development/m1-live-acceptance-deferments.md). Increment sections
 below retain their original scope; the release section describes current execution.
@@ -655,8 +658,7 @@ SC-006 (permitted MIXED), SC-007 (stale reports) and SC-011 (prompt injection) w
 dataset `1.4.0`. [M1.11](docs/development/m1-11-sc-005-sc-008.md) adds the partially
 blocked SC-005 (SUP offshore wind) and SC-008 (material conflict) with dataset `1.5.0`.
 [M1.12](docs/development/m1-12-sc-002-wind-chop.md) completes the set with SC-002, adding the
-owner-approved swimming wind-chop MIXED permission, dataset `1.6.0` and profile `0.7`. SC-002 is deferred until a swimming MIXED
-permission has an approved safety-policy basis.
+owner-approved swimming wind-chop MIXED permission, dataset `1.6.0` and profile `0.7`.
 
 Default demos now use raw admission and independently validated interpretation
 proposals. SC-004 retains the requested Kihei preference. SC-010 records actual
@@ -723,7 +725,7 @@ inputs are surfaced, duplicate copies are deduplicated, and clarification is not
 counted as a terminal failure. Historical traces are absent from a fresh clone;
 the [reporting notes](docs/development/m1-reliability-baseline.md) include an offline
 demo example and explain denominators, privacy and exit status. SC-006 and SC-008
-remain deferred from the selected live gate.
+were fixed in M1.13; the selected live gate again covers all twelve scenarios.
 
 ## Specification notes
 

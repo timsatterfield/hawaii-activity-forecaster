@@ -8,20 +8,19 @@ The dataset's reference clock is **November 16, 2026, 09:00 HST**. "Tomorrow" me
 **November 17**, with morning **08:00–11:00** and afternoon **12:00–16:00 HST**.
 These fixed dates make results repeatable; they are not today's Maui conditions.
 
-## Temporary live acceptance selection
+## Live acceptance selection
 
-The owner temporarily deferred the failing profile 0.7 live checks SC-006 and
-SC-008. Preview the current selection with no model calls:
+The live runner selects all twelve registered scenarios. SC-006 and SC-008 were
+temporarily deferred after the profile 0.7 batch, then fixed and re-enabled on 0.8.
+Preview the selection with no model calls:
 
 ```bash
 uv run --locked python scripts/run_live_acceptance.py
 ```
 
-The default live rerun selects ten scenarios and records the two deferred ones as
-NOT_RUN. The full offline pytest suite remains enabled. See the
-[deferment record](development/m1-live-acceptance-deferments.md) for the paid opt-in
-command, failure evidence and re-enable criteria. This is a selected live gate;
-success does not establish twelve passing scenarios on profile 0.7.
+The preview lists all twelve with none deferred. The full offline pytest suite
+remains enabled. See the [deferment record](development/m1-live-acceptance-deferments.md)
+for the paid opt-in command, the earlier failure evidence and the fixes.
 
 ## Offline rehearsal
 
@@ -138,13 +137,12 @@ offline `demo favorable` or `demo recovery` command is implied.
 
 The release configuration selects **`m1-saturday-runtime-0.8`** with `gpt-6-luna`.
 The registered pack is dataset **`1.6.0`**, format `2.0.0`. All twelve scenarios have
-recorded live scenario-level PASS results: eleven on profile 0.6 and SC-002 on 0.7.
-This is historical evidence across versions. The subsequent authorized all-twelve
-0.7 rerun passed **10/12**; SC-006 and SC-008 failed. See the
-[completion report](development/m1-completion-report.md#profile-07-rerun-and-sc-006-investigation-2026-11-20)
-for the current regression result and SC-006 diagnosis.
-Profile 0.7 changes only request-normalization guidance; older profiles remain
-available for validating their traces.
+recorded live scenario-level PASS results. On profile 0.8, four full rounds passed
+**47/48** scenario runs (51/52 investigations operationally successful). The one
+failure, an SC-012 follow-up whose Ocean plan named an invalid option, failed closed.
+See the [completion report](development/m1-completion-report.md#profile-08-reliability-sample-2026-11-20).
+The earlier 0.7 batch passed 10/12 before SC-006 and SC-008 were fixed. Older profiles
+remain available for validating their traces.
 
 Scenario PASS means the mandatory executable assertions pass. Optional blocked
 assertions remain for real wind-hazard classification (SC-005), clear-water
@@ -166,7 +164,7 @@ batch separate from earlier reports and traces. Reports are saved even on failur
 the final summary returns a failure if any scenario did not pass.
 
 ```bash
-acceptance_run="traces/acceptance-0.7-$(date +%Y%m%d-%H%M%S)"
+acceptance_run="traces/acceptance-0.8-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$acceptance_run"
 for scenario in SC-001 SC-002 SC-003 SC-004 SC-005 SC-006 SC-007 SC-008 SC-009 SC-010 SC-011 SC-012; do
   if uv run --locked --env-file keys/apsi.env hafi evaluate "$scenario" \
