@@ -24,8 +24,9 @@ successes, 65 model calls, 106 tool calls and a 9,247 ms median. Its reports rem
 local under `traces/acceptance-subset-1bf7ac46-b5d5-42d5-9350-ed519a756f07/`.
 The earlier profile 0.7 10/12 result and the subsequent fixes/re-enablement are
 historical stages, retained below and in the [deferment record](m1-live-acceptance-deferments.md).
-Historical artifacts are not included in the tracked repository or publicly
-available from a fresh clone. These synthetic results do not establish real-world
+The complete raw batches remain local. Representative traces, their saved reports
+and the four-round aggregate are published in the
+[portable evaluation evidence](../evaluation-evidence/README.md). These synthetic results do not establish real-world
 forecasting accuracy or production reliability.
 
 Evidence supports all fifteen approved [M1 completion criteria](../implementation/m1-technical-plan.md#16-m1-completion-criteria)

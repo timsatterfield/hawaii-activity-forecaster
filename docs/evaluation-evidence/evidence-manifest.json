@@ -1,0 +1,309 @@
+{
+  "manifest_version": "1.0",
+  "package": "Hawaii Activity Planner portable evaluation evidence",
+  "model_identifier": "gpt-6-luna",
+  "profile_id": "m1-saturday-runtime-0.8",
+  "recorded_execution_mode": "LIVE_PROVIDER",
+  "environmental_data": "SYNTHETIC_FIXTURES (fixture_package_version 1.6.0)",
+  "original_application_revision": "NOT_RECORDED: traces and reports carry schema, policy, configuration, harness and fixture versions but no source-control revision",
+  "provenance_note": "Model identity and execution mode are trace-declared; they are not independent certification of network inference.",
+  "artifacts": [
+    {
+      "portable_path": "representative-traces/sc-001-round0-recommendation.jsonl",
+      "artifact_type": "TRACE_JSONL",
+      "original_artifact": "acceptance-subset-1bf7ac46-b5d5-42d5-9350-ed519a756f07/6d3be8e1-7d29-480d-9cde-8bed9e98c638.jsonl",
+      "original_sha256": "b2cfcd7230876ef60f96dcae19906b22a6a12f81944a5699d78f1b4144745738",
+      "published_sha256": "b2cfcd7230876ef60f96dcae19906b22a6a12f81944a5699d78f1b4144745738",
+      "byte_identical_copy": true,
+      "transformation": "NONE",
+      "sanitization_status": "REVIEWED_NO_REDACTION_REQUIRED",
+      "scenario_id": "SC-001",
+      "evaluation_round": 0,
+      "scenario_step": 1,
+      "investigation_id": "6d3be8e1-7d29-480d-9cde-8bed9e98c638",
+      "session_id": "1e8c125b-b94e-4e54-a741-fe6790e74382",
+      "model_identifier": "gpt-6-luna",
+      "provider": "openai",
+      "profile_id": "m1-saturday-runtime-0.8",
+      "execution_mode": "LIVE_PROVIDER",
+      "investigation_status": "COMPLETED",
+      "investigation_outcome": "RECOMMENDATIONS",
+      "demonstrates": "A. Successful recommendation",
+      "original_application_revision": "NOT_RECORDED"
+    },
+    {
+      "portable_path": "representative-traces/sc-004-round0-advisory-exclusion.jsonl",
+      "artifact_type": "TRACE_JSONL",
+      "original_artifact": "acceptance-subset-1bf7ac46-b5d5-42d5-9350-ed519a756f07/0ad4870e-3d44-4775-9444-2385fa26e069.jsonl",
+      "original_sha256": "4ca76ebf56dae22ee96be60a699731a22e45a2be3b03c701028dbdb64eeef7a3",
+      "published_sha256": "4ca76ebf56dae22ee96be60a699731a22e45a2be3b03c701028dbdb64eeef7a3",
+      "byte_identical_copy": true,
+      "transformation": "NONE",
+      "sanitization_status": "REVIEWED_NO_REDACTION_REQUIRED",
+      "scenario_id": "SC-004",
+      "evaluation_round": 0,
+      "scenario_step": 1,
+      "investigation_id": "0ad4870e-3d44-4775-9444-2385fa26e069",
+      "session_id": "eaa37ea7-ba02-4717-af4b-2fea26a755b9",
+      "model_identifier": "gpt-6-luna",
+      "provider": "openai",
+      "profile_id": "m1-saturday-runtime-0.8",
+      "execution_mode": "LIVE_PROVIDER",
+      "investigation_status": "COMPLETED",
+      "investigation_outcome": "RECOMMENDATIONS",
+      "demonstrates": "B. Advisory-based safety exclusion",
+      "original_application_revision": "NOT_RECORDED"
+    },
+    {
+      "portable_path": "representative-traces/sc-009-round0-conditional-recovery.jsonl",
+      "artifact_type": "TRACE_JSONL",
+      "original_artifact": "acceptance-subset-1bf7ac46-b5d5-42d5-9350-ed519a756f07/2979e42c-5d26-4b30-b2a4-96ae9ed0704a.jsonl",
+      "original_sha256": "b86a0fe06ab78ff55f8b26f3452f025d8231abae43267b04e9cc8789f4a8a0b1",
+      "published_sha256": "b86a0fe06ab78ff55f8b26f3452f025d8231abae43267b04e9cc8789f4a8a0b1",
+      "byte_identical_copy": true,
+      "transformation": "NONE",
+      "sanitization_status": "REVIEWED_NO_REDACTION_REQUIRED",
+      "scenario_id": "SC-009",
+      "evaluation_round": 0,
+      "scenario_step": 1,
+      "investigation_id": "2979e42c-5d26-4b30-b2a4-96ae9ed0704a",
+      "session_id": "68d54c71-4982-4b87-9056-c6bedf40073d",
+      "model_identifier": "gpt-6-luna",
+      "provider": "openai",
+      "profile_id": "m1-saturday-runtime-0.8",
+      "execution_mode": "LIVE_PROVIDER",
+      "investigation_status": "COMPLETED",
+      "investigation_outcome": "RECOMMENDATIONS",
+      "demonstrates": "C. Conditional recovery",
+      "original_application_revision": "NOT_RECORDED"
+    },
+    {
+      "portable_path": "representative-traces/sc-010-round0-explained-abstention.jsonl",
+      "artifact_type": "TRACE_JSONL",
+      "original_artifact": "acceptance-subset-1bf7ac46-b5d5-42d5-9350-ed519a756f07/e37b7bbd-493e-4798-849b-6b078f51f880.jsonl",
+      "original_sha256": "2eaed8c522e5efc07fc08e18c207757397b45a323b4322688ee1c9ca30975140",
+      "published_sha256": "2eaed8c522e5efc07fc08e18c207757397b45a323b4322688ee1c9ca30975140",
+      "byte_identical_copy": true,
+      "transformation": "NONE",
+      "sanitization_status": "REVIEWED_NO_REDACTION_REQUIRED",
+      "scenario_id": "SC-010",
+      "evaluation_round": 0,
+      "scenario_step": 1,
+      "investigation_id": "e37b7bbd-493e-4798-849b-6b078f51f880",
+      "session_id": "cc68af6e-2c28-4d6d-ac14-e574b5ad9e87",
+      "model_identifier": "gpt-6-luna",
+      "provider": "openai",
+      "profile_id": "m1-saturday-runtime-0.8",
+      "execution_mode": "LIVE_PROVIDER",
+      "investigation_status": "ABSTAINED",
+      "investigation_outcome": "NO_RECOMMENDATION",
+      "demonstrates": "D. Explained abstention",
+      "original_application_revision": "NOT_RECORDED"
+    },
+    {
+      "portable_path": "representative-traces/sc-012-round3-step1-session-start.jsonl",
+      "artifact_type": "TRACE_JSONL",
+      "original_artifact": "acceptance-subset-2d828b70-1415-4865-81f8-75bc6ca53466/c4354e5c-627e-440b-bce2-329341201f07.jsonl",
+      "original_sha256": "f638ba95e7f76c97141ad43ed55ec78579f04e016b81b29a2220dbfe1ee95dea",
+      "published_sha256": "f638ba95e7f76c97141ad43ed55ec78579f04e016b81b29a2220dbfe1ee95dea",
+      "byte_identical_copy": true,
+      "transformation": "NONE",
+      "sanitization_status": "REVIEWED_NO_REDACTION_REQUIRED",
+      "scenario_id": "SC-012",
+      "evaluation_round": 3,
+      "scenario_step": 1,
+      "investigation_id": "c4354e5c-627e-440b-bce2-329341201f07",
+      "session_id": "2e1faad9-8cbf-439e-91d8-4b3033e3d9a9",
+      "model_identifier": "gpt-6-luna",
+      "provider": "openai",
+      "profile_id": "m1-saturday-runtime-0.8",
+      "execution_mode": "LIVE_PROVIDER",
+      "investigation_status": "COMPLETED",
+      "investigation_outcome": "RECOMMENDATIONS",
+      "demonstrates": "E. Context: preceding session investigation",
+      "original_application_revision": "NOT_RECORDED"
+    },
+    {
+      "portable_path": "representative-traces/sc-012-round3-step2-failed-closed.jsonl",
+      "artifact_type": "TRACE_JSONL",
+      "original_artifact": "acceptance-subset-2d828b70-1415-4865-81f8-75bc6ca53466/316bb35d-a9e3-4776-8b83-0ebe570db302.jsonl",
+      "original_sha256": "3a5390cf771d2331b7d62ca55ab402d178e753063866b2acda3ea95ad8d83ea6",
+      "published_sha256": "3a5390cf771d2331b7d62ca55ab402d178e753063866b2acda3ea95ad8d83ea6",
+      "byte_identical_copy": true,
+      "transformation": "NONE",
+      "sanitization_status": "REVIEWED_NO_REDACTION_REQUIRED",
+      "scenario_id": "SC-012",
+      "evaluation_round": 3,
+      "scenario_step": 2,
+      "investigation_id": "316bb35d-a9e3-4776-8b83-0ebe570db302",
+      "session_id": "2e1faad9-8cbf-439e-91d8-4b3033e3d9a9",
+      "model_identifier": "gpt-6-luna",
+      "provider": "openai",
+      "profile_id": "m1-saturday-runtime-0.8",
+      "execution_mode": "LIVE_PROVIDER",
+      "investigation_status": "FAILED",
+      "investigation_outcome": "ERROR",
+      "demonstrates": "E. Failed-closed model proposal",
+      "original_application_revision": "NOT_RECORDED"
+    },
+    {
+      "portable_path": "representative-reports/sc-001-round0.json",
+      "artifact_type": "SCENARIO_REPORT_JSON",
+      "original_artifact": "acceptance-subset-1bf7ac46-b5d5-42d5-9350-ed519a756f07/SC-001.json",
+      "original_sha256": "a4a6000b512cef457c324a5934cd91d385d4effaac18f7742b65d54348cf1ac4",
+      "published_sha256": "a4a6000b512cef457c324a5934cd91d385d4effaac18f7742b65d54348cf1ac4",
+      "byte_identical_copy": true,
+      "transformation": "NONE",
+      "sanitization_status": "REVIEWED_NO_REDACTION_REQUIRED",
+      "scenario_id": "SC-001",
+      "evaluation_round": 0,
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 86,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "execution_modes": [
+        "LIVE_PROVIDER"
+      ],
+      "bound_trace_sha256": [
+        "b2cfcd7230876ef60f96dcae19906b22a6a12f81944a5699d78f1b4144745738"
+      ],
+      "original_application_revision": "NOT_RECORDED"
+    },
+    {
+      "portable_path": "representative-reports/sc-004-round0.json",
+      "artifact_type": "SCENARIO_REPORT_JSON",
+      "original_artifact": "acceptance-subset-1bf7ac46-b5d5-42d5-9350-ed519a756f07/SC-004.json",
+      "original_sha256": "9e5767ea72fec96f528fc8fe8b7d41818de92b38721d72bb8abadeaf6f98810e",
+      "published_sha256": "9e5767ea72fec96f528fc8fe8b7d41818de92b38721d72bb8abadeaf6f98810e",
+      "byte_identical_copy": true,
+      "transformation": "NONE",
+      "sanitization_status": "REVIEWED_NO_REDACTION_REQUIRED",
+      "scenario_id": "SC-004",
+      "evaluation_round": 0,
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 84,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "execution_modes": [
+        "LIVE_PROVIDER"
+      ],
+      "bound_trace_sha256": [
+        "4ca76ebf56dae22ee96be60a699731a22e45a2be3b03c701028dbdb64eeef7a3"
+      ],
+      "original_application_revision": "NOT_RECORDED"
+    },
+    {
+      "portable_path": "representative-reports/sc-009-round0.json",
+      "artifact_type": "SCENARIO_REPORT_JSON",
+      "original_artifact": "acceptance-subset-1bf7ac46-b5d5-42d5-9350-ed519a756f07/SC-009.json",
+      "original_sha256": "8570fb83409d1b19e3619073f0b9b4fa1182c34bf464227a14989f49b859d422",
+      "published_sha256": "8570fb83409d1b19e3619073f0b9b4fa1182c34bf464227a14989f49b859d422",
+      "byte_identical_copy": true,
+      "transformation": "NONE",
+      "sanitization_status": "REVIEWED_NO_REDACTION_REQUIRED",
+      "scenario_id": "SC-009",
+      "evaluation_round": 0,
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 73,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "execution_modes": [
+        "LIVE_PROVIDER"
+      ],
+      "bound_trace_sha256": [
+        "b86a0fe06ab78ff55f8b26f3452f025d8231abae43267b04e9cc8789f4a8a0b1"
+      ],
+      "original_application_revision": "NOT_RECORDED"
+    },
+    {
+      "portable_path": "representative-reports/sc-010-round0.json",
+      "artifact_type": "SCENARIO_REPORT_JSON",
+      "original_artifact": "acceptance-subset-1bf7ac46-b5d5-42d5-9350-ed519a756f07/SC-010.json",
+      "original_sha256": "732c4517c2bfb8d68b58685214bd1c4456c699f700a7d8073ff1d2fde23067e9",
+      "published_sha256": "732c4517c2bfb8d68b58685214bd1c4456c699f700a7d8073ff1d2fde23067e9",
+      "byte_identical_copy": true,
+      "transformation": "NONE",
+      "sanitization_status": "REVIEWED_NO_REDACTION_REQUIRED",
+      "scenario_id": "SC-010",
+      "evaluation_round": 0,
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 61,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "execution_modes": [
+        "LIVE_PROVIDER"
+      ],
+      "bound_trace_sha256": [
+        "2eaed8c522e5efc07fc08e18c207757397b45a323b4322688ee1c9ca30975140"
+      ],
+      "original_application_revision": "NOT_RECORDED"
+    },
+    {
+      "portable_path": "representative-reports/sc-012-round3.json",
+      "artifact_type": "SCENARIO_REPORT_JSON",
+      "original_artifact": "acceptance-subset-2d828b70-1415-4865-81f8-75bc6ca53466/SC-012.json",
+      "original_sha256": "22b54ca83776a2a818684761a2278c32fe21347d9dd618b53dc8505cab3809d5",
+      "published_sha256": "22b54ca83776a2a818684761a2278c32fe21347d9dd618b53dc8505cab3809d5",
+      "byte_identical_copy": true,
+      "transformation": "NONE",
+      "sanitization_status": "REVIEWED_NO_REDACTION_REQUIRED",
+      "scenario_id": "SC-012",
+      "evaluation_round": 3,
+      "scenario_outcome": "FAIL",
+      "assertion_counts": {
+        "PASS": 60,
+        "FAIL": 23,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "execution_modes": [
+        "LIVE_PROVIDER",
+        "LIVE_PROVIDER"
+      ],
+      "bound_trace_sha256": [
+        "f638ba95e7f76c97141ad43ed55ec78579f04e016b81b29a2220dbfe1ee95dea",
+        "3a5390cf771d2331b7d62ca55ab402d178e753063866b2acda3ea95ad8d83ea6"
+      ],
+      "original_application_revision": "NOT_RECORDED"
+    },
+    {
+      "portable_path": "aggregate/four-round-reliability.json",
+      "artifact_type": "DERIVED_AGGREGATE",
+      "byte_identical_copy": false,
+      "published_sha256": "09f3f43cac7847ea76c805bd239974ae0e3cf1fc75bde32e30f68ec4d8af3a1d",
+      "transformation": "Regenerated with `hafi reliability --format json` from the four original batch directories; key order and indentation normalized. No paths are present.",
+      "sanitization_status": "REVIEWED_NO_SENSITIVE_FIELDS",
+      "source_scope": "All 48 scenario reports and 52 traces in the four rounds (originals remain local)"
+    },
+    {
+      "portable_path": "aggregate/four-round-reliability.md",
+      "artifact_type": "DERIVED_AGGREGATE",
+      "byte_identical_copy": false,
+      "published_sha256": "79aa3c8603afdaf2d4e6a95ff19d1eb98d90fd5675f89d58d804ccd892b8b259",
+      "transformation": "Regenerated with `hafi reliability --format markdown` from the four original batch directories; output unchanged.",
+      "sanitization_status": "REVIEWED_NO_SENSITIVE_FIELDS",
+      "source_scope": "All 48 scenario reports and 52 traces in the four rounds (originals remain local)"
+    },
+    {
+      "portable_path": "aggregate/scenario-round-matrix.json",
+      "artifact_type": "DERIVED_AGGREGATE",
+      "byte_identical_copy": false,
+      "published_sha256": "10e47cb6b4c90f1fe81a852be29b7c59b056f98949a6432b61e507d6fff59f90",
+      "transformation": "Derived by joining every saved scenario report (48) to its digest-bound reliability record (52 investigations); mandatory and optional assertion outcomes split by the reports' own `mandatory` flags.",
+      "sanitization_status": "REVIEWED_NO_SENSITIVE_FIELDS",
+      "source_scope": "All 48 scenario reports and 52 traces in the four rounds (originals remain local)"
+    }
+  ]
+}

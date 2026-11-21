@@ -1,0 +1,1730 @@
+{
+  "outcome": "PASS",
+  "mode": "AGENT_RUNTIME",
+  "attempted_steps": [
+    1
+  ],
+  "component": {
+    "scenario_id": "SC-001",
+    "scope": "COMPONENT",
+    "outcome": "PASS",
+    "category": "ASSERTIONS_EVALUATED",
+    "assertions": [
+      {
+        "assertion_id": "SC-001-A001",
+        "requirement_ids": [
+          "PR-002"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A002",
+        "requirement_ids": [
+          "PR-002"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A003",
+        "requirement_ids": [
+          "PR-002"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A004",
+        "requirement_ids": [
+          "RR-001"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A005",
+        "requirement_ids": [
+          "IS-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A006",
+        "requirement_ids": [
+          "DS-009"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A007",
+        "requirement_ids": [
+          "RR-002"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A008",
+        "requirement_ids": [
+          "RR-001"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A009",
+        "requirement_ids": [
+          "IT-001"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A010",
+        "requirement_ids": [
+          "IT-008"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A011",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A012",
+        "requirement_ids": [
+          "IT-009"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A013",
+        "requirement_ids": [
+          "IT-009"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A014",
+        "requirement_ids": [
+          "IT-008"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A015",
+        "requirement_ids": [
+          "TW-013"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A016",
+        "requirement_ids": [
+          "DS-009"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A017",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A018",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A019",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A020",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A021",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A022",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A023",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A024",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A025",
+        "requirement_ids": [
+          "TW-001"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A026",
+        "requirement_ids": [
+          "TW-001"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A027",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A028",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A029",
+        "requirement_ids": [
+          "EF-002",
+          "EF-003"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A030",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A031",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A032",
+        "requirement_ids": [
+          "RR-006"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A033",
+        "requirement_ids": [
+          "RR-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A034",
+        "requirement_ids": [
+          "PR-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A035",
+        "requirement_ids": [
+          "PR-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A036",
+        "requirement_ids": [
+          "PR-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A037",
+        "requirement_ids": [
+          "PR-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A038",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A039",
+        "requirement_ids": [
+          "RR-006"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A040",
+        "requirement_ids": [
+          "RR-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A041",
+        "requirement_ids": [
+          "EL-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A042",
+        "requirement_ids": [
+          "EL-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A043",
+        "requirement_ids": [
+          "EF-012"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A044",
+        "requirement_ids": [
+          "PR-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A045",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A046",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A047",
+        "requirement_ids": [
+          "RR-010"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A048",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A049",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A050",
+        "requirement_ids": [
+          "EF-002",
+          "EF-003"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A051",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A052",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A053",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A054",
+        "requirement_ids": [
+          "RR-006"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A055",
+        "requirement_ids": [
+          "RR-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A056",
+        "requirement_ids": [
+          "EL-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A057",
+        "requirement_ids": [
+          "EL-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A058",
+        "requirement_ids": [
+          "EF-012"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A059",
+        "requirement_ids": [
+          "PR-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A060",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A061",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A062",
+        "requirement_ids": [
+          "RR-010"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A063",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A064",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A065",
+        "requirement_ids": [
+          "EF-002",
+          "EF-003"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A066",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A067",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A068",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A069",
+        "requirement_ids": [
+          "RR-006"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A070",
+        "requirement_ids": [
+          "RR-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A071",
+        "requirement_ids": [
+          "EL-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A072",
+        "requirement_ids": [
+          "EL-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A073",
+        "requirement_ids": [
+          "EF-012"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A074",
+        "requirement_ids": [
+          "PR-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A075",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A076",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A077",
+        "requirement_ids": [
+          "RR-010"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A078",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A079",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A080",
+        "requirement_ids": [
+          "EF-002",
+          "EF-003"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A081",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A082",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A083",
+        "requirement_ids": [
+          "RR-005",
+          "RR-014"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A084",
+        "requirement_ids": [
+          "RR-005",
+          "RR-014"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A085",
+        "requirement_ids": [
+          "RR-003"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A086",
+        "requirement_ids": [
+          "QF-002"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      }
+    ],
+    "counts": {
+      "PASS": 86,
+      "FAIL": 0,
+      "BLOCKED": 0,
+      "NOT_RUN": 0
+    },
+    "artifact_digests": [],
+    "trace_digests": [
+      [
+        1,
+        "b2cfcd7230876ef60f96dcae19906b22a6a12f81944a5699d78f1b4144745738"
+      ]
+    ],
+    "versions": [
+      [
+        "harness_contract_version",
+        "1.0.0"
+      ],
+      [
+        "schema_version",
+        "0.1"
+      ],
+      [
+        "policy_version",
+        "0.2"
+      ],
+      [
+        "configuration_version",
+        "0.1"
+      ],
+      [
+        "fixture_format_version",
+        "2.0.0"
+      ],
+      [
+        "fixture_package_version",
+        "1.6.0"
+      ]
+    ]
+  },
+  "scenario": {
+    "scenario_id": "SC-001",
+    "scope": "SCENARIO",
+    "outcome": "PASS",
+    "category": "ASSERTIONS_EVALUATED",
+    "assertions": [
+      {
+        "assertion_id": "SC-001-A001",
+        "requirement_ids": [
+          "PR-002"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A002",
+        "requirement_ids": [
+          "PR-002"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A003",
+        "requirement_ids": [
+          "PR-002"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A004",
+        "requirement_ids": [
+          "RR-001"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A005",
+        "requirement_ids": [
+          "IS-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A006",
+        "requirement_ids": [
+          "DS-009"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A007",
+        "requirement_ids": [
+          "RR-002"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A008",
+        "requirement_ids": [
+          "RR-001"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A009",
+        "requirement_ids": [
+          "IT-001"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A010",
+        "requirement_ids": [
+          "IT-008"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A011",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A012",
+        "requirement_ids": [
+          "IT-009"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A013",
+        "requirement_ids": [
+          "IT-009"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A014",
+        "requirement_ids": [
+          "IT-008"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A015",
+        "requirement_ids": [
+          "TW-013"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A016",
+        "requirement_ids": [
+          "DS-009"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A017",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A018",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A019",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A020",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A021",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A022",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A023",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A024",
+        "requirement_ids": [
+          "IT-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A025",
+        "requirement_ids": [
+          "TW-001"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A026",
+        "requirement_ids": [
+          "TW-001"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A027",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A028",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A029",
+        "requirement_ids": [
+          "EF-002",
+          "EF-003"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A030",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A031",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A032",
+        "requirement_ids": [
+          "RR-006"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A033",
+        "requirement_ids": [
+          "RR-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A034",
+        "requirement_ids": [
+          "PR-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A035",
+        "requirement_ids": [
+          "PR-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A036",
+        "requirement_ids": [
+          "PR-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A037",
+        "requirement_ids": [
+          "PR-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A038",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A039",
+        "requirement_ids": [
+          "RR-006"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A040",
+        "requirement_ids": [
+          "RR-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A041",
+        "requirement_ids": [
+          "EL-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A042",
+        "requirement_ids": [
+          "EL-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A043",
+        "requirement_ids": [
+          "EF-012"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A044",
+        "requirement_ids": [
+          "PR-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A045",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A046",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A047",
+        "requirement_ids": [
+          "RR-010"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A048",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A049",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A050",
+        "requirement_ids": [
+          "EF-002",
+          "EF-003"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A051",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A052",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A053",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A054",
+        "requirement_ids": [
+          "RR-006"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A055",
+        "requirement_ids": [
+          "RR-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A056",
+        "requirement_ids": [
+          "EL-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A057",
+        "requirement_ids": [
+          "EL-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A058",
+        "requirement_ids": [
+          "EF-012"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A059",
+        "requirement_ids": [
+          "PR-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A060",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A061",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A062",
+        "requirement_ids": [
+          "RR-010"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A063",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A064",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A065",
+        "requirement_ids": [
+          "EF-002",
+          "EF-003"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A066",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A067",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A068",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A069",
+        "requirement_ids": [
+          "RR-006"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A070",
+        "requirement_ids": [
+          "RR-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A071",
+        "requirement_ids": [
+          "EL-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A072",
+        "requirement_ids": [
+          "EL-007"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A073",
+        "requirement_ids": [
+          "EF-012"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A074",
+        "requirement_ids": [
+          "PR-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A075",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A076",
+        "requirement_ids": [
+          "RR-005"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A077",
+        "requirement_ids": [
+          "RR-010"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A078",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A079",
+        "requirement_ids": [
+          "EF-011"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A080",
+        "requirement_ids": [
+          "EF-002",
+          "EF-003"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A081",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A082",
+        "requirement_ids": [
+          "EF-004"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A083",
+        "requirement_ids": [
+          "RR-005",
+          "RR-014"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A084",
+        "requirement_ids": [
+          "RR-005",
+          "RR-014"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A085",
+        "requirement_ids": [
+          "RR-003"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      },
+      {
+        "assertion_id": "SC-001-A086",
+        "requirement_ids": [
+          "QF-002"
+        ],
+        "mandatory": true,
+        "outcome": "PASS",
+        "reason": "MATCH"
+      }
+    ],
+    "counts": {
+      "PASS": 86,
+      "FAIL": 0,
+      "BLOCKED": 0,
+      "NOT_RUN": 0
+    },
+    "artifact_digests": [
+      [
+        "behaviors/sc-001.json",
+        "aaaf5b4b26586cbb78dc122e82911ebd571fc3587f3c58c375a95e509577c5d4"
+      ],
+      [
+        "catalogs/synthetic-maui-v1.json",
+        "53d37df080839d364f78a9ec0abdf4071ce5fb5eaf437a4a2d89cde3b8ad15fc"
+      ],
+      [
+        "manifest.json",
+        "d175c30b2be32a16e821e90d63f159ad2015be7bcf665a4789c627220c27dc3d"
+      ],
+      [
+        "policies/sc-001.json",
+        "2cf76afa7a53c70c6784b8f1aeef63d7781d4b26d423e8e3885a80433ae2425f"
+      ],
+      [
+        "scenarios/SC-001/expected.json",
+        "6b6c2ace6eeb7b70f93f1bce65a4623fee84c97d87baca04466f6950519e5607"
+      ],
+      [
+        "scenarios/SC-001/scenario.json",
+        "53c7281e4e8d8dd18040f1830bed2ecdca498a51f8a2eb028c20aa619650d3d9"
+      ],
+      [
+        "source_sets/sc-001-ocean.json",
+        "72a740f8f600fca02ef0cd262e04e293b6be51b057a9bb2083818255995046ba"
+      ],
+      [
+        "source_sets/sc-001-weather.json",
+        "033adf3c6a44509e86c42cacf774e8c7637cf62a4befcf0719611697087d94bd"
+      ],
+      [
+        "sources/ocean/sc-001-marine.json",
+        "e97de07f40eb881f4671bc8467b2bd888d46f0d96bb49ac26f789ca6c1828479"
+      ],
+      [
+        "sources/ocean/sc-001-visibility.json",
+        "65b4022a15de3331c0934e666bc2d478e3ffeef7ecd2d3376a382592186c3cd4"
+      ],
+      [
+        "sources/ocean/sc-001-water-a.json",
+        "d4f97a3751915cb57603a38b62904bf295b8f63acf43ea6ca782e3abde8e0513"
+      ],
+      [
+        "sources/ocean/sc-001-water-b.json",
+        "78ae0338c2a8d292030dd0f8f3c1316c59fa7aa0b4e2f984e545371280c3357f"
+      ],
+      [
+        "sources/ocean/sc-001-water-c.json",
+        "67390b0ae3b305bcd089246ca888f2138dd64f0959b450316e070a73c4ffef50"
+      ],
+      [
+        "sources/ocean/sc-001-water-d.json",
+        "4d30cffa1de2fb8de76d8a49a559c1c49e2e2d6f83f81ec00ced9cd82e4f1cef"
+      ],
+      [
+        "sources/weather/sc-001-alerts.json",
+        "5e77ca27c34c2dff185fb5d1a036848ba78c3e4514a8d0f426ceae2b0b91f7f9"
+      ],
+      [
+        "sources/weather/sc-001-wind.json",
+        "d6b5669541b2aff5e0eb5d534157b24f9e969577470c32ed94acaf04616290ac"
+      ]
+    ],
+    "trace_digests": [
+      [
+        1,
+        "b2cfcd7230876ef60f96dcae19906b22a6a12f81944a5699d78f1b4144745738"
+      ]
+    ],
+    "versions": [
+      [
+        "harness_contract_version",
+        "1.0.0"
+      ],
+      [
+        "schema_version",
+        "0.1"
+      ],
+      [
+        "policy_version",
+        "0.2"
+      ],
+      [
+        "configuration_version",
+        "0.1"
+      ],
+      [
+        "fixture_format_version",
+        "2.0.0"
+      ],
+      [
+        "fixture_package_version",
+        "1.6.0"
+      ]
+    ]
+  },
+  "execution_modes": [
+    "LIVE_PROVIDER"
+  ],
+  "tool_allowlist_digest": "04d4bc01c97d0fa6967395b5104259f46ad753bb7bf0abb620b3eea74b30a485"
+}
