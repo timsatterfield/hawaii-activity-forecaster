@@ -53,7 +53,10 @@ have historical live passes across profiles 0.6/0.7. The latest all-twelve profi
 0.7 batch passed **10/12**. SC-006 and SC-008 were then diagnosed and fixed (profile
 0.8 normalize guidance, and SC-008 option names that avoid reserved prompt tokens).
 Both passed live on profile 0.8 and are re-enabled. A subsequent all-twelve live
-batch on 0.8 passed **12/12**, with 13/13 operational successes and no technical failures. Their earlier failures remain documented. No offline tests or
+batch on 0.8 passed **12/12**. Across four full rounds on 0.8 (that batch plus three
+more), **47/48** scenario runs passed, with 51/52 operational successes. The one failure, an SC-012 follow-up
+where the Ocean plan named an invalid option, failed closed. See the
+[completion report](development/m1-completion-report.md). Their earlier failures remain documented. No offline tests or
 safety assertions were disabled.
 
 SC-007's passing live report also contains six optional failures for a skipped
