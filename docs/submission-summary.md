@@ -95,11 +95,16 @@ skipped that redundant source: 24 optional failures in total. Intentionally bloc
 optional assertions remain in SC-005, SC-006, SC-007, SC-008 and SC-012. Scenario-level
 PASS therefore does not imply every optional assertion passed.
 
-**Historical evaluation artifacts are not currently included in the tracked
-repository and are not publicly available from a fresh clone.** The completion
-report records identifiers, digests and outcome summaries. Reviewers can generate
-new authored traces with the offline commands above; these are a different evidence
-type and cannot recreate or replace the historical genuine-model investigations.
+**Representative genuine-model evidence is in the
+[portable evaluation evidence](evaluation-evidence/README.md) package.** It holds
+six unchanged `gpt-6-luna` traces with their saved reports: a recommendation, an
+advisory exclusion, conditional recovery, an explained abstention, and the SC-012
+failed-closed follow-up. It also holds aggregate results covering all 48 scenario
+evaluations and 52 investigations, and a checksum manifest. These can be validated
+offline with `hafi trace` and `hafi reliability`. The complete raw dataset remains
+local, so the aggregates cannot be fully re-derived from the package alone. Authored
+traces generated with the offline commands above are a different evidence type and
+cannot replace the historical genuine-model investigations.
 
 The four-round results describe a small historical development sample of fixed
 requests and synthetic conditions. They do not establish real-world ocean forecasting

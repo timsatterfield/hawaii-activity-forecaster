@@ -1,0 +1,2234 @@
+{
+  "format": "hap-evaluation-matrix-1",
+  "derived": true,
+  "derived_from": "Saved scenario reports and the hafi reliability JSON for the four original profile 0.8 batches",
+  "rounds": {
+    "0": "acceptance-subset-1bf7ac46-b5d5-42d5-9350-ed519a756f07",
+    "1": "acceptance-subset-bae52ab1-eb9d-46e2-815e-a25e40f19f00",
+    "2": "acceptance-subset-96b39600-74b8-44f0-b74b-7bfe8b39fb3f",
+    "3": "acceptance-subset-2d828b70-1415-4865-81f8-75bc6ca53466"
+  },
+  "scenario_evaluations": 48,
+  "investigations": 52,
+  "rows": [
+    {
+      "evaluation_round": 0,
+      "scenario_id": "SC-001",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 86,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 86,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "b2cfcd7230876ef60f96dcae19906b22a6a12f81944a5699d78f1b4144745738",
+          "investigation_id": "6d3be8e1-7d29-480d-9cde-8bed9e98c638",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 11225,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 0,
+      "scenario_id": "SC-002",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 65,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 65,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "560a502a8c65a9248a29de7309cde40e293f2e7a439676a7556050a43db86fac",
+          "investigation_id": "35810714-b3fd-46f0-8b55-b121e2a9742c",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 9,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 9372,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 0,
+      "scenario_id": "SC-003",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 55,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 55,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "eb7529e255763d8963d910fadceb6774cd8d56880e9a49a4e2bf67ac3f39bbcb",
+          "investigation_id": "aeecb125-6176-4a86-a6bd-7912acf66152",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 5,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 9247,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 0,
+      "scenario_id": "SC-004",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 84,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 84,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "4ca76ebf56dae22ee96be60a699731a22e45a2be3b03c701028dbdb64eeef7a3",
+          "investigation_id": "0ad4870e-3d44-4775-9444-2385fa26e069",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 11,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 10115,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 0,
+      "scenario_id": "SC-005",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 59,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 59,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-005-A060"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "6808aac06c0111cda961c17ef4128f4c6810850b6a84989d25a509a3a18e08cd",
+          "investigation_id": "4f659d8b-48b8-4545-a7c5-df3a8435bdf2",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 6,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 8988,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 0,
+      "scenario_id": "SC-006",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 62,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 62,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-006-A064"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "8ebf76d3fb9890755b149904f6a65f04ca1a2af4f2871c663569b65e6866ece4",
+          "investigation_id": "554221f9-d835-4ef6-b0d0-65a55be833e4",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 10653,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 0,
+      "scenario_id": "SC-007",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 78,
+        "FAIL": 6,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 78,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 6,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [
+        "SC-007-A041",
+        "SC-007-A042",
+        "SC-007-A043",
+        "SC-007-A044",
+        "SC-007-A045",
+        "SC-007-A046"
+      ],
+      "optional_blocked_assertion_ids": [
+        "SC-007-A047"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "f5fb48556bb2859e36b553d1bb94547f6dc2962b009d8fb3fe33b8f8c8f32236",
+          "investigation_id": "4e48ac02-3ee2-4375-ad81-5a057795251b",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 8170,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 0,
+      "scenario_id": "SC-008",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 45,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 45,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-008-A046"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "72921db563ef1586d4f6d546b00d51366800b3b3818dc43d0ee6996673b20b57",
+          "investigation_id": "4cda335c-9622-4d73-8dae-5c2e040e4981",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "ABSTAINED",
+          "outcome": "NO_RECOMMENDATION",
+          "model_calls": 5,
+          "tool_calls": 9,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 8041,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 0,
+      "scenario_id": "SC-009",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 73,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 73,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "b86a0fe06ab78ff55f8b26f3452f025d8231abae43267b04e9cc8789f4a8a0b1",
+          "investigation_id": "2979e42c-5d26-4b30-b2a4-96ae9ed0704a",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 11,
+          "retries": 0,
+          "fallbacks": 2,
+          "duration_ms": 9730,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 0,
+      "scenario_id": "SC-010",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 61,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 61,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "2eaed8c522e5efc07fc08e18c207757397b45a323b4322688ee1c9ca30975140",
+          "investigation_id": "e37b7bbd-493e-4798-849b-6b078f51f880",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "ABSTAINED",
+          "outcome": "NO_RECOMMENDATION",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 1,
+          "fallbacks": 2,
+          "duration_ms": 8896,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 0,
+      "scenario_id": "SC-011",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 70,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 70,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "6692db50d5a85a541648420134d7cb8ef8a12671d8b259e2bf1c7dc17edb38cf",
+          "investigation_id": "391a3912-ed6f-40a2-9be0-1f689e5ac12b",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 7,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 9556,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 0,
+      "scenario_id": "SC-012",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 83,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 83,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-012-A084"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "56807bbf247b0024eb5107842dd71ec04e5a75f6195c3e47c6547ff6206c06fe",
+          "investigation_id": "200eb665-59e4-4d26-b0c5-c7ad17357976",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 8782,
+          "failure_codes": []
+        },
+        {
+          "scenario_step": 2,
+          "trace_sha256": "64e143052ae174f96ac25417019ed4ac758b19ffea4a7fc0c77b7b0516afc12d",
+          "investigation_id": "d816e2c6-58f1-48ee-aaac-9314038f3079",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 8628,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 1,
+      "scenario_id": "SC-001",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 86,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 86,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "a7a49a18a23f85c174afc11f5f64fdd875ef03964fe00d94d6ba9570f6a82cf8",
+          "investigation_id": "b9becc2d-e7db-4c12-ac87-ba6beb16f9ec",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 11541,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 1,
+      "scenario_id": "SC-002",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 65,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 65,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "bf44434cfe1a53a3c8e7509dca47d1f87f88484f0b4044fbc19f79e395ab633d",
+          "investigation_id": "b9ffa0aa-a4ee-4a7a-bef4-3eb7ff83910b",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 9,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 9673,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 1,
+      "scenario_id": "SC-003",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 55,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 55,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "59d8efadf5bd81c4d43bf8e9e1101ec30a6efa40f319a60b7c6a711ae6d6f703",
+          "investigation_id": "36e52218-3b2a-4c8b-b7c5-f22801e040b2",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 5,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 10264,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 1,
+      "scenario_id": "SC-004",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 84,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 84,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "3f72afbc6d70e7f7539e0334181079faed11844d114433cb4201d5c12e9c69ce",
+          "investigation_id": "fdf770fc-13bc-4ec3-8c6d-98a5dd6c77d0",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 11,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 9603,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 1,
+      "scenario_id": "SC-005",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 59,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 59,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-005-A060"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "8ce69380036ef126a8e2f69b5bf04fb84f7e3b851b92e23822cb2978596194c0",
+          "investigation_id": "9c2c819b-8e38-4824-8cb5-d52c1f6b7029",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 6,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 8850,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 1,
+      "scenario_id": "SC-006",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 62,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 62,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-006-A064"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "08feb4134ac9a6a638b60a44e6b46ab0bce94d1ee0f73a8cf4ea4cbc1de164a1",
+          "investigation_id": "072b0d67-f2c7-4ea4-9d42-2ee14d8b3cb1",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 8599,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 1,
+      "scenario_id": "SC-007",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 78,
+        "FAIL": 6,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 78,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 6,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [
+        "SC-007-A041",
+        "SC-007-A042",
+        "SC-007-A043",
+        "SC-007-A044",
+        "SC-007-A045",
+        "SC-007-A046"
+      ],
+      "optional_blocked_assertion_ids": [
+        "SC-007-A047"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "bade124f7690258b75578ab708d3fb4acf92e0bed614da0b5d8f0cc14db1a870",
+          "investigation_id": "095458a3-2712-4fb4-b184-2aac6faa4a02",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 9162,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 1,
+      "scenario_id": "SC-008",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 45,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 45,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-008-A046"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "b40828de45ac61ea8ecbb88967646e11c48aabf1a53c98fdbad2ffb850d8d2f7",
+          "investigation_id": "12cc37a1-6124-4a30-a4bd-7c249479c50d",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "ABSTAINED",
+          "outcome": "NO_RECOMMENDATION",
+          "model_calls": 5,
+          "tool_calls": 9,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 8787,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 1,
+      "scenario_id": "SC-009",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 73,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 73,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "53229faa0974214014ae74cc90d0ce314a493a9bf01741e35aeae5d24a17fce4",
+          "investigation_id": "a0be11ba-65a3-4402-aac7-86f9b4c8ad50",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 11,
+          "retries": 0,
+          "fallbacks": 2,
+          "duration_ms": 10517,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 1,
+      "scenario_id": "SC-010",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 61,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 61,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "5b017289c139fbbbbbe6ad13fc32372f259a9bf6be876e812cf698c2af80a3d1",
+          "investigation_id": "d4e3e4c8-04bb-4d36-bc12-f04c5cc77d3a",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "ABSTAINED",
+          "outcome": "NO_RECOMMENDATION",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 1,
+          "fallbacks": 2,
+          "duration_ms": 9553,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 1,
+      "scenario_id": "SC-011",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 70,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 70,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "ddeafbf3ecdf60fcbe06a1d39cd3863571d861a0ffa8444213913a360f17ec8c",
+          "investigation_id": "82089b50-2af1-4cd8-a431-ff34881e14bb",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 7,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 10122,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 1,
+      "scenario_id": "SC-012",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 83,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 83,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-012-A084"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "e42427f1b7226949a3baecdc56ee21d63b4cf7e39e3a7ab1c830ec1e812d51d6",
+          "investigation_id": "a84baea9-2204-444d-ab8f-07ee32e1390d",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 9924,
+          "failure_codes": []
+        },
+        {
+          "scenario_step": 2,
+          "trace_sha256": "69a5cd7e1d59e8cde72fda614872244b6069e0d370863dfd6a2c1b3d0288f273",
+          "investigation_id": "ec8c560f-2606-4ae1-b6b5-1bc739e45f14",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 8793,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 2,
+      "scenario_id": "SC-001",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 86,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 86,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "a02784601baf596f032f3fdfb5e5dcc39a7b6a6d466fefaba1a33952157ea572",
+          "investigation_id": "460fce79-f741-4f55-a688-8a695f5adb05",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 9133,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 2,
+      "scenario_id": "SC-002",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 65,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 65,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "ad7501822e81717b76772c406416a2fcf9c7f39ba26aaf7400e48a1d1acd9211",
+          "investigation_id": "fc955dea-ef21-4d54-a480-56fc29831402",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 9,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 7851,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 2,
+      "scenario_id": "SC-003",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 55,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 55,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "7bd204f7d81e95c285486c2c95266948112cef12019b376388139f464468f26e",
+          "investigation_id": "54bcf305-9112-478c-8727-b99e32f3ff98",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 5,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 11608,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 2,
+      "scenario_id": "SC-004",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 84,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 84,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "0e1701b1c6adf8d1eb696ec8b27752c59fcf3040f091a1d33b41ed9333373924",
+          "investigation_id": "cd79bb03-2a88-45e1-9ee8-96d6b1c1982c",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 9,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 9580,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 2,
+      "scenario_id": "SC-005",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 59,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 59,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-005-A060"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "86bf9d2ba84711bb1886b178284db2954ed571e4c6d0257693aa68366e4abd92",
+          "investigation_id": "b6c3a0a4-2cd8-4e86-8fb9-611ec5f1afcd",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 6,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 9088,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 2,
+      "scenario_id": "SC-006",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 62,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 62,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-006-A064"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "b1299dcfe16a72e7401eeb8e761de5ae913b92b5e6f89722f7bc9c7a4837da2a",
+          "investigation_id": "c7aaf91c-d4a4-4eb3-b09e-5d48db92bbea",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 12939,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 2,
+      "scenario_id": "SC-007",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 78,
+        "FAIL": 6,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 78,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 6,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [
+        "SC-007-A041",
+        "SC-007-A042",
+        "SC-007-A043",
+        "SC-007-A044",
+        "SC-007-A045",
+        "SC-007-A046"
+      ],
+      "optional_blocked_assertion_ids": [
+        "SC-007-A047"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "620cce6a1954937f0cd56b66dba6399e96890e1fea1a350bf6ad86b1273ecca5",
+          "investigation_id": "3e492911-9bd9-43a2-9f02-6c3389659a27",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 8561,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 2,
+      "scenario_id": "SC-008",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 45,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 45,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-008-A046"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "77b93fda31119e16ee87b8c904652e22a253dc38965a27d21e9026116fa9425b",
+          "investigation_id": "d265bec8-a775-4d3f-9aa7-2346a752fad1",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "ABSTAINED",
+          "outcome": "NO_RECOMMENDATION",
+          "model_calls": 5,
+          "tool_calls": 9,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 10012,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 2,
+      "scenario_id": "SC-009",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 73,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 73,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "10c9e51945111e9a510b429884c928039cb2805b62e5355ef2f9f31db41c0dab",
+          "investigation_id": "f49411c8-0f76-4321-88fe-7dc937521789",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 11,
+          "retries": 0,
+          "fallbacks": 2,
+          "duration_ms": 9406,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 2,
+      "scenario_id": "SC-010",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 61,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 61,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "8a5f3a54637fab254df96318305db3782e87a0e01643e403e7209b499ca73069",
+          "investigation_id": "e86321e6-7bae-4ea3-8e5b-f10bfb35792e",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "ABSTAINED",
+          "outcome": "NO_RECOMMENDATION",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 1,
+          "fallbacks": 2,
+          "duration_ms": 7933,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 2,
+      "scenario_id": "SC-011",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 70,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 70,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "ea117f467e00495fd6fc79ac312a1a8118c061303e3c72bfd18733f5a054b0fd",
+          "investigation_id": "8609265c-b52c-4e9c-916d-092944fcb8d4",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 7,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 9215,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 2,
+      "scenario_id": "SC-012",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 83,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 83,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-012-A084"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "f93f0496864aab998851ce95b0557b8b7cf2d5695ce30925f6c02dfd511eca88",
+          "investigation_id": "d9d72c94-4b30-4c85-afd6-331f7b3015bb",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 10453,
+          "failure_codes": []
+        },
+        {
+          "scenario_step": 2,
+          "trace_sha256": "1ef8f8761b4d23bf1c948f2facaefc61abaf6e5a4a313b17d1c6986b16d9d89e",
+          "investigation_id": "c228deb0-3192-48f7-a953-78486f73b484",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 11969,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 3,
+      "scenario_id": "SC-001",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 86,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 86,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "84754bf5961188828ec26cbe4583a5c25d7c29a88ed631676c38ce6af801d1be",
+          "investigation_id": "2cb2b140-d980-4051-8468-803c8b17f899",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 11228,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 3,
+      "scenario_id": "SC-002",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 65,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 65,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "8632215d30ad1c3b6a58d0b721504f137897303d3e9200cfc19c9c5701b9eec2",
+          "investigation_id": "4fd99fd1-7839-482b-aa1d-e4678b84d425",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 9,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 12114,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 3,
+      "scenario_id": "SC-003",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 55,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 55,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "3c4d65d8755ac3319e905b67f036d6766f9c847b5373e55eb3b229f59a82dc81",
+          "investigation_id": "d20fa6d5-2d7e-41ec-bebe-b1b57a64dc4c",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 5,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 8996,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 3,
+      "scenario_id": "SC-004",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 84,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 84,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "a0bf392b68fdc12bd4e6f1437788707df47a9a56d0262dcd53f817d7927b0fcc",
+          "investigation_id": "ca0da3e6-3ed4-4eb8-9d27-89de52ffe3d5",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 11,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 10589,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 3,
+      "scenario_id": "SC-005",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 59,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 59,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-005-A060"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "cd709543a9fd22f83e4afa7d004880bb14cd05fa127153434456fc41a9d69ec5",
+          "investigation_id": "9f48b5cc-01d6-41e1-998d-a36b810e8384",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 6,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 8540,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 3,
+      "scenario_id": "SC-006",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 62,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 62,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-006-A064"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "29e8e97dc4d6c6722c9637eb5d65bc34d49e9a592cf9521ca8f28cc35aa2faed",
+          "investigation_id": "34d6785e-59b5-481b-b78a-194ce850ce08",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 10632,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 3,
+      "scenario_id": "SC-007",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 78,
+        "FAIL": 6,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 78,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 6,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [
+        "SC-007-A041",
+        "SC-007-A042",
+        "SC-007-A043",
+        "SC-007-A044",
+        "SC-007-A045",
+        "SC-007-A046"
+      ],
+      "optional_blocked_assertion_ids": [
+        "SC-007-A047"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "e9966bd101539082f828c05b2c891a14df2c9da31bf993381dd39f7aaf7f7f49",
+          "investigation_id": "716878e2-00c4-4a00-ad05-1032b6570f42",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 9266,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 3,
+      "scenario_id": "SC-008",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 45,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 45,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-008-A046"
+      ],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "f6e68ee8dc3255262559964eb7e31cd1ee0389a53b91a8411b30962a586bb33e",
+          "investigation_id": "58af9772-f505-4cd2-b553-add34fc899ec",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "ABSTAINED",
+          "outcome": "NO_RECOMMENDATION",
+          "model_calls": 5,
+          "tool_calls": 9,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 8693,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 3,
+      "scenario_id": "SC-009",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 73,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 73,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "3d886864f539c43b85a01f3c114f601cb3e339df90e1b6f069c276d56376d163",
+          "investigation_id": "4695bd54-f883-4006-a583-ba3d5e88bdcf",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 11,
+          "retries": 0,
+          "fallbacks": 2,
+          "duration_ms": 8559,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 3,
+      "scenario_id": "SC-010",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 61,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 61,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "523489317b9eb77d9a95d1f83d30e94eea57e2dfa3a48db4fb9d26ef32156987",
+          "investigation_id": "9508d73e-9ae9-4a26-8c91-7e6a64a46909",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "ABSTAINED",
+          "outcome": "NO_RECOMMENDATION",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 1,
+          "fallbacks": 2,
+          "duration_ms": 9548,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 3,
+      "scenario_id": "SC-011",
+      "scenario_outcome": "PASS",
+      "assertion_counts": {
+        "PASS": 70,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 70,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [],
+      "mandatory_failed_assertion_ids": [],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "7dcb22e7e37f4e67b81d823620d9de8c115d9929e071c3b26e31676b46f9ebf7",
+          "investigation_id": "716050e7-166c-4187-9af9-8426cf703944",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 7,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 9018,
+          "failure_codes": []
+        }
+      ]
+    },
+    {
+      "evaluation_round": 3,
+      "scenario_id": "SC-012",
+      "scenario_outcome": "FAIL",
+      "assertion_counts": {
+        "PASS": 60,
+        "FAIL": 23,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "mandatory": {
+        "PASS": 60,
+        "FAIL": 23,
+        "BLOCKED": 0,
+        "NOT_RUN": 0
+      },
+      "optional": {
+        "PASS": 0,
+        "FAIL": 0,
+        "BLOCKED": 1,
+        "NOT_RUN": 0
+      },
+      "optional_failed_assertion_ids": [],
+      "optional_blocked_assertion_ids": [
+        "SC-012-A084"
+      ],
+      "mandatory_failed_assertion_ids": [
+        "SC-012-A048",
+        "SC-012-A049",
+        "SC-012-A050",
+        "SC-012-A056",
+        "SC-012-A057",
+        "SC-012-A058",
+        "SC-012-A059",
+        "SC-012-A060",
+        "SC-012-A061",
+        "SC-012-A062",
+        "SC-012-A063",
+        "SC-012-A064",
+        "SC-012-A065",
+        "SC-012-A066",
+        "SC-012-A067",
+        "SC-012-A068",
+        "SC-012-A069",
+        "SC-012-A070",
+        "SC-012-A071",
+        "SC-012-A075",
+        "SC-012-A076",
+        "SC-012-A077",
+        "SC-012-A078"
+      ],
+      "investigations": [
+        {
+          "scenario_step": 1,
+          "trace_sha256": "f638ba95e7f76c97141ad43ed55ec78579f04e016b81b29a2220dbfe1ee95dea",
+          "investigation_id": "c4354e5c-627e-440b-bce2-329341201f07",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "COMPLETED",
+          "outcome": "RECOMMENDATIONS",
+          "model_calls": 5,
+          "tool_calls": 8,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 9998,
+          "failure_codes": []
+        },
+        {
+          "scenario_step": 2,
+          "trace_sha256": "3a5390cf771d2331b7d62ca55ab402d178e753063866b2acda3ea95ad8d83ea6",
+          "investigation_id": "316bb35d-a9e3-4776-8b83-0ebe570db302",
+          "profile_id": "m1-saturday-runtime-0.8",
+          "execution_mode": "LIVE_PROVIDER",
+          "status": "FAILED",
+          "outcome": "ERROR",
+          "model_calls": 4,
+          "tool_calls": 0,
+          "retries": 0,
+          "fallbacks": 0,
+          "duration_ms": 10535,
+          "failure_codes": [
+            "MODEL_INVESTIGATION_INACTIVE",
+            "MODEL_PLAN_OPTION_NOT_ALLOWED"
+          ]
+        }
+      ]
+    }
+  ]
+}

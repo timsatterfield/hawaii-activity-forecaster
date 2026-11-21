@@ -83,8 +83,10 @@ The final submission snapshot records **1,530 passing pytest tests, one document
 expected failure and zero unexpected failures**. Genuine model-driven evaluations
 used `gpt-6-luna`; the current historical evaluation profile is
 `m1-saturday-runtime-0.8`. These synthetic development observations do not establish
-real-world forecasting accuracy or production reliability. Historical evaluation
-artifacts are not included in the tracked repository.
+real-world forecasting accuracy or production reliability. Representative traces,
+their saved reports and the four-round aggregate are in the
+[portable evaluation evidence](docs/evaluation-evidence/README.md); the complete raw
+dataset remains local.
 
 ## Documentation
 
@@ -92,6 +94,7 @@ See [requirements](docs/requirements/) and [implementation plans](docs/implement
 for the approved specifications.
 
 - [Submission summary](docs/submission-summary.md): offline reviewer setup, evidence scope and current limitations.
+- [Portable evaluation evidence](docs/evaluation-evidence/README.md): representative genuine-model traces, saved reports, the four-round aggregate and a checksum manifest.
 - [M1 completion report](docs/development/m1-completion-report.md): criterion coverage, live evidence and close-out limitations.
 - [Reliability baseline](docs/development/m1-reliability-baseline.md): read-only trace metrics, failure categories and separate saved scenario outcomes.
 - [Demo runbook](docs/demo-runbook.md): offline rehearsal, expected results, trace inspection and reference live commands.
@@ -749,8 +752,10 @@ These commands summarize existing local evidence without model calls. Profiles
 and recorded execution modes stay separate. Recommendations and abstentions are
 operational successes; saved scenario PASS/FAIL is reported separately. Invalid
 inputs are surfaced, duplicate copies are deduplicated, and clarification is not
-counted as a terminal failure. Historical traces are absent from a fresh clone;
-the [reporting notes](docs/development/m1-reliability-baseline.md) include an offline
+counted as a terminal failure. Most historical traces are absent from a fresh clone;
+representative profile 0.8 traces in the
+[portable evaluation evidence](docs/evaluation-evidence/README.md) can be summarized
+the same way, and the [reporting notes](docs/development/m1-reliability-baseline.md) include an offline
 demo example and explain denominators, privacy and exit status. SC-006 and SC-008
 were fixed in M1.13; the selected live gate again covers all twelve scenarios.
 
