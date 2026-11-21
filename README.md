@@ -1,23 +1,42 @@
 
-# Hawaii Activity Forecaster
+# Hawaii Activity Planner
 
-Capstone project for Carnegie Mellon University's
-Agentic AI Systems program.
+Capstone project for Carnegie Mellon University's Agentic AI Systems program.
 
-## Objective
+## Problem and intended users
 
-Recommend suitable Maui locations and times for
-swimming, snorkeling, and stand-up paddleboarding
-using environmental evidence, verified geographic
-information, and user preferences.
+Hawaii visitors and recreational ocean participants must combine weather,
+marine reports, advisories and local beach characteristics when choosing where
+and when to swim, snorkel or stand-up paddleboard (SUP). Hawaii Activity Planner
+investigates that evidence and explains supported options and uncertainties.
 
-## Architecture
+Maui is the initial geographic implementation. Other Hawaiian islands are
+envisioned for future versions; they are outside the submitted M1 implementation.
+The repository remains `timsatterfield/hawaii-activity-forecaster`, and the Python
+package remains `hawaii_activity_forecaster`. CLI banners and archived
+specifications retain the original Hawaii Activity Forecaster label.
 
-- Coordinator Agent: supervision and ReAct workflow
-- Weather Agent: weather forecasts and advisories
-- Ocean Agent: marine conditions and hazards
-- Local JSON: curated beach catalog (approved M1 storage)
-- Deterministic safety and evidence validation
+**Completed milestone:** M1 — Synthetic End-to-End Forecaster. Feature development
+is frozen for capstone submission. M1 uses fictional beaches and synthetic
+environmental evidence; it does not provide validated real-world ocean safety
+recommendations or retrieve current Maui conditions.
+
+## Architecture and reasoning boundary
+
+- **Coordinator:** interprets requests, delegates investigations and reviews results.
+- **Weather Agent:** plans authorized weather-related retrieval operations.
+- **Ocean Agent:** plans authorized marine-related retrieval operations.
+- **Trusted Python components:** independently validate evidence, enforce tool
+  permissions and safety policies, and determine recommendation eligibility.
+- **LangGraph:** orchestrates the three model-driven roles; a local JSON catalog
+  supplies curated geographic inputs and local JSONL records investigations.
+
+M1 performs constrained model-driven planning. Specialists generate conditional
+plans before environmental retrieval. Trusted execution activates their retries
+and fallbacks from observed outcomes, within the approved budgets. Unrestricted
+observation-driven specialist replanning is not implemented in M1. Authored
+`demo` plans and offline scripted-model tests are separate from genuine model
+inference; the evidence types are distinguished below.
 
 ## Current Status
 
@@ -59,6 +78,13 @@ were then fixed and re-enabled. The full offline pytest suite remains enabled. O
 are retained in the [M1 completion report](docs/development/m1-completion-report.md)
 and [deferment record](docs/development/m1-live-acceptance-deferments.md). Increment sections
 below retain their original scope; the release section describes current execution.
+
+The final submission snapshot records **1,530 passing pytest tests, one documented
+expected failure and zero unexpected failures**. Genuine model-driven evaluations
+used `gpt-6-luna`; the current historical evaluation profile is
+`m1-saturday-runtime-0.8`. These synthetic development observations do not establish
+real-world forecasting accuracy or production reliability. Historical evaluation
+artifacts are not included in the tracked repository.
 
 ## Documentation
 
@@ -190,9 +216,10 @@ reuse the installed LangChain/OpenAI-compatible client; no additional SDK is nee
 The process allowance defaults to three investigations and cannot exceed ten.
 The authorized pilot was **ten investigations across all commands and $1 total**;
 all ten have now been used. Its count was tracked manually, not by a persistent
-dollar ledger. The conservative OpenAI
-reserve is $0.03 per investigation, not an invoice amount or a permission to exceed
-that pilot. Local calls reserve zero API dollars and still count toward the model
+dollar ledger. That original profile 0.2 pilot reserved up to $0.03 per investigation. The
+current profile 0.8 reserves 2,600 microdollars per dispatched call, up to $0.0312
+at the twelve-call limit. These are code-level reservations, not invoice amounts
+or permission to extend a prior allowance. Local calls reserve zero API dollars and still count toward the model
 invocation limit. Traces distinguish `LOCAL_PROVIDER`, `LIVE_PROVIDER` and mock
 `OFFLINE_TRANSPORT` execution and retain the selected provider/model identity.
 
@@ -741,5 +768,5 @@ notices in AGENTS.md and specifications precede the separate implementation
 authorizations recorded in development notes and the release scope supplement.
 
 Existing path irregularity: `docs/decisions/README.md` is a directory rather than
-a Markdown file. It is preserved. Existing `src/tmp.txt`, `tests/tmp.txt`, data,
-and approved specifications are also preserved.
+a Markdown file. It is preserved. Existing data and approved specifications
+remain unchanged; the empty bootstrap placeholders were removed for submission.

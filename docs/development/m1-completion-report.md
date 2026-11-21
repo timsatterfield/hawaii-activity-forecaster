@@ -1,20 +1,32 @@
-# M1 integration completion report
+# Hawaii Activity Planner — M1 integration completion report
 
 **Evidence reviewed:** 2026-11-20  
-**Implementation baseline:** `eb8761f4aee9792eb56a47aae7b782b68d3dca41`  
-**Current configuration:** `m1-saturday-runtime-0.7`, `gpt-6-luna`  
+**Original close-out baseline (historical):** `eb8761f4aee9792eb56a47aae7b782b68d3dca41`\
+**Final M1 evaluation profile:** `m1-saturday-runtime-0.8`, `gpt-6-luna`\
 **Current scenario pack:** dataset `1.6.0`, fixture format `2.0.0`
 
 ## Conclusion and scope
 
-**Current disposition:** on the release profile `m1-saturday-runtime-0.8`, a single
-all-twelve live batch passed **12/12** (2026-11-20). All 13 investigations were
-operational successes (11 completed, 2 abstained, 0 failed), using 65 model calls
-and 106 tool calls with a 9,247 ms median. Reports are local under
-`traces/acceptance-subset-1bf7ac46-b5d5-42d5-9350-ed519a756f07/`.
-The earlier profile 0.7 batch passed 10/12. SC-006 and SC-008 were diagnosed, fixed
-and re-enabled (see the [deferment record](m1-live-acceptance-deferments.md)), and
-the live runner again selects all twelve. Full offline tests remain enabled.
+**Current disposition:** Hawaii Activity Planner has completed M1 — Synthetic
+End-to-End Forecaster; feature development is frozen for capstone submission.
+The initial geographic implementation is Maui. The repository and package retain
+their original identifiers.
+
+The final historical evaluation snapshot uses `m1-saturday-runtime-0.8` and
+`gpt-6-luna`. Four all-twelve live rounds recorded **47/48 scenario passes** and
+**51/52 operational successes**: 43 recommendations, 8 explained abstentions and
+1 technical failure. All twelve scenarios are selected, with zero deferred.
+The existing pytest suite records **1,530 passes, one documented expected failure
+and zero unexpected failures**. See the [four-round evaluation](#profile-08-reliability-sample-2026-11-20).
+
+The initial profile 0.8 confirmation batch passed **12/12**, with 13 operational
+successes, 65 model calls, 106 tool calls and a 9,247 ms median. Its reports remain
+local under `traces/acceptance-subset-1bf7ac46-b5d5-42d5-9350-ed519a756f07/`.
+The earlier profile 0.7 10/12 result and the subsequent fixes/re-enablement are
+historical stages, retained below and in the [deferment record](m1-live-acceptance-deferments.md).
+Historical artifacts are not included in the tracked repository or publicly
+available from a fresh clone. These synthetic results do not establish real-world
+forecasting accuracy or production reliability.
 
 Evidence supports all fifteen approved [M1 completion criteria](../implementation/m1-technical-plan.md#16-m1-completion-criteria)
 within the [approved synthetic release scope](../implementation/m1-saturday-release-scope.md).
@@ -52,7 +64,7 @@ paid calls were made while investigating its failures.
 | 12 | Results pass schema and grounding checks | `test_results.py`, `test_result_graph.py`, `test_presentation.py`; independent pilot trace/result checks | Verified |
 | 13 | Local traces satisfy required assertions | `test_trace_storage.py`, `test_trace_validation.py`, `test_model_trace_validation.py`; ten independently checked pilot traces | Verified |
 | 14 | LangSmith is optional | `test_model_gateway.py`; shared disabled remote-tracing contexts; offline commands need no tracing credentials | Verified |
-| 15 | Selected M1 scenarios pass their executable scope | Historical live PASS reports and verified traces below; current 0.7 rerun and owner deferments | All twelve PASS live in one profile 0.8 batch (12/12); optional FAIL/BLOCKED rows retained |
+| 15 | Selected M1 scenarios pass their executable scope | Historical trace-bound results below and the final profile 0.8 four-round sample | Twelve registered scenarios; 47/48 historical runs PASS across four profile 0.8 rounds; optional FAIL/BLOCKED rows retained |
 
 Criterion 1's supported-activity CLI behavior is verified. The original pilot did
 not exercise live clarification; the separately authorized close-out check now
@@ -111,6 +123,14 @@ request, model payload, credential or trace contents are copied into this report
 
 ## Close-out verification
 
+### Submission documentation cleanup verification
+
+The unchanged existing suite was rerun on Python 3.12.14 using installed
+dependencies in an isolated source copy: **1530 passed, 1 xfailed in 87.71s**,
+with zero unexpected failures. No dependencies were installed, model calls made,
+or historical evaluation artifacts modified. Older test counts below retain
+their original dated baselines and are not the final submission test count.
+
 ### Isolated public-checkout verification (2026-11-20)
 
 The tracked public source plus this batch's documentation changes were copied to
@@ -129,8 +149,9 @@ credential template was retained. The original developer environment was preserv
 | Selected-live preview | Ten selected, SC-006 and SC-008 deferred; no model calls |
 
 Child demo processes had model credentials removed and remote tracing disabled.
-This is current-code Python 3.12 verification, superseding the earlier limitation
-that only an older baseline had a clean 3.12 rehearsal. The expected failure is
+This verified the then-current code on Python 3.12, superseding the earlier
+clean-rehearsal limitation. It is a historical baseline, not the final submission
+test count. The expected failure is
 the deferred experimental Ollama preferred-area input bound.
 
 The tracked-file scan found no API-key-shaped strings. Known local credential
@@ -204,7 +225,8 @@ The owner authorized one all-twelve rerun. Its saved reports are under local
 `traces/acceptance-0.7-closeout-1795206283375/SC-NNN.json`, with per-command exit
 codes in `batch-status.json`. **10/12 scenarios passed**; SC-006 and SC-008 failed.
 All thirteen terminal traces independently validate. The historical passes above
-remain valid historical observations; the current rerun is not all green.
+remain valid historical observations. That profile 0.7 rerun was not all green;
+later profile 0.8 results follow below.
 SC-007 again passed with six optional FAIL assertions and one optional BLOCKED.
 No failed scenario was automatically rerun.
 
@@ -230,18 +252,20 @@ an explicit UNINTERPRETED entry with a full source span or a full unresolved phr
 span passes request validation and retains the preference. Neither requires
 clarification or claims the preference is satisfied.
 
-The current prompt gives an explicit CALM_WATER example but no corresponding
+The profile 0.7 prompt at that stage gave an explicit CALM_WATER example but no corresponding
 UNINTERPRETED preference example. It mentions unsupported "constraint meaning"
 without showing the precise representation. This is a likely prompt-guidance gap;
 raw model proposals are deliberately not retained, so the exact returned spans
 cannot be reconstructed. It is not evidence of failed MIXED safety evaluation:
 that stage was never reached.
 
-Recommended next change for owner review: a new prompt/profile version with an
-explicit generic unsupported-soft-preference example and whole-phrase span guidance,
+At that stage, the recommended change for owner review was a new prompt/profile
+version with an explicit generic unsupported-soft-preference example and whole-phrase span guidance,
 retaining profile 0.7 bytes and all deterministic guards. No prompt, policy, schema,
 fixture, application code or test file was changed during this investigation.
-SC-008's separate assertion failure is not diagnosed by the SC-006 finding.
+SC-008's separate assertion failure was not diagnosed by the SC-006 finding. Both
+issues were subsequently fixed and verified in M1.13, as recorded in the
+[deferment record](m1-live-acceptance-deferments.md); the 0.7 evidence above is retained unchanged.
 
 ## Profile 0.8 reliability sample (2026-11-20)
 
