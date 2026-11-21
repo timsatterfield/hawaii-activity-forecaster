@@ -69,6 +69,9 @@ venv/
 *.pem
 *.key
 
+# Local Claude Code settings (preview launch configuration)
+/.claude/
+
 # Presentation scripts
 docs/demo-presentation.md
 

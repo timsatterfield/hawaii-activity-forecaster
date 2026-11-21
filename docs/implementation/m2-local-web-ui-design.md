@@ -4,6 +4,7 @@
 **Status:** Approved — M2 Local Web Interface Design
 **Date:** 2026-11-20 (owner approval 2026-11-20)
 **Scope:** Design only; no application code, dependency, test, fixture, prompt or policy change
+**Implementation:** WEB-A built 2026-11-20; see the [implementation notes](../development/m2-web-a-local-web-interface.md), including deviations for review
 
 ## 1. Authority and purpose
 

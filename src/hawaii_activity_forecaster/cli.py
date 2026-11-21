@@ -56,7 +56,29 @@ def main(argv: Sequence[str] | None = None) -> int:
     agent_target.add_argument("--live", action="store_true", help="with --agent: the configured OpenAI target (paid calls)")
     agent_target.add_argument("--local", action="store_true", help="with --agent: the configured local Ollama target")
     evaluation.add_argument("--trace-directory", type=Path, metavar="PATH")
+    web = commands.add_parser("web", help="local loopback web interface over the same workflow (optional)")
+    web.add_argument("--fixtures", type=Path, required=True, metavar="PATH",
+                     help="authored scenario-pack-v1 directory for the demonstrations")
+    web.add_argument("--release-fixtures", type=Path, metavar="PATH",
+                     help="saturday-release fixture root; required with --live or --local")
+    web.add_argument("--config", type=Path, metavar="PATH", help="explicit local TOML configuration")
+    web_target = web.add_mutually_exclusive_group()
+    web_target.add_argument("--live", action="store_true", help="allow runs on the configured OpenAI target (paid calls)")
+    web_target.add_argument("--local", action="store_true", help="allow runs on the configured local Ollama target")
+    web.add_argument("--case", choices=("favorable", "advisory", "outage", "recovery"), default="favorable")
+    web.add_argument("--max-investigations", type=int, choices=range(1, 11), default=3, metavar="1..10")
+    web.add_argument("--trace-directory", type=Path, metavar="PATH")
+    web.add_argument("--evidence", type=Path, metavar="PATH",
+                     help="published evidence package (default: docs/evaluation-evidence)")
+    web.add_argument("--port", type=int, default=8765, metavar="PORT", help="loopback port (default 8765; 0 picks one)")
     arguments = parser.parse_args(argv)
+    if arguments.command == "web":
+        if (arguments.live or arguments.local) and (arguments.config is None or arguments.release_fixtures is None):
+            parser.error("--live and --local require --config and --release-fixtures")
+        if not 0 <= arguments.port <= 65535:
+            parser.error("--port must be between 0 and 65535")
+        from .web.cli import web_command
+        return web_command(arguments)
     if arguments.command == "reliability":
         from .observability.reliability import build_reliability_report, render_markdown
         report = build_reliability_report(arguments.paths, report_inputs=arguments.reports)

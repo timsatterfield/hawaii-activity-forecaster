@@ -139,8 +139,8 @@ def _verified(report, catalog, policy):
     return report, state, result, catalog
 
 
-def _exclusions(state, beaches):
-    """Validated EXCLUDED candidates with fixed reasons; never recommendations or scores."""
+def _exclusion_reasons(state, beaches):
+    """(beach_id, name, fixed reasons) for validated EXCLUDED candidates only."""
     items = []
     for assessment in sorted(state.assessments, key=lambda a: a.beach_id):
         if assessment.eligibility != "EXCLUDED" or assessment.beach_id not in beaches:
@@ -154,8 +154,13 @@ def _exclusions(state, beaches):
                                f"({value.replace('_', ' ').title()})")
             elif constraint.result == "FAIL":
                 reasons.append("a required condition you specified is not met")
-        items.append(f"{beaches[assessment.beach_id].name}: " + "; ".join(reasons or ["excluded by a safety policy"]))
+        items.append((assessment.beach_id, beaches[assessment.beach_id].name, reasons or ["excluded by a safety policy"]))
     return items
+
+
+def _exclusions(state, beaches):
+    """Validated EXCLUDED candidates with fixed reasons; never recommendations or scores."""
+    return [f"{name}: " + "; ".join(reasons) for _, name, reasons in _exclusion_reasons(state, beaches)]
 
 
 def _section(lines, title, items, *, indent=""):
@@ -163,6 +168,16 @@ def _section(lines, title, items, *, indent=""):
     if items:
         lines.append(indent + title)
         lines.extend(indent + "  - " + item for item in items)
+
+
+def _measurement(measurement) -> str:
+    value = measurement.value
+    rendered = f"{value.min}–{value.max}" if hasattr(value, "min") and hasattr(value, "max") else str(value)
+    units = " " + measurement.unit if measurement.unit else ""
+    convention = {"FACE": "wave-face convention", "HAWAIIAN_BACK": "Hawaiian-back convention"}.get(
+        measurement.measurement_convention, measurement.measurement_convention)
+    detail = f" ({convention})" if convention else ""
+    return _text(f"{_MEASUREMENTS[measurement.measurement_type]}: {rendered}{units}{detail}")
 
 
 def _evidence(lines, finding):
@@ -177,13 +192,7 @@ def _evidence(lines, finding):
         lines.append(f"      Observed: {_time(finding.observed_at)}")
     lines.append(f"      Retrieved: {_time(finding.retrieved_at)}")
     for measurement in finding.measurements or ():
-        value = measurement.value
-        rendered = f"{value.min}–{value.max}" if hasattr(value, "min") and hasattr(value, "max") else str(value)
-        units = " " + measurement.unit if measurement.unit else ""
-        convention = {"FACE": "wave-face convention", "HAWAIIAN_BACK": "Hawaiian-back convention"}.get(
-            measurement.measurement_convention, measurement.measurement_convention)
-        detail = f" ({convention})" if convention else ""
-        lines.append("      " + _text(f"{_MEASUREMENTS[measurement.measurement_type]}: {rendered}{units}{detail}"))
+        lines.append("      " + _measurement(measurement))
         if measurement.measurement_time is not None:
             lines.append("      Measurement time: " + _time(measurement.measurement_time))
         if measurement.measurement_notes:
@@ -250,3 +259,162 @@ def render_report(report: SkeletonReport, *, catalog: BeachCatalog | None = None
     _section(lines, "Not recommended (excluded):", _exclusions(state, beaches))
     _section(lines, "General limitations:", [_limitation(item) for item in result.general_limitations])
     return "\n".join(lines) + "\n"
+
+
+# --- Structured view for the local web interface (M2 WEB-A) ---------------------
+# report_view() shares _verified() and the fixed wording above with render_report(),
+# so the web page can show only what the CLI would show. Policy identifiers and
+# decision-reason strings stay in the trace; they are not presentation fields.
+
+def _value(item) -> str:
+    return str(getattr(item, "value", item))
+
+
+def _when(value: datetime | None) -> dict | None:
+    return None if value is None else {"iso": value.isoformat(), "display": _time(value)}
+
+
+def _span(value) -> dict:
+    return {"start": _when(value.start), "end": _when(value.end), "display": _window(value)}
+
+
+def _finding_view(finding) -> dict:
+    convention = {"FACE": "wave-face", "HAWAIIAN_BACK": "Hawaiian-back"}
+    return {
+        "finding_id": finding.finding_id,
+        "agent": _value(finding.agent_type),
+        "source_id": finding.source_id,
+        "provider": _text(_PROVIDERS.get(finding.source_id, finding.source_id)),
+        "finding_type": _value(finding.finding_type).capitalize(),
+        "coverage": _text(finding.coverage_description),
+        "coverage_type": _value(finding.coverage_type).lower().replace("_", " "),
+        "beach_id": finding.beach_id,
+        "valid_from": _when(finding.valid_from), "valid_until": _when(finding.valid_until),
+        "issued_at": _when(finding.issued_at), "observed_at": _when(finding.observed_at),
+        "retrieved_at": _when(finding.retrieved_at),
+        "measurements": [_measurement(item) for item in finding.measurements or ()],
+        "measurement_conventions": sorted({convention.get(m.measurement_convention, m.measurement_convention)
+                                           for m in finding.measurements or () if m.measurement_convention}),
+        "advisories": [{"type": _text(a.advisory_type), "issuer": _text(a.issuer), "area": _text(a.affected_area),
+                        "effective": f"{_time(a.effective_from)} to {_time(a.effective_until)}",
+                        "severity": _text(a.severity) if a.severity else None,
+                        "reference": _text(a.source_reference)} for a in finding.advisories or ()],
+        "retrieval_status": _value(finding.retrieval_status),
+        "validation_status": _value(finding.validation_status),
+        "limitations": [_limitation(_value(item)) for item in finding.limitations or ()],
+        "reference": _text(finding.source_reference) if finding.source_reference else None,
+    }
+
+
+def _beach_view(assessment, beach, findings) -> dict:
+    def listed(ids):
+        return [findings[key] for key in ids if key in findings]
+    return {
+        "beach_id": assessment.beach_id,
+        "name": _text(beach.name), "region": _text(_value(beach.region)), "locality": _text(beach.locality or ""),
+        "latitude": float(beach.latitude) if beach.latitude is not None else None,
+        "longitude": float(beach.longitude) if beach.longitude is not None else None,
+        "eligibility": _value(assessment.eligibility),
+        "environmental_suitability": _value(assessment.environmental_suitability),
+        "evidence_quality": _value(assessment.evidence_quality),
+        "geographic_preference_match": _value(assessment.geographic_preference_match)
+            if assessment.geographic_preference_match is not None else None,
+        "policy_checks": [{"result": _value(item.result), "explanation": _text(item.explanation)}
+                          for item in assessment.policy_results],
+        "hard_constraints": [{"description": _text(item.constraint_description), "result": _value(item.result)}
+                             for item in assessment.hard_constraint_results],
+        "preferences": [{"description": _text(item.preference_description), "alignment": _value(item.alignment),
+                         "explanation": _text(item.explanation)} for item in assessment.preference_results],
+        "evidence_limitations": [_limitation(_value(item)) for item in assessment.evidence_limitations],
+        "safety_limitations": [_text(item) for item in assessment.safety_limitations],
+        "remaining_questions": [_text(item) for item in assessment.remaining_questions],
+        "supporting": listed(assessment.supporting_finding_ids),
+        "conflicting": listed(assessment.conflicting_finding_ids),
+        "rejected": listed(assessment.rejected_finding_ids),
+        "catalog": {
+            "shore_type": _text(_value(beach.shore_type)) if beach.shore_type else None,
+            "reef_presence": _text(_value(beach.reef_presence)) if beach.reef_presence is not None else None,
+            "lifeguard_status": _text(_value(beach.lifeguard_status)) if beach.lifeguard_status else None,
+            "supported_activities": [_ACTIVITIES.get(_value(a), _value(a)) for a in beach.supported_activities],
+            "last_verified": beach.last_verified.isoformat(),
+            "sources": [{"publisher": _text(source.publisher), "title": _text(source.title or source.publisher),
+                         "reference": _text(source.url), "accessed_at": source.accessed_at.isoformat()}
+                        for source in beach.sources],
+        },
+    }
+
+
+def report_view(report: SkeletonReport, *, catalog: BeachCatalog | None = None,
+                policy: PolicyConfiguration | None = None) -> dict:
+    """JSON-safe view of a validated committed result, under render_report()'s checks."""
+    report, state, result, catalog = _verified(report, catalog, policy)
+    view = {
+        "investigation_id": state.investigation_id, "session_id": state.session_id,
+        "request_revision": state.request_revision, "status": _value(state.status), "outcome": result.outcome,
+        "activity": _ACTIVITIES[result.activity], "activity_code": result.activity,
+        "window": _span(result.target_time_window),
+        "general_warnings": [_text(item) for item in result.general_warnings],
+        "general_limitations": list(dict.fromkeys(_limitation(item) for item in result.general_limitations)),
+        "request": {
+            "preferred_area": _text(state.preferred_area) if state.preferred_area else None,
+            "experience_level": _value(state.experience_level).capitalize() if state.experience_level else None,
+            "original": _text(state.original_request),
+            "hard_constraints": [_text(", ".join(f"{k.replace('_', ' ')}: {v}" for k, v in item.items()))
+                                 for item in state.hard_constraints],
+            "soft_preferences": [_text(item.get("preference") or ", ".join(f"{k}: {v}" for k, v in item.items()))
+                                 for item in state.soft_preferences],
+        },
+        "usage": {"tool_calls": state.tool_call_count, "max_tool_calls": state.max_tool_calls,
+                  "iterations": state.iteration_count, "max_iterations": state.max_iterations,
+                  "retries": state.retry_count, "max_retries": state.max_retries,
+                  "fallback_attempted": state.fallback_attempted},
+        "recommendations": [], "exclusions": [], "beaches": [], "abstention": None, "error": None,
+    }
+    if result.outcome == "ERROR":
+        view["error"] = {"summary": _text(result.error_summary)}
+        return view
+    beaches = {beach.beach_id: beach for beach in catalog.root}
+    findings = {f.finding_id: _finding_view(f) for f in state.weather_findings + state.ocean_findings}
+    view["beaches"] = [_beach_view(a, beaches[a.beach_id], findings)
+                       for a in sorted(state.assessments, key=lambda a: a.beach_id) if a.beach_id in beaches]
+    view["exclusions"] = [{"beach_id": key, "name": _text(name), "reasons": [_text(r) for r in reasons]}
+                          for key, name, reasons in _exclusion_reasons(state, beaches)]
+    if result.outcome == "NO_RECOMMENDATION":
+        issues = []
+        for issue in result.unresolved_issues or ():
+            prefix, separator, detail = issue.partition(": ")
+            issues.append(_text((beaches[prefix].name + separator + detail) if prefix in beaches else issue))
+        view["abstention"] = {
+            "explanation": _text(result.explanation),
+            "affected": [_text(beaches[key].name) for key in result.affected_beach_ids or () if key in beaches],
+            "unresolved": issues,
+            "next_steps": [_text(item) for item in result.next_step_suggestions or ()],
+        }
+        return view
+    for recommendation in result.recommendations:
+        notices = {a.advisory_id: a for fid in recommendation.supporting_finding_ids
+                   for a in (next((f for f in state.weather_findings + state.ocean_findings if f.finding_id == fid), None).advisories or ())}
+        beach = beaches[recommendation.beach_id]
+        view["recommendations"].append({
+            "beach_id": recommendation.beach_id, "name": _text(recommendation.display_name),
+            "environmental_suitability": recommendation.environmental_suitability.value,
+            "evidence_quality": recommendation.evidence_quality.value,
+            "window": _span(recommendation.recommended_time_window),
+            "reason": _text(recommendation.recommendation_reason),
+            "summary": _text(recommendation.environmental_summary),
+            "warnings": list(dict.fromkeys(_text(item) for item in recommendation.warnings if _text(item))),
+            "limitations": list(dict.fromkeys(_limitation(item) for item in recommendation.limitations)),
+            "preferences": list(dict.fromkeys(_text(item) for item in recommendation.preference_alignment if _text(item))),
+            "evidence": [findings[fid] for fid in recommendation.supporting_finding_ids],
+            "advisories": [{"type": _text(notices[a].advisory_type), "issuer": _text(notices[a].issuer),
+                            "area": _text(notices[a].affected_area),
+                            "effective": f"{_time(notices[a].effective_from)} to {_time(notices[a].effective_until)}",
+                            "reference": _text(notices[a].source_reference),
+                            "severity": _text(notices[a].severity) if notices[a].severity else None}
+                           for a in recommendation.advisory_references],
+            "attribution": [{"publisher": _text(s.publisher), "title": _text(s.title or s.publisher),
+                             "accessed_at": s.accessed_at.isoformat(), "verified": beach.last_verified.isoformat(),
+                             "reference": _text(s.url)}
+                            for s in beach.sources if s.source_id in recommendation.source_references],
+        })
+    return view

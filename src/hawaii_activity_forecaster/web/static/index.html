@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hawaii Activity Planner</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13" fill="none" stroke="#7FD0D6" stroke-width="1.5"></circle><path d="M5 16c3 0 3-3 6-3s3 3 6 3 3-3 6-3" fill="none" stroke="#7FD0D6" stroke-width="1.8" stroke-linecap="round"></path><path d="M7 20c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2" fill="none" stroke="#7FD0D6" stroke-width="1.4" stroke-linecap="round" opacity="0.6"></path></svg>
+      <span>Hawaii Activity Planner</span>
+    </div>
+    <nav class="nav" aria-label="Main">
+      <a href="#/plan" data-nav="plan">Plan</a>
+      <a href="#/evidence" data-nav="evidence">Evidence</a>
+      <a href="#/inspector" data-nav="inspector">Run inspector</a>
+      <a href="#/recorded" data-nav="recorded">Recorded runs</a>
+    </nav>
+    <span class="mode" id="mode">Loading…</span>
+  </div>
+</header>
+<main id="app" aria-live="polite"><div class="empty">Loading…</div></main>
+<p class="footer">Fictional beaches and synthetic environmental data only. This is not for real activity planning: check current official warnings, posted signs and lifeguard guidance before entering the water.</p>
+<script src="/app.js"></script>
+</body>
+</html>

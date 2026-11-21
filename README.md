@@ -759,6 +759,21 @@ the same way, and the [reporting notes](docs/development/m1-reliability-baseline
 demo example and explain denominators, privacy and exit status. SC-006 and SC-008
 were fixed in M1.13; the selected live gate again covers all twelve scenarios.
 
+### Local web interface (optional) — M2 WEB-A
+
+```bash
+uv run --locked hafi web --fixtures fixtures/scenario-pack-v1
+```
+
+Open the printed `http://127.0.0.1:…/#token=…` URL. Without `--live` or `--local`
+the page offers the authored demonstrations and the recorded `gpt-6-luna` traces
+from the evidence package, with no credentials and no model calls. Adding
+`--release-fixtures fixtures/saturday-release --config haf.release.example.toml --live`
+(with the env-file) allows paid model runs and follow-ups under the same limits as
+`hafi run`. The CLI remains the required interface. See the
+[design](docs/implementation/m2-local-web-ui-design.md) and
+[implementation notes](docs/development/m2-web-a-local-web-interface.md).
+
 ## Specification notes
 
 All seven core requirements and eight approved M1 implementation/design
