@@ -1,12 +1,23 @@
-# M1 submission summary
+# Hawaii Activity Planner — M1 submission summary
 
-This repository implements a synthetic Hawaii Activity Forecaster for a Carnegie
-Mellon University Agentic AI Systems capstone. It supports swimming, snorkeling
-and stand-up paddleboarding through a CLI, with Coordinator, Weather and Ocean
-roles, LangGraph coordination, deterministic validation and local JSONL traces.
+**Hawaii Activity Planner** is a Carnegie Mellon University Agentic AI Systems
+capstone for Hawaii visitors and recreational ocean participants choosing locations
+for swimming, snorkeling and stand-up paddleboarding (SUP). Maui is the initial
+geographic implementation; other Hawaiian islands are envisioned for future versions.
+Repository and package identifiers remain `timsatterfield/hawaii-activity-forecaster`
+and `hawaii_activity_forecaster`.
 
-The demonstration uses fictional beaches and fixed environmental evidence.
-It does not retrieve current Maui conditions or establish real-world ocean safety.
+The completed milestone is **M1 — Synthetic End-to-End Forecaster**, with feature
+development frozen for submission. It uses fictional beaches and fixed synthetic
+environmental evidence. It does not provide validated real-world ocean safety
+recommendations or establish real-world forecasting accuracy.
+
+Coordinator, Weather and Ocean roles operate through LangGraph. Models perform
+constrained planning; specialists submit conditional plans before retrieval.
+Trusted Python independently validates evidence, enforces permissions and safety
+policies, and determines eligibility. It activates conditional recovery from
+observed outcomes. Unrestricted observation-driven specialist replanning is not
+implemented in M1.
 
 ## Reviewer setup: no credentials or model calls
 
@@ -47,36 +58,54 @@ Defaults are disabled; live execution requires an explicit configuration, local
 credential and `--live` opt-in. It makes paid calls and is not needed for the
 offline review above. Local Qwen is experimental and deferred.
 
-The [completion report](development/m1-completion-report.md) maps the fifteen
-approved M1 criteria to tests and recorded live evidence. All twelve scenarios
-have historical live passes across profiles 0.6/0.7. The latest all-twelve profile
-0.7 batch passed **10/12**. SC-006 and SC-008 were then diagnosed and fixed (profile
-0.8 normalize guidance, and SC-008 option names that avoid reserved prompt tokens).
-Both passed live on profile 0.8 and are re-enabled. A subsequent all-twelve live
-batch on 0.8 passed **12/12**. Across four full rounds on 0.8 (that batch plus three
-more), **47/48** scenario runs passed, with 51/52 operational successes. The one failure, an SC-012 follow-up
-where the Ocean plan named an invalid option, failed closed. See the
-[completion report](development/m1-completion-report.md). Their earlier failures remain documented. No offline tests or
-safety assertions were disabled.
+## Final M1 evaluation snapshot
 
-SC-007's passing live report also contains six optional failures for a skipped
-redundant source. Optional blocked checks cover unresolved production rules and
-other explicit limitations. A scenario-level PASS is not a claim that every
-optional assertion passed. See the [deferment record](development/m1-live-acceptance-deferments.md).
+All genuine model-driven evaluations used **`gpt-6-luna`**. The current historical
+evaluation profile is **`m1-saturday-runtime-0.8`**. The
+[completion report](development/m1-completion-report.md#profile-08-reliability-sample-2026-11-20)
+records four complete rounds against the twelve registered acceptance scenarios:
 
-Historical traces and raw reports are ignored local artifacts, absent from a
-fresh clone. The completion report contains their identifiers, digests and outcome
-summaries. Reviewers can regenerate fresh authored traces with the offline commands;
-those new traces must not be relabeled as recorded genuine model execution.
+| Measure | Verified result |
+|---|---|
+| Existing pytest suite | **1,530 passed; one documented expected failure; zero unexpected failures** |
+| Registered acceptance scenarios | **12**, currently selected with zero deferred |
+| Historical scenario outcomes | **47/48 PASS** across four profile 0.8 rounds |
+| Historical investigations | **52**: 43 recommendations, 8 explained abstentions, 1 technical failure |
+| Operational successes | **51/52**, counting recommendations and explained abstentions |
 
-## Verification snapshot (2026-11-20)
+The expected pytest failure concerns the deferred experimental Ollama preferred-area
+input bound; it is not a genuine-model evaluation using Qwen. The one profile 0.8
+technical failure was an SC-012 follow-up whose Ocean plan named an invalid option;
+validation rejected it and the investigation failed closed. Older profile 0.7
+failures, subsequent fixes and re-enablement remain in the
+[historical deferment record](development/m1-live-acceptance-deferments.md).
 
-A fresh public-source copy installed from `uv.lock` on Python 3.12.14 and passed
-**1499 tests, with 1 expected failure**, in 81.81 seconds. The expected failure
-covers the deferred experimental Ollama preferred-area input bound. Startup,
-all three authored demos, trace validation, SC-004 component evaluation and the
-selected-live preview also passed without model credentials or paid calls.
-See the completion report for the exact verification scope and earlier CI evidence.
+These are distinct evidence types:
+
+1. **Authored demonstrations:** fixed component plans through the trusted execution
+   and validation stack, with zero model inference calls.
+2. **Offline scripted-model component tests:** explicit mock HTTP/scripted responses
+   exercise contracts and execution. Full scenario acceptance remains BLOCKED under
+   offline transport; component assertion success is not genuine model inference.
+3. **Recorded genuine-model investigations:** historical `gpt-6-luna` calls against
+   synthetic environmental fixtures, with trace-bound saved evaluation results.
+
+SC-007's six optional Snorkel Store checks failed in each round because the model
+skipped that redundant source: 24 optional failures in total. Intentionally blocked
+optional assertions remain in SC-005, SC-006, SC-007, SC-008 and SC-012. Scenario-level
+PASS therefore does not imply every optional assertion passed.
+
+**Historical evaluation artifacts are not currently included in the tracked
+repository and are not publicly available from a fresh clone.** The completion
+report records identifiers, digests and outcome summaries. Reviewers can generate
+new authored traces with the offline commands above; these are a different evidence
+type and cannot recreate or replace the historical genuine-model investigations.
+
+The four-round results describe a small historical development sample of fixed
+requests and synthetic conditions. They do not establish real-world ocean forecasting
+accuracy or production reliability. The earlier clean-checkout result of 1,499
+passing tests is preserved as a dated historical snapshot in the completion report;
+it is not the final test count.
 
 ## Remaining scope
 

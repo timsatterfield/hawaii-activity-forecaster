@@ -1,11 +1,26 @@
-# Temporary live acceptance deferments (resolved in M1.13)
+# Hawaii Activity Planner — Historical live acceptance deferments
+
+**Status: superseded; both temporary deferments were resolved in M1.13.**
+The current executable selection in `scripts/run_live_acceptance.py` contains
+**twelve scenarios and zero deferred**, on evaluation profile
+`m1-saturday-runtime-0.8` with `gpt-6-luna`. The completed M1 implementation is
+frozen for submission. The ten-scenario gate described in the historical record
+below is no longer the current selection.
+
+See the [submission summary](../submission-summary.md) and
+[profile 0.8 evaluation results](m1-completion-report.md#profile-08-reliability-sample-2026-11-20)
+for the final four-round 47/48 scenario result and its limitations. Re-enabling
+these scenarios did not resolve intentionally blocked optional assertions or
+other deferred capabilities.
+
+## Historical profile 0.7 deferment
 
 **Owner authorization:** 2026-11-20, temporarily defer the failing live checks to
-continue development. This changes the selected live rerun gate, preserving the
+continue development. This temporarily changed the selected live rerun gate, preserving the
 registered scenarios, mandatory assertions, safety validators and offline pytest
 coverage. Approved requirements and architecture documents are unchanged.
 
-| Scenario | Temporary disposition | Follow-up needed |
+| Scenario | Historical temporary disposition | Follow-up needed at that stage |
 |---|---|---|
 | SC-006 | NOT_RUN in the default live rerun | Add reviewed, versioned normalization guidance for retaining unsupported soft preferences; verify with offline cases and an authorized live check |
 | SC-008 | NOT_RUN in the default live rerun | Diagnose the profile 0.7 assertion failures, correct the cause and verify with an authorized live check |
@@ -19,10 +34,11 @@ failure was `APPLICATION_FAILURE`: request normalization rejected a missing
 The phrase "prefer clear water" must be retained as UNINTERPRETED or covered by
 an unresolved phrase span. This is independent of MIXED safety evaluation.
 
-## Fixes applied, pending live verification (M1.13)
+## Fixes and completed live verification (M1.13)
 
-Both causes are now diagnosed and fixed offline. The scenarios stay in `DEFERRED`
-until each has a reviewed live pass.
+Both causes were diagnosed and fixed offline. At that stage they remained in
+`DEFERRED` until reviewed live passes were available; that verification and
+re-enablement are recorded below.
 
 | Scenario | Diagnosed cause (profile 0.7 batch) | Fix |
 |---|---|---|
@@ -41,7 +57,7 @@ scenarios. Offline suite: 1530 passed, 1 xfailed. A full twelve-scenario live ru
 on 0.8 then passed **12/12**, with 13/13 operational successes, 65 model calls and no
 technical failures (`traces/acceptance-subset-1bf7ac46-…`).
 
-## Selected live rerun
+## Current selected live rerun
 
 From the repository root, preview the selection without model calls or output files:
 
@@ -49,31 +65,49 @@ From the repository root, preview the selection without model calls or output fi
 uv run --locked python scripts/run_live_acceptance.py
 ```
 
-The preview selects SC-001–005, SC-007 and SC-009–012: **ten selected, two deferred**.
+The preview selects SC-001 through SC-012: **twelve selected, zero deferred**.
+This replaces the historical ten-selected/two-deferred procedure.
 After separate live authorization, run each selected scenario once:
 
 ```bash
 uv run --locked --env-file keys/apsi.env python scripts/run_live_acceptance.py --live
 ```
 
-This makes paid calls. A typical run uses 55 model calls across eleven
+This makes paid calls. A typical run uses 65 model calls across thirteen
 investigations because SC-012 has two steps. Existing per-investigation limits
 remain enforced; actual call counts can vary. There are no automatic reruns.
 
 The runner creates a new ignored directory under `traces/`, saves reports and
-diagnostics, and records the deferred scenarios as NOT_RUN in `batch-status.json`.
+diagnostics, and records the selected outcomes in `batch-status.json`. The
+runner would record any future deferred cases as NOT_RUN; currently there are none.
 It returns failure for any selected scenario whose exit code or report is not a
 PASS. Optional FAIL/BLOCKED assertion counts remain visible in each report.
-A successful selected gate is **10/10 selected**, never 12/12 acceptance.
+A successful full selection is **12/12 scenario-level PASS**. That still does
+not imply all optional assertions passed, nor does it establish production reliability.
 
-To preview all twelve for future verification, append `--include-deferred`.
-Combining that switch with `--live` explicitly includes both deferred scenarios;
-it requires authorization for the expanded live batch. Direct `hafi evaluate`
-commands also remain available for investigation.
+The retained `--include-deferred` switch does not change the current selection
+because `DEFERRED` is empty. Any new live run still requires separate authorization.
+Direct `hafi evaluate` commands remain available for investigation. Authored and
+offline scripted-transport runs can pass component assertions while full scenario
+acceptance remains BLOCKED; they must not be labeled genuine-model live passes.
 
-## Re-enable
+## Historical re-enable procedure — completed
 
-After each fix has independent offline coverage and reviewed live evidence,
-remove its entry from `DEFERRED` in the runner and update this record. Until then,
-report the unresolved regressions alongside the selected gate. The existing
+The original procedure required independent offline coverage and reviewed live
+evidence before removing each entry from `DEFERRED`. Both entries have been removed
+and all twelve scenarios are selected. This historical procedure does not authorize
+new feature work or changes to intentionally blocked assertions. The existing
 GitHub pytest gate continues to run the full offline suite.
+
+## Intentionally blocked assertions and deferred capabilities
+
+Optional blocked rows still cover production wind-hazard classification (SC-005),
+clear-water preference interpretation (SC-006), production freshness cutoffs
+(SC-007), automatic conflict-materiality classification (SC-008), and historical
+evidence reuse (SC-012). They are distinct from the resolved temporary scenario
+exclusions. SC-007 also has optional failures when its redundant source is skipped.
+
+Verified real-beach catalog completion, live environmental providers, production
+hazard/freshness/materiality rules and active clarification resumption remain
+outside the submitted synthetic M1 scope. The [completion report](m1-completion-report.md)
+preserves those boundaries and the original failure provenance.
