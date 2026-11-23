@@ -14,7 +14,7 @@ It does not change the approved [technical plan](m1-technical-plan.md), the
 [session lifecycle](m1-session-lifecycle.md), the
 [execution design](m1-langgraph-execution-design.md) or any of the seven
 [requirements specifications](../requirements/). The owner approved this design
-on 2026-11-20. It authorizes no implementation in M1.
+on 2026-11-20, and WEB-A implements it.
 
 An earlier private design prototype explored four screens: Plan, Evidence,
 No-result and Run inspector. This document defines how they would be connected to
@@ -30,9 +30,9 @@ Python components decide today.
 | Test acceptance §11 | The CLI is the MVP's required user interface | Unchanged. All acceptance scenarios keep running through the existing harness |
 | `AGENTS.md` | Feature freeze; three agents; no added agents or architecture without approval | No agent, graph, validator or policy is added or changed. Approval of this document is the required design change |
 
-**Decision (2026-11-20): accepted** as M2 work, after the M1 submission. It is
-not part of the submitted M1 release. The owner settled the §9 decisions the
-same day, taking the proposed defaults.
+**Decision (2026-11-20): accepted** as M2 work. The web layer is outside the
+evaluated M1 baseline: the four-round M1 evaluation ran before it existed. The
+owner settled the §9 decisions the same day, taking the proposed defaults.
 
 ## 2. Goals and non-goals
 

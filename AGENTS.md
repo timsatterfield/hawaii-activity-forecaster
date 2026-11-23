@@ -7,8 +7,8 @@
 
 ## Current Development Phase
 - M1 is complete and frozen; its behavior must not change.
-- M2 WEB-A (local web interface) is authorized for implementation, as defined in
-  docs/implementation/m2-local-web-ui-design.md.
+- M2 WEB-A (local web interface) is implemented, as defined in
+  docs/implementation/m2-local-web-ui-design.md. Changes to it follow that design.
 - Do not implement other application code until authorized.
 
 ## Architecture Constraints
