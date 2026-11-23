@@ -16,10 +16,36 @@ The repository remains `timsatterfield/hawaii-activity-forecaster`, and the Pyth
 package remains `hawaii_activity_forecaster`. CLI banners and archived
 specifications retain the original Hawaii Activity Forecaster label.
 
-**Completed milestone:** M1 — Synthetic End-to-End Forecaster. Feature development
-is frozen for capstone submission. M1 uses fictional beaches and synthetic
+**Completed milestone:** M1 — Synthetic End-to-End Forecaster, the evaluated
+capstone baseline; its behavior is frozen. M1 uses fictional beaches and synthetic
 environmental evidence; it does not provide validated real-world ocean safety
-recommendations or retrieve current Maui conditions.
+recommendations or retrieve current Maui conditions. An optional local web
+interface (M2 WEB-A) was added after the M1 evaluation. It displays the same
+validated results and traces, and changes no agent, tool or safety behavior.
+
+## Quick review (no credentials, no model calls)
+
+With [uv](https://docs.astral.sh/uv/getting-started/installation/) and Python 3.12+,
+from the repository root:
+
+```bash
+uv sync --locked
+uv run --locked pytest
+uv run --locked hafi demo advisory --fixtures fixtures/scenario-pack-v1
+uv run --locked hafi trace docs/evaluation-evidence/representative-traces/sc-012-round3-step2-failed-closed.jsonl
+uv run --locked hafi web --fixtures fixtures/scenario-pack-v1
+```
+
+| Command | What it shows |
+|---|---|
+| `pytest` | The offline test suite; no credentials or network calls |
+| `hafi demo advisory` | An authored run through the real validators: one beach excluded by an official advisory, another recommended |
+| `hafi trace …` | Validation of a recorded genuine `gpt-6-luna` investigation that failed closed on an invalid model plan |
+| `hafi web` | The local web interface: authored demos and the six recorded `gpt-6-luna` runs. Open the printed URL |
+
+The [submission summary](docs/submission-summary.md) explains the evidence types
+and limitations, and the [evaluation evidence](docs/evaluation-evidence/README.md)
+package holds the recorded traces, reports, aggregates and checksums.
 
 ## Architecture and reasoning boundary
 
@@ -139,7 +165,7 @@ its optional pytest plugin is disabled.
 
 Package areas under `src/hawaii_activity_forecaster/` are `config`, `models`,
 `fixtures`, `harness`, `agents`, `orchestration`, `interpretation`, `model_runtime`,
-`observability`, `validation`, `tools`, and `recommendations`. The `models`
+`observability`, `validation`, `tools`, `recommendations` and `web`. The `models`
 package contains the Pydantic contracts, `config` contains settings and loading,
 `fixtures` loads local synthetic inputs, and `harness` validates v2 scenario contracts;
 `orchestration` contains the synthetic graph, trusted budgets, session admission and specialist merge components;
@@ -149,6 +175,7 @@ package contains the Pydantic contracts, `config` contains settings and loading,
 synthetic safety policies and Candidate Assessments. `recommendations` compares
 eligible candidates and validates controlled synthetic results. `agents` connects
 the three model-driven planners, explicit tool options, raw sessions and CLI.
+`web` serves the optional loopback-only interface over those same functions.
 
 ### Model-driven synthetic release
 
