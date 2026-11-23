@@ -13,7 +13,7 @@ or provider integration is enabled.
   request/validation interfaces, temporal and geographic rules, hard versus soft
   meanings, origin-preserving follow-ups, catalog selection, outcome/trace behavior,
   twenty-two future acceptance checks and ten approved decisions.
-- [README](../../README.md): current status, design link and approval
+- [Development guide](../development-guide.md): current status, design link and approval
   items, while retaining existing setup/demo/test instructions and project history.
 
 The user explicitly requested approval of the document with the afternoon-window
