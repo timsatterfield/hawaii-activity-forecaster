@@ -6,8 +6,10 @@
 - Record proposed design changes for human review.
 
 ## Current Development Phase
-- Requirements and design only.
-- Do not implement application code until authorized.
+- M1 is complete and frozen; its behavior must not change.
+- M2 WEB-A (local web interface) is implemented, as defined in
+  docs/implementation/m2-local-web-ui-design.md. Changes to it follow that design.
+- Do not implement other application code until authorized.
 
 ## Architecture Constraints
 - Three agents: Coordinator, Weather, Ocean.
