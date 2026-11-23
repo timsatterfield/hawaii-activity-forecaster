@@ -52,6 +52,6 @@ delivery boundary and supply explicit conflict/wind/visibility policy facts. The
 exercise the installed SDK using mock HTTP, without credentials or paid calls.
 These are focused release checks, not newly registered full SC-001–012 passes.
 
-See the root [README](../../README.md#model-driven-synthetic-release) for opt-in
+See the [development guide](../../docs/development-guide.md#model-driven-synthetic-release) for opt-in
 execution and [integration notes](../../docs/development/m1-integration-release.md)
 for acceptance scope and remaining limitations.

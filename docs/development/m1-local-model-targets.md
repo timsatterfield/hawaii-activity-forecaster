@@ -142,6 +142,6 @@ uv run --locked hafi run "Where should I snorkel tomorrow morning?" \
 ```
 
 The last command is a real local experiment and may fail as documented above.
-Existing OpenAI instructions remain in the [README](../../README.md#model-driven-synthetic-release).
+Existing OpenAI instructions remain in the [README](../development-guide.md#model-driven-synthetic-release).
 Full registered scenario acceptance remains BLOCKED; no mock or failed local run
 is relabeled as a genuine agentic PASS.

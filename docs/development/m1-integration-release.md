@@ -146,7 +146,7 @@ uv run --locked pytest tests/test_agent_release.py tests/test_release_cli.py tes
 uv run --locked pytest
 ```
 
-See the root [README](../../README.md#model-driven-synthetic-release) for paid opt-in
+See the [development guide](../development-guide.md#model-driven-synthetic-release) for paid opt-in
 commands. No approved requirements/architecture document, dependency/lockfile,
 original fixture package or CI configuration was modified. No commit or push occurs.
 
